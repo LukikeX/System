@@ -45,10 +45,9 @@ bool VGATextoutput::textScroll(ushort line, ushort col, ushort height, ushort wi
     uchar* where = (uchar *)RAM_ADDR;
     
     for (uint i = 1; i < height; i++)
-        Memory::copy(where + ((line * i - 1) * (this->cols * 2)) + (col * 2), where + ((line + i) * (this->cols * 2)) + (col * 2), width * 2);
+        Memory::copy(where + ((line + i) * (this->cols * 2)) + (col * 2), where + ((line + i - 1) * (this->cols * 2)) + (col * 2), width * 2);
     
-    ushort* w = (ushort *)where;
-    
+    ushort* w = (ushort *)where;    
     for (uint i = 0; i < width; i++)
         (w + ((line + height - 1) * this->cols) + col)[i] = 0x20 | (color << 8);
     return true;

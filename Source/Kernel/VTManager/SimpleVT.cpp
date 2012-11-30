@@ -61,6 +61,7 @@ void SimpleVT::unmap() {
 void SimpleVT::redraw() {
     if (!mapped)
         return;
+    return;
     
     for (uint r = 0; r < rows; r++) {
         for (uint c = 0; c < cols; c++)
@@ -70,7 +71,7 @@ void SimpleVT::redraw() {
 
 void SimpleVT::scroll() {
     for (uint i = 0; i < rows - 1; i++) {
-        for (uint c = 0; c < cols; i++)
+        for (uint c = 0; c < cols; c++)
             BUFCHR(i, c) = BUFCHR(i + 1, c);
     }
     

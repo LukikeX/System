@@ -4,6 +4,8 @@
 #include <Resources/Keymaps/en.kmap>
 #include <Devices/Keyboard/Keyboard.proto.h>
 
+#include <Core/Loader.h>
+
 uint Keyboard::status;
 
 const uchar Keyboard::controllKeys[] = {
@@ -35,7 +37,7 @@ void Keyboard::updateLeds() {
         ((KeyboardProto *)(kbd[i]))->updateLeds(status);
 }
 
-void Keyboard::keyPress(uchar code) {
+void Keyboard::keyPress(uchar code) { *kvt << "A";
     keyStatus ks;
     ks.pressed = true;
     ks.modifiers = status & 0x0F;
@@ -167,5 +169,5 @@ void Keyboard::keyRelease(uchar code) {
 }
 
 void Keyboard::process(const keyStatus& ks) {
-    
+    *kvt << ks.character << "A";
 }

@@ -53,7 +53,7 @@ void ScrollableVT::redraw() {
                 Display::putChar(r + maprow, c + mapcol, BUFCHR(r - linesUp, c).c, BUFCHR(r - linesUp, c).color);
         } else {
             for (uint c = 0; c < cols; c++) {
-                uint l = keepRows - linesUp + r;
+                //register uint l = keepRows - linesUp + r;
                 //Display::putChar(r + maprow, c + mapcol, lines[l][c].c, lines[l][c].color);
             }
         }

@@ -164,6 +164,5 @@ void IDT::handler(regs* r) {
         IO::sti();
         Device::handler(r);
         IO::cli();
-        
     }
 }

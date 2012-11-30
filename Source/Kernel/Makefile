@@ -33,13 +33,13 @@ SRC += $(wildcard TaskManager/V86/*.asm TaskManager/V86/*.cpp)
 
 SRC += $(wildcard Devices/*.cpp)
 SRC += $(wildcard Devices/Display/*.cpp)
+SRC += $(wildcard Devices/Keyboard/*.cpp)
 
 SRC += $(wildcard VTManager/*.cpp)
 
 
 
 #SRC += $(wildcard Devices/ATA/*.cpp)
-#SRC += $(wildcard Devices/Keyboard/*.cpp)
 #SRC += $(wildcard Devices/Mouse/*.cpp)
 #SRC += $(wildcard Devices/Character/*.cpp)
 #SRC += $(wildcard Devices/PCI/*.cpp)
