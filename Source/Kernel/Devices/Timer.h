@@ -23,8 +23,8 @@ public:
     
     void setFrequency(uchar frequency);
     
-    String getName() { return "timer"; }
-    String getClass() { return "Programmable interrupt timer"; }
+    String getName() const { return "timer"; }
+    String getClass() const { return "Programmable interrupt timer"; }
     
     inline uint uptime() { return seconds; }
     inline uint time() { return (seconds * 1000) + ((ticks * 1000) / frequency); }

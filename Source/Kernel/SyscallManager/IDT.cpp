@@ -57,7 +57,7 @@ extern "C" void int77();
 extern "C" void int88();
 
 extern "C" void interrupt_handler(IDT::regs* r) {
-    //IDT::handler(r);
+    IDT::handler(r);
 }
 
 IDT::entryT* IDT::entries;

@@ -5,7 +5,7 @@
 
 class SB {
 private:
-    static SimpleVT* prog, *debug;
+    static SimpleVT* prog, *debug, *progMsg;
     static uint count, inProg, length;
     
 public:

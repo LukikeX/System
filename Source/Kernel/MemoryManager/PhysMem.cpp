@@ -12,9 +12,6 @@ PhysMem::PhysMem() {
     
     for (ulong i = 0xFFFFFFFFC0000000; i < 0xFFFFFFFFC0800000; i += 0x1000)
         kernelPageDirectory->allocFrame(i, false, true);
-    
-    //PageDirectory::PTE* gdt = kernelPageDirectory->getPage(0x8000, true);
-    //kernelPageDirectory->map(gdt, 0x8000, false, true);
 
     kernelPageDirectory->switchTo();
 }

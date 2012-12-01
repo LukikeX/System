@@ -15,7 +15,7 @@ PS2Keyboard::PS2Keyboard() {
     escaped = false;
 }
 
-void PS2Keyboard::IRQHandler(IDT::regs* r) {
+void PS2Keyboard::IRQHandler(IDT::regs*) {
     uchar code = IO::inB(0x60);
     if (code == 0xE0)
         escaped = true;

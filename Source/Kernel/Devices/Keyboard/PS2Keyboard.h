@@ -12,7 +12,7 @@ public:
     String getName() const { return "Standard PS2 keyboard"; };
     String getClass() const { return "keyboard.ps2"; }
     
-    void IRQHandler(IDT::regs *r);
+    void IRQHandler(IDT::regs *);
     void updateLeds(uint status);
 };
 

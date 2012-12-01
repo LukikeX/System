@@ -1,22 +1,23 @@
 #include "Loader.h"
+#include "Devices/Timer.h"
 #include "typedef.h"
 #include "Panic.h"
 #include "SB.h"
-
-#include "VTManager/SimpleVT.h"
-#include "VTManager/ScrollableVT.h"
-#include "DeviceManager/Device.h"
-#include "Devices/Keyboard/PS2Keyboard.h"
 #include "IO.h"
-#include "C++/Runtime.h"
+#include "DeviceManager/Time.h"
+#include <C++/Runtime.h>
 
 #include <MemoryManager/Memory.h>
 #include <MemoryManager/GDT.h>
 
+#include <DeviceManager/Device.h>
 #include <DeviceManager/Display.h>
+
 #include <Devices/Display/VGATextOutput.h>
+#include <Devices/Keyboard/PS2Keyboard.h>
 
 #include <VTManager/SimpleVT.h>
+#include <VTManager/ScrollableVT.h>
 
 //Panic - dokoncit
 //Mutex - waitLock()
@@ -47,7 +48,7 @@ extern "C" void Loader() {
     VGATextoutput* vgaout = new VGATextoutput();
     Display::setText(vgaout);
     
-    new SB(5);
+    new SB(8);
     
     SB::progress("Initializing paging...");
     PhysMem();
@@ -57,43 +58,31 @@ extern "C" void Loader() {
     Memory();
     SB::ok();
     
-    SB::progress("Initializing Global Description Table...");
+    SB::progress("Initializing GDT...");
     GDT();
     SB::ok();
     
-    SB::progress("Creating kernel virtual terminal...");
+    SB::progress("Creating Kernel VT...");
     kvt = new ScrollableVT(Display::textRows(), Display::textCols(), 20);
     SB::ok();
     
-    SB::progress("Initializing Interrupt Description Table...");
+    SB::progress("Initializing IDT...");
     IDT();
     SB::ok();
     
-   
+    SB::progress("Setting up timer...");
+    Device::registerDevice(new Timer());
+    SB::ok();
+    
+    SB::progress("Initializing multitasking...");
+    //Task..
+    SB::ok();
+     
+    
+    SB::progress("Finished!");
+    SB::ok();
+    
     IO::sti();
-    
-    
-    //kvt->map(0, 0);
-    
-    //IO::cli();
-    //new IDT();
-    //Device::registerDevice(new PS2Keyboard());
-    //IO::sti();
-    
-  //  kvt->getkeyPress(true, false);
-  //  kvt->getkeyPress(true, false);
-   // kvt->getkeyPress(true, false);
-  //  kvt->getkeyPress(true, false);
-    //*kvt << "test";
-    
-    //for (uint i = 1; i; i++) {
-        //*kvt << "test: " << (int)i << "\n";
-        //for (uint j = 0; j < 1000000; j++);
-    //}
-    //*kvt << "test\n";
-    
-   // panic("test");
-    
     
     for (;;);
 }
