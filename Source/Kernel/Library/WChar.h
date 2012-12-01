@@ -14,9 +14,8 @@ private:
         uint i;
     };
     
-    static WChar CP437[];
-    
 public:
+    static WChar CP437[];
     uint value;
     
     WChar();

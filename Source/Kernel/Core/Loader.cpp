@@ -1,12 +1,14 @@
 #include "Loader.h"
 #include "typedef.h"
 #include "Panic.h"
+#include "SB.h"
 
 #include "VTManager/SimpleVT.h"
 #include "VTManager/ScrollableVT.h"
 #include "DeviceManager/Device.h"
 #include "Devices/Keyboard/PS2Keyboard.h"
 #include "IO.h"
+#include "C++/Runtime.h"
 
 #include <MemoryManager/Memory.h>
 #include <MemoryManager/GDT.h>
@@ -26,6 +28,8 @@
 //Simple VT - handle escape
 //DOkoncit keyboard process
 //ScrollableVT - redraw()....
+//opravit free() v heape
+//Memory dokoncit mkXchgSpace
 
 /* Syscall
  * request task switch - 66
@@ -38,27 +42,49 @@ SimpleVT* kvt;
 
 extern "C" void Loader() {
     Memory::placementAddress = (ulong)&_end;
-    
-    PhysMem();
-    Memory();
-    GDT();
+    construct();
     
     VGATextoutput* vgaout = new VGATextoutput();
     Display::setText(vgaout);
     
-    kvt = new ScrollableVT(25, 80, 20);
-    kvt->map(0, 0);
+    new SB(5);
     
-    IO::cli();
-    new IDT();
-    //Device::registerDevice(new PS2Keyboard());
+    SB::progress("Initializing paging...");
+    PhysMem();
+    SB::ok();
+    
+    SB::progress("Initializing memory heap...");
+    Memory();
+    SB::ok();
+    
+    SB::progress("Initializing Global Description Table...");
+    GDT();
+    SB::ok();
+    
+    SB::progress("Creating kernel virtual terminal...");
+    kvt = new ScrollableVT(Display::textRows(), Display::textCols(), 20);
+    SB::ok();
+    
+    SB::progress("Initializing Interrupt Description Table...");
+    IDT();
+    SB::ok();
+    
+   
     IO::sti();
     
-    kvt->getkeyPress(true, false);
-    kvt->getkeyPress(true, false);
-    kvt->getkeyPress(true, false);
-    kvt->getkeyPress(true, false);
-    *kvt << "test";
+    
+    //kvt->map(0, 0);
+    
+    //IO::cli();
+    //new IDT();
+    //Device::registerDevice(new PS2Keyboard());
+    //IO::sti();
+    
+  //  kvt->getkeyPress(true, false);
+  //  kvt->getkeyPress(true, false);
+   // kvt->getkeyPress(true, false);
+  //  kvt->getkeyPress(true, false);
+    //*kvt << "test";
     
     //for (uint i = 1; i; i++) {
         //*kvt << "test: " << (int)i << "\n";

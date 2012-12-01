@@ -24,6 +24,8 @@
           <in>Mutex.h</in>
           <in>Panic.cpp</in>
           <in>Panic.h</in>
+          <in>SB.cpp</in>
+          <in>SB.h</in>
           <in>typedef.h</in>
         </df>
         <df name="DeviceManager">
@@ -45,6 +47,8 @@
           <df name="Keyboard">
             <in>Keyboard.defs.h</in>
             <in>Keyboard.proto.h</in>
+            <in>PS2Keyboard.cpp</in>
+            <in>PS2Keyboard.h</in>
           </df>
           <in>Device.proto.h</in>
           <in>Timer.cpp</in>

@@ -35,6 +35,7 @@ public:
     
     long toInt() const;
     ulong toInt16() const;
+    uint getLength() const { return length; }
     
     Vector<String> split(WChar c) const;
     String substr(int start, int size = -1);

@@ -75,10 +75,10 @@ uint WChar::affectUtf8(const char* c) {
         if (value < 2048)
             value = 0;
 
-        if (value >= 0xD800 and value <= 0xDFFF)
+        if (value >= 0xD800 && value <= 0xDFFF)
             value = 0;
 
-        if (value >= 0xFFFE and value <= 0xFFFF) 
+        if (value >= 0xFFFE && value <= 0xFFFF) 
             value = 0;
 
         return 3;
@@ -99,12 +99,11 @@ uint WChar::affectUtf8(const char* c) {
 uchar WChar::toAscii() {
     if (value < 128)
         return (char)value;
-    
-    for (int i = 0; i < 128; i++) {
+
+    for (uint i = 0; i < 128; i++) {
         if (CP437[i] == value)
             return (i + 128);
     }
-    
     return '?';
 }
 

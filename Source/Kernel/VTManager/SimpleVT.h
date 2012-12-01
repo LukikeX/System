@@ -34,6 +34,7 @@ public:
     uchar width()  { return cols; }
     uchar csrLin() { return csrlin; }
     uchar csrCol() { return csrcol; }
+    void setColor(uchar color) { this->color = color; }
     
     void map(int row = -1, int col = -1);
     void unmap();

@@ -85,7 +85,7 @@ void Heap::free(void* ptr) {
     }
     
     headerT* nextHeader = (headerT *)((ulong)footer + sizeof(footerT));
-    if (nextHeader->magic == HEAP_MAGIC && nextHeader->size) {
+    if (nextHeader->magic == HEAP_MAGIC && nextHeader->isHole) {
         removeFromIndex(nextHeader);
         footer = (footerT *)((ulong)footer + nextHeader->size);
         
@@ -93,8 +93,8 @@ void Heap::free(void* ptr) {
         header->size = ((ulong)footer - (ulong)header + sizeof(footerT));
     }
     
-    header->isHole = true;
-    insertIntoIndex(header);
+    //header->isHole = true;
+   // insertIntoIndex(header);
     
     if ((ulong)footer == (end - sizeof(footerT)) && header->size >= 0x2000 && (end - start > HEAP_MIN_SIZE))
         contract();
@@ -209,8 +209,9 @@ void Heap::contract() {
 
 void Heap::removeFromIndex(uint idx) {
     index.size--;
+    idx++;
     while (idx < index.size) {
-        index.data[idx] = index.data[idx + 1];
+        index.data[idx - 1] = index.data[idx];
         idx++;
     }
 }

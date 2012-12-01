@@ -57,7 +57,7 @@ extern "C" void int77();
 extern "C" void int88();
 
 extern "C" void interrupt_handler(IDT::regs* r) {
-    IDT::handler(r);
+    //IDT::handler(r);
 }
 
 IDT::entryT* IDT::entries;
@@ -136,18 +136,21 @@ IDT::IDT() {
     setGate(46, (ulong)irq14, 0x08, 0x8E);
     setGate(47, (ulong)irq15, 0x08, 0x8E);
     
-    asm("lidt (%0)" : : "r"((ulong)ptr));
+    setGate(66, (ulong)int66, 0x08, 0x8E);
+    setGate(77, (ulong)int77, 0x08, 0x8E);
+    setGate(88, (ulong)int88, 0x08, 0x8E);
+    
+    asm volatile ("lidt (%0)" : : "r"((ulong)ptr));
 }
 
 void IDT::setGate(uint num, ulong base, ushort sel, uint flags) {
     entries[num].baseLow    = base & 0xFFFF;
     entries[num].baseMiddle = (base >> 16) & 0xFFFF;
     entries[num].baseHigh   = base >> 32;
-    
-    entries[num].sel      = sel;
-    entries[num].flags    = flags;
-    entries[num].always0  = 0;
-    entries[num].always02 = 0;
+    entries[num].sel        = sel;
+    entries[num].flags      = flags;
+    entries[num].always0    = 0;
+    entries[num].always02   = 0;
 }
 
 void IDT::handler(regs* r) {
