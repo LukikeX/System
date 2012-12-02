@@ -21,7 +21,7 @@ private:
     static Process* currProcess;
     
     static uint nextpid;
-    static uint tempStack[256];
+    static ulong tempStack[256];
     
     static List<Thread *>* nextThread();
     static void currentThreadExitsProceed(uint errorCode);
@@ -30,7 +30,7 @@ public:
     Task(String cmdline, VirtualTerminal* vt);
     static Thread* currentThread() { return currThread->v(); }
     static Process* currentProcess() { return currProcess; }
-    static getKernelProcess();
+    static Process* getKernelProcess();
     
     static void doSwitch();
     static inline void triggerSwitch() { asm ("int $66"); }

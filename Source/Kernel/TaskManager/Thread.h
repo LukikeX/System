@@ -48,13 +48,13 @@ public:
     
     void setState(ulong rsp, ulong rbp, ulong rip);
     void setKernelStack();
-    ulong getRsp();
-    ulong getRbp();
-    ulong getRip();
-    Process* getProcess();
+    ulong getRsp() { return rsp; }
+    ulong getRbp() { return rbp; }
+    ulong getRip() { return rip; }
+    Process* getProcess() { return process; }
     
     void* mkXchgSpace(uint sz);
-    void sleep(uint ms) { }
+    void sleep(uint ms);
     void waitIRQ(uchar irq);
     bool runnable();
     
@@ -65,6 +65,6 @@ public:
         }
         return false;
     }
-}
+};
 
 #endif

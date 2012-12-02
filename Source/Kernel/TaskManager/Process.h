@@ -10,6 +10,8 @@
 #define E_EXIT       0x0FFFFF01
 #define E_UNHLD_EXCP 0x0FFFFF02
 
+#define STACKSIZE 4096
+
 class Thread;
 
 class Process {
@@ -54,19 +56,18 @@ public:
     
     //register & unregister file desc
     
-    PageDirectory* getPageDir();
+    PageDirectory* getPageDir() { return pageDir; }
     uint getUid() { return uid; }
     uint getPid() { return pid; }
     uint getPpid() { return ppid; }
     
     //set cwd...
     
-    VirtualTerminal* getInVT();
-    VirtualTerminal* getOutVT();
-    void setInVT(VirtualTerminal* vt);
-    void setOutVT(VirtualTerminal* vt);
+    VirtualTerminal* getInVT() { return inVT; }
+    VirtualTerminal* getOutVT() { return outVT; }
+    void setInVT(VirtualTerminal* vt) { inVT = vt; }
+    void setOutVT(VirtualTerminal* vt) { outVT = vt; }
     uint getState() { return state; }
 };
-
 
 #endif

@@ -6,9 +6,6 @@
 #include "PageDirectory.h"
 
 class Memory {
-private:
-    static Heap kernelHeap;
-    
 public:
     Memory();
     
@@ -33,6 +30,7 @@ public:
             destination[i + offset] = source[i];
     }
     
+    static Heap kernelHeap;
     static ulong placementAddress;
 };
 

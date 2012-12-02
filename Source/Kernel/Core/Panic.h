@@ -6,6 +6,6 @@
 #include <SyscallManager/IDT.h>
 
 void panic(const String& str);
-void dumpRegisters(IDT::regs* r, SimpleVT* vt);
+void dumpRegisters(IDT::regs* r, VirtualTerminal* vt);
 
 #endif

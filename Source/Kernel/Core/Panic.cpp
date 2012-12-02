@@ -57,7 +57,7 @@ void panic(const String&) {
     for (;;);
 }
 
-void dumpRegisters(IDT::regs* r, SimpleVT* vt) {
+void dumpRegisters(IDT::regs* r, VirtualTerminal* vt) {
     // intNo
     *vt << " [INT: ";
     vt->setColor(3);

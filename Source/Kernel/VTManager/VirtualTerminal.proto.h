@@ -25,6 +25,7 @@ public:
     virtual bool isBoxed() = 0;
     virtual uchar height() { return 0; }
     virtual uchar width() { return 0; }
+    virtual void setColor(uchar color) = 0;
     
     virtual void handleEscape(mvtEscCmdT cmd) = 0;
     

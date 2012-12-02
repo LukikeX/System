@@ -12,7 +12,7 @@ List<Thread *>* Task::idleThread;
 Process* Task::currProcess;
     
 uint Task::nextpid;
-uint Task::tempStack[256];
+ulong Task::tempStack[256];
 
 Task::Task(String cmdline, VirtualTerminal* vt) {
     IO::cli();
@@ -29,7 +29,6 @@ Task::Task(String cmdline, VirtualTerminal* vt) {
             break;
         }
     }
-    IO::sti();
 }
 
 Process* Task::getKernelProcess() {
@@ -126,8 +125,8 @@ bool Task::IRQwakeup(uchar irq) {
 
 void Task::currentThreadExits(uint errorCode) {
     IO::cli();
-    uint* stack = &tempStack[255];
-    *stack == errorCode;
+    ulong* stack = &tempStack[255];
+    *stack = errorCode;
     stack--;
     *stack = 0;
     

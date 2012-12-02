@@ -59,6 +59,7 @@
           <in>BasicString.h</in>
           <in>Bitset.cpp</in>
           <in>Bitset.h</in>
+          <in>List.h</in>
           <in>String.cpp</in>
           <in>String.h</in>
           <in>Vector.cpp.h</in>
@@ -96,6 +97,13 @@
             <in>V86Thread.cpp</in>
             <in>V86Thread.h</in>
           </df>
+          <in>Process.cpp</in>
+          <in>Process.h</in>
+          <in>Task.asm</in>
+          <in>Task.cpp</in>
+          <in>Task.h</in>
+          <in>Thread.cpp</in>
+          <in>Thread.h</in>
         </df>
         <df name="VTManager">
           <in>ScrollableVT.cpp</in>

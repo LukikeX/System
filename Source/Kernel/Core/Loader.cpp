@@ -19,6 +19,8 @@
 #include <VTManager/SimpleVT.h>
 #include <VTManager/ScrollableVT.h>
 
+#include <TaskManager/Task.h>
+
 //dorobit irq handler
 //dorobit display dm, chyba tam select mode....
 //VGATextoutput dokoncit a nahodit V86
@@ -31,9 +33,9 @@
 //dorobit page directory
 
 //dorobit multitasking
-//Napisat List
-//Dorobit process 
 //v task.cpp dorobit allocKernelPage
+
+//Opravit chybu v VTcku, po sti sa mu nejako nechce makat...
 
 /* Syscall
  * request task switch - 66
@@ -76,10 +78,11 @@ extern "C" void Loader() {
     
     SB::progress("Setting up timer...");
     Device::registerDevice(new Timer());
+    IO::sti();
     SB::ok();
     
     SB::progress("Initializing multitasking...");
-    //Task..
+    Task("none", kvt);
     SB::ok();
      
     

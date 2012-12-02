@@ -28,7 +28,7 @@ SRC += $(wildcard Library/*.cpp)
 SRC += $(wildcard DeviceManager/*.cpp)
 SRC += $(wildcard MemoryManager/*.cpp)
 SRC += $(wildcard SyscallManager/*.asm SyscallManager/*.cpp)
-SRC += $(wildcard TaskManager/*.cpp)
+SRC += $(wildcard TaskManager/*.asm TaskManager/*.cpp)
 SRC += $(wildcard TaskManager/V86/*.asm TaskManager/V86/*.cpp)
 
 SRC += $(wildcard Devices/*.cpp)
