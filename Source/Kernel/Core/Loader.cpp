@@ -19,8 +19,6 @@
 #include <VTManager/SimpleVT.h>
 #include <VTManager/ScrollableVT.h>
 
-//Panic - dokoncit
-//Mutex - waitLock()
 //dorobit irq handler
 //dorobit display dm, chyba tam select mode....
 //VGATextoutput dokoncit a nahodit V86
@@ -30,7 +28,12 @@
 //DOkoncit keyboard process
 //ScrollableVT - redraw()....
 //opravit free() v heape
-//Memory dokoncit mkXchgSpace
+//dorobit page directory
+
+//dorobit multitasking
+//Napisat List
+//Dorobit process 
+//v task.cpp dorobit allocKernelPage
 
 /* Syscall
  * request task switch - 66
@@ -48,7 +51,7 @@ extern "C" void Loader() {
     VGATextoutput* vgaout = new VGATextoutput();
     Display::setText(vgaout);
     
-    new SB(8);
+    SB* sb = new SB(8);
     
     SB::progress("Initializing paging...");
     PhysMem();
@@ -63,7 +66,8 @@ extern "C" void Loader() {
     SB::ok();
     
     SB::progress("Creating Kernel VT...");
-    kvt = new ScrollableVT(Display::textRows(), Display::textCols(), 20);
+    //kvt = new ScrollableVT(Display::textRows(), Display::textCols(), 20);
+    kvt = new SimpleVT(Display::textRows(), Display::textCols());
     SB::ok();
     
     SB::progress("Initializing IDT...");
@@ -82,7 +86,12 @@ extern "C" void Loader() {
     SB::progress("Finished!");
     SB::ok();
     
+    //delete sb;
+    //kvt->map(0, 0);
+    
     IO::sti();
+    
+    //panic("test");
     
     for (;;);
 }

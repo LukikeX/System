@@ -108,6 +108,7 @@ public:
     
     //void faultHandler();
     inline static ulong getPhysAddress(ulong address) { return address & ~0xFFFFFFFFC0000000; }
+    inline ulong getPhysicalAddr() { return getPhysAddress(pages); }
 };
 
 #endif

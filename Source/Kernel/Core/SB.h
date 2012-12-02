@@ -5,7 +5,7 @@
 
 class SB {
 private:
-    static SimpleVT* prog, *debug, *progMsg;
+    static SimpleVT* prog, *debug, *progMsg, *logo;
     static uint count, inProg, length;
     
 public:
@@ -13,6 +13,7 @@ public:
     static void progress(const String& str);
     static void ok();
     static void failed();
+    ~SB();
 };
 
 #endif

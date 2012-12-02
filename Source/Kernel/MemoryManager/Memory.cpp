@@ -1,4 +1,5 @@
 #include "Memory.h"
+#include <TaskManager/Task.h>
 
 Heap Memory::kernelHeap;
 ulong Memory::placementAddress;
@@ -32,6 +33,6 @@ void Memory::free(void* p) {
     kernelHeap.free(p);
 }
 
-void* Memory::mkXchgSpace(ulong) {
-    return (void *)0; //task->CurrentThread()->mkXchgSpace(Size);
+void* Memory::mkXchgSpace(ulong size) {
+    return Task::currentThread()->mkXchgSpace(size);
 }

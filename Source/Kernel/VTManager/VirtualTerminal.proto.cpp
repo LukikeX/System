@@ -51,10 +51,10 @@ void VirtualTerminal::writeDec(long num, bool updateScr) {
 }
 
 void VirtualTerminal::writeHex(ulong num, bool updateScr) {
-//    write("0x", false);
+    write("0x", false);
     char hexdigits[] = "0123456789ABCDEF";
     for (uint i = 0; i < 16; i++) {
-        put(hexdigits[(num & 0xF0000000) >> 28], false);
+        put(hexdigits[(num & 0xF000000000000000) >> 60], false);
         num = num << 4;
     }
     
@@ -63,10 +63,22 @@ void VirtualTerminal::writeHex(ulong num, bool updateScr) {
 }
 
 void VirtualTerminal::writeHex(uint num, bool updateScr) {
-  //  write("0x", false);
+    write("0x", false);
     char hexdigits[] = "0123456789ABCDEF";
     for (uint i = 0; i < 8; i++) {
         put(hexdigits[(num & 0xF0000000) >> 28], false);
+        num = num << 4;
+    }
+    
+    if (updateScr)
+        updateCursor();
+}
+
+void VirtualTerminal::writeHex(ushort num, bool updateScr) {
+    write("0x", false);
+    char hexdigits[] = "0123456789ABCDEF";
+    for (uint i = 0; i < 4; i++) {
+        put(hexdigits[(num & 0xF000) >> 12], false);
         num = num << 4;
     }
     

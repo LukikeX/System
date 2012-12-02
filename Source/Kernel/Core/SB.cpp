@@ -1,7 +1,7 @@
 #include "SB.h"
 #include <DeviceManager/Display.h>
 
-SimpleVT* SB::prog, *SB::debug, *SB::progMsg;
+SimpleVT* SB::prog, *SB::debug, *SB::progMsg, *SB::logo;
 uint SB::count, SB::inProg, SB::length;
 
 SB::SB(uint count) {
@@ -19,7 +19,7 @@ SB::SB(uint count) {
         prog->map(Display::textRows() / 2 + 4, length / 2 - 1);
         progMsg->map(Display::textRows() / 2 + 8, 0);
         
-        SimpleVT* logo = new SimpleVT(8, Display::textCols());
+        logo = new SimpleVT(8, Display::textCols());
         logo->map(2, 0);
         *logo << "\
              ######  ##    ##  ######  ######## ######## ##     ##              \
@@ -43,6 +43,18 @@ SB::SB(uint count) {
     for (uint i = 2; i < length; i++)
         *prog << "═";
     *prog << "╝";
+}
+
+SB::~SB() {
+    debug->unmap();
+    prog->unmap();
+    progMsg->unmap();
+    logo->unmap();
+    
+    delete debug;
+    delete prog;
+    delete progMsg;
+    delete logo;
 }
 
 void SB::progress(const String& str) {
