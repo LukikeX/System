@@ -34,6 +34,7 @@
 
 //dorobit multitasking
 //v task.cpp dorobit allocKernelPage
+//v thread::run sa to sekne asi
 
 /* Syscall
  * request task switch - 66
@@ -48,7 +49,6 @@ ulong test() {
     
     return 1;
 }
-
 
 
 SimpleVT* kvt;
@@ -105,10 +105,10 @@ extern "C" void Loader() {
     
     IO::sti();
     
-    //new Thread((ThreadEntry)test, 0, true);
+    new Thread((ThreadEntry)test, 0, true);
     
     while (true) {
-        *kvt << (uint)Task::processes->size() << "\n";
+     //   *kvt << (uint)Task::processes->size() << "\n";
         for (uint i = 0; i < 50000000; i++);
     }
     

@@ -5,7 +5,6 @@
 
 void Thread::run(Thread* t, void* data, ThreadEntry entryPoint) {
     t->process->getPageDir()->switchTo();
-    
     if (t->isKernel) {
         IO::cli();
         ulong ret = entryPoint(data);
@@ -83,6 +82,7 @@ void Thread::setup(Process* process, ThreadEntry entryPoint, void* data, bool is
     }
     
     ulong* stack = (ulong *)((ulong)kernelStack.address + kernelStack.size);
+    rbp = (ulong)stack;
     stack--;
     *stack = (ulong)entryPoint;
     stack--;
@@ -93,10 +93,9 @@ void Thread::setup(Process* process, ThreadEntry entryPoint, void* data, bool is
     *stack = 0;
     
     rsp = (ulong)stack;
-    rbp = rsp + 8;
     rip = (ulong)run;
-    
     state = RUNNING;
+    
     process->registerThread(this);
     Task::registerThread(this);
 }
