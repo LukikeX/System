@@ -35,14 +35,21 @@
 //dorobit multitasking
 //v task.cpp dorobit allocKernelPage
 
-//Opravit chybu v VTcku, po sti sa mu nejako nechce makat...
-
 /* Syscall
  * request task switch - 66
  * signal that thread ended - 77
  * main - 88
  * debug - 99
  */
+
+ulong test() {
+    while (true)
+        asm ("int $88");
+    
+    return 1;
+}
+
+
 
 SimpleVT* kvt;
 
@@ -53,7 +60,7 @@ extern "C" void Loader() {
     VGATextoutput* vgaout = new VGATextoutput();
     Display::setText(vgaout);
     
-    SB* sb = new SB(8);
+    SB* sb = new SB(9);
     
     SB::progress("Initializing paging...");
     PhysMem();
@@ -76,9 +83,12 @@ extern "C" void Loader() {
     IDT();
     SB::ok();
     
+    SB::progress("Setting up device manager...");
+    Device();
+    SB::ok();
+    
     SB::progress("Setting up timer...");
     Device::registerDevice(new Timer());
-    IO::sti();
     SB::ok();
     
     SB::progress("Initializing multitasking...");
@@ -89,11 +99,22 @@ extern "C" void Loader() {
     SB::progress("Finished!");
     SB::ok();
     
-    //delete sb;
-    //kvt->map(0, 0);
+    //for (uint i = 0; i < 10000000; i++);
+    delete sb;
+    kvt->map(0, 0);
     
     IO::sti();
     
+    //new Thread((ThreadEntry)test, 0, true);
+    
+    while (true) {
+        *kvt << (uint)Task::processes->size() << "\n";
+        for (uint i = 0; i < 50000000; i++);
+    }
+    
+ 
+    //*kvt << "lol";
+    //Device::registerDevice(new PS2Keyboard());
     //panic("test");
     
     for (;;);

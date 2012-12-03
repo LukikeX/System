@@ -3,6 +3,8 @@
 #include <Core/IO.h>
 #include <DeviceManager/Keyboard.h>
 
+#include <Core/Loader.h>
+
 PS2Keyboard::PS2Keyboard() {
     Device::requestIRQ(this, 1);
     
@@ -11,7 +13,7 @@ PS2Keyboard::PS2Keyboard() {
         tmp2 = tmp;
         tmp = IO::inB(0x60);
     }
-    
+
     escaped = false;
 }
 

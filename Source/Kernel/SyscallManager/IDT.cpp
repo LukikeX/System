@@ -1,6 +1,8 @@
 #include "IDT.h"
+#include "Core/Panic.h"
 #include <Core/IO.h>
 #include <DeviceManager/Device.h>
+#include <TaskManager/Task.h>
 
 extern "C" void isr0();
 extern "C" void isr1();
@@ -154,18 +156,23 @@ void IDT::setGate(uint num, ulong base, ushort sel, uint flags) {
 }
 
 void IDT::handler(regs* r) {
-    //bool doSwitch = (r->intNo == 32 || r->intNo >= 65);
+    bool doSwitch = (r->intNo == 32 || r->intNo >= 66);
     
     if (r->intNo < 32) {
-        for (;;);
         //send exception to the task
     } else if (r->intNo < 48) {
         if (r->intNo >= 40)
             IO::outB(0xA0, 0x20);
         IO::outB(0x20, 0x20);
-        
-        IO::sti();
+    
+       // IO::sti();
         Device::handler(r);
-        IO::cli();
+      //  IO::cli();
+    } else if (r->intNo == 88) {
+        *kvt << "thread switch\n";
     }
+    
+    *kvt << ".";
+    if (doSwitch)
+        Task::doSwitch();
 }

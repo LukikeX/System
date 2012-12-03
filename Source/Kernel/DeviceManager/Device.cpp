@@ -25,7 +25,7 @@ void Device::unregisterDevice(DeviceProto* dev) {
 }
 
 bool Device::requestIRQ(DeviceProto* dev, uint irq) {
-    if (IRQHandler[irq]) {
+    if (!IRQHandler[irq]) {
         IRQHandler[irq] = dev;
         return true;
     } else
@@ -64,6 +64,6 @@ DeviceProto* Device::findDevice(String className, uint idx) {
 }
 
 void Device::handler(IDT::regs* r) {
-    if (IRQHandler[r->intNo])
-        (IRQHandler[r->intNo])->IRQHandler(r);
+    if (IRQHandler[r->intNo - 32])
+        ((DeviceProto *)IRQHandler[r->intNo - 32])->IRQHandler(r);
 }

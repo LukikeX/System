@@ -22,7 +22,7 @@ Task::Task(String cmdline, VirtualTerminal* vt) {
     currProcess = Process::createKernel(cmdline, vt);
     currThread = threads;
     
-    Thread* idle = new Thread(idle_task,0 , true);
+    Thread* idle = new Thread(idle_task, 0, true);
     for (List<Thread *>* iter = threads; iter; iter = iter->next()) {
         if (iter->v() == idle) {
             idleThread = iter;
@@ -104,10 +104,10 @@ void Task::doSwitch() {
     rsp = t->getRsp();
     rbp = t->getRbp();
     rip = t->getRip();
-    
+
     IO::cli();
     t->setKernelStack();
-    
+
     asm volatile ("mov %0, %%rbp \n"
                   "mov %1, %%rsp \n"
                   "mov %2, %%rcx \n"

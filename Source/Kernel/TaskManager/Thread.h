@@ -5,7 +5,7 @@
 
 class Process;
 
-typedef long unsigned int(*ThreadEntry)(void *);
+typedef ulong(*ThreadEntry)(void *);
 
 class Thread {
     friend class Process;

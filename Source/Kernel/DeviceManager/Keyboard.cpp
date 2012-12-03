@@ -169,5 +169,5 @@ void Keyboard::keyRelease(uchar code) {
 }
 
 void Keyboard::process(const keyStatus& ks) {
-    *kvt << ks.character << "A";
+    *kvt << ks.character << " ";
 }

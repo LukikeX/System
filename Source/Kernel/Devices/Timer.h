@@ -29,7 +29,7 @@ public:
     inline uint uptime() { return seconds; }
     inline uint time() { return (seconds * 1000) + ((ticks * 1000) / frequency); }
     
-    void IRQHandler(IDT::regs* r);
+    void IRQHandler(IDT::regs*);
 };
 
 #endif

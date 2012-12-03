@@ -21,12 +21,10 @@ void Timer::setFrequency(uchar frequency) {
     IO::outB(CHANNEL_0, divisor >> 8);
 }
 
-void Timer::IRQHandler(IDT::regs* r) {
-    if (r->intNo == 0) {
-        ticks++;
-        if (ticks == frequency) {
-            ticks = 0;
-            seconds++;
-        }
+void Timer::IRQHandler(IDT::regs*) {
+    ticks++;
+    if (ticks == frequency) {
+        ticks = 0;
+        seconds++;
     }
 }

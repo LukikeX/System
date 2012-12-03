@@ -185,24 +185,21 @@ String String::hex(uint n) {
     
     char hexDigits[] = "0123456789ABCDEF";
     
-    for (uint i = 0; i < 8; i++) {
-        ret.string[i + 2] = hexDigits[(n & 0xF0000000) >> 28];
+    for (uint i = 2; i < 10; i++) {
+        ret.string[i] = hexDigits[(n & 0xF0000000) >> 28];
         n = n << 4;
     }
     return ret;
 }
 
 String String::number(long n) {
-    if (!n)
-        return String("0");
+    //if (!n) return String("0");
     
     bool negative = false;
-    
     if (n < 0) {
         negative = true;
         n = 0 - n;
     }
-    
     uint order = 0, temp = n;
     char numbers[] = "0123456789";
     while (temp > 0) {
@@ -221,8 +218,8 @@ String String::number(long n) {
     
     ret.string[order] = 0;
     
-    if (negative)
-        return String("-") += ret;
+   // if (negative)
+     //   return String("-") += ret;
     return ret;
 }
 
@@ -236,8 +233,8 @@ String String::hex(ulong n) {
     
     char hexDigits[] = "0123456789ABCDEF";
     
-    for (uint i = 0; i < 16; i++) {
-        ret.string[i + 2] = hexDigits[(n & 0xF000000000000000) >> 28];
+    for (uint i = 2; i < 18; i++) {
+        ret.string[i] = hexDigits[(n & 0xF000000000000000) >> 60];
         n = n << 4;
     }
     return ret;

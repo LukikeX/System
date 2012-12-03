@@ -1,7 +1,6 @@
 [bits 64]
 [extern interrupt_handler]
 
-
 %macro ISR_NOERRCODE 1
     [global isr%1]
 
@@ -102,7 +101,7 @@ interrupt_common_stub:
     push rbx
     push rax
 
-    mov ax, 0x10  ; load the kernel data segment descriptor
+    mov ax, 0x10
     mov ds, ax
     mov es, ax
     mov fs, ax
