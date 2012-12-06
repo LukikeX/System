@@ -32,8 +32,7 @@ keyStatus VirtualTerminal::getkeyPress(bool show, bool block) {
     //while (kbdBufferStart == kbdBufferEnd)
         //Task::currentThread()->sleep(10);
     
-    keyStatus ret = kbdBuffer[kbdBufferStart];
-    kbdBufferStart++;
+    keyStatus ret = kbdBuffer[kbdBufferStart++];
     
     if (kbdBufferStart == 32)
         kbdBufferStart = 0;

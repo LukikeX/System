@@ -2,6 +2,7 @@
 #include "Task.h"
 #include "Core/IO.h"
 #include "DeviceManager/Time.h"
+#include "MemoryManager/GDT.h"
 
 void Thread::run(Thread* t, void* data, ThreadEntry entryPoint) {
     t->process->getPageDir()->switchTo();
@@ -59,6 +60,7 @@ Thread::~Thread() {
     Task::unregisterThread(this);
     delete (ulong *)kernelStack.address;
     process->getPageDir()->switchTo();
+    
     if (userStack.address && !isKernel)
         process->heap().free(userStack.address);
     
@@ -81,7 +83,7 @@ void Thread::setup(Process* process, ThreadEntry entryPoint, void* data, bool is
         userStack.size = STACKSIZE;
     }
     
-    ulong* stack = (ulong *)((ulong)kernelStack.address + kernelStack.size);
+    ulong* stack = (ulong *)((ulong)kernelStack.address) + kernelStack.size;
     rbp = (ulong)stack;
     stack--;
     *stack = (ulong)entryPoint;
@@ -121,7 +123,7 @@ void Thread::handleException(IDT::regs* r) {
         "Machine check exception", "", "", "", "", "", "", "", "", "", "", "", "", ""};
     
     VirtualTerminal& vt = *(process->getOutVT());
-    vt << "\nUnhandled exception " << r->intNo << " at " << r->cs << ":"
+    vt << "\nUnhandled exception " << (int)r->intNo << " at " << (ushort)r->cs << ":"
        << r->rip << "\n:: " << exceptions[r->intNo];
     
     if (r->intNo == 3) {
@@ -164,7 +166,7 @@ void Thread::setState(ulong rsp, ulong rbp, ulong rip) {
 }
 
 void Thread::setKernelStack() {
-    //dorobit
+    GDT::tssEntry.rsp0 = (ulong)kernelStack.address + kernelStack.size;
 }
 
 

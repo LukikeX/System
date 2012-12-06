@@ -6,7 +6,7 @@ ulong Memory::placementAddress;
 
 Memory::Memory() {
     ulong indexSize = PhysMem::total() / 0x1000 * 64 + 0x10000;
-    ulong start = (placementAddress & 0xFFFFFFFFFFFFF000) + 0x10000;
+    ulong start = (placementAddress & 0xFFFFFFFFFFFFF000) + 0x1000;
     ulong size = HEAP_MIN_SIZE + indexSize;
     
     kernelHeap.create(start, size, indexSize, PhysMem::kernelPageDirectory, false, true);

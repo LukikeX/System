@@ -22,7 +22,8 @@ void PhysMem::allocFrame(PageDirectory::PTE* page, bool isUser, bool isWritable)
     else {
         uint idx = frames->firstFreeBit();
         
-        //if (idx == (uint)-1)
+        if (idx == (uint)-1)
+            return;
             //throw MemoryException("No more free frames!");
         
         frames->setBit(idx);
@@ -43,9 +44,4 @@ void PhysMem::freeFrame(PageDirectory::PTE* page) {
         page->present = 0;
         page->address = 0;
     }
-}
-
-void PhysMem::removeTemporaryPages() {
-   // PageDirectory::PTE* p = (PageDirectory::PTE *)PageDirectory::getPhysAddress(0x8000);
-   // freeFrame(p);
 }

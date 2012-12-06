@@ -13,7 +13,6 @@
 
 class Task {
 private:
-public:
     static List<Process *>* processes;
     static List<Thread *>* threads;
     

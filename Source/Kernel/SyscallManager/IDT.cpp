@@ -1,5 +1,6 @@
 #include "IDT.h"
 #include "Core/Panic.h"
+#include "DeviceManager/Time.h"
 #include <Core/IO.h>
 #include <DeviceManager/Device.h>
 #include <TaskManager/Task.h>
@@ -54,9 +55,10 @@ extern "C" void irq13();
 extern "C" void irq14();
 extern "C" void irq15();
 
+extern "C" void int64();
+extern "C" void int65();
 extern "C" void int66();
-extern "C" void int77();
-extern "C" void int88();
+extern "C" void int67();
 
 extern "C" void interrupt_handler(IDT::regs* r) {
     IDT::handler(r);
@@ -138,9 +140,10 @@ IDT::IDT() {
     setGate(46, (ulong)irq14, 0x08, 0x8E);
     setGate(47, (ulong)irq15, 0x08, 0x8E);
     
-    setGate(66, (ulong)int66, 0x08, 0x8E);
-    setGate(77, (ulong)int77, 0x08, 0x8E);
-    setGate(88, (ulong)int88, 0x08, 0x8E);
+    setGate(66, (ulong)int64, 0x08, 0x8E);
+    setGate(77, (ulong)int65, 0x08, 0x8E);
+    setGate(88, (ulong)int66, 0x08, 0x8E);
+    setGate(88, (ulong)int67, 0x08, 0x8E);
     
     asm volatile ("lidt (%0)" : : "r"((ulong)ptr));
 }
@@ -156,23 +159,41 @@ void IDT::setGate(uint num, ulong base, ushort sel, uint flags) {
 }
 
 void IDT::handler(regs* r) {
-    bool doSwitch = (r->intNo == 32 || r->intNo >= 66);
+    bool doSwitch = r->intNo == 32 || r->intNo >= 66;
     
     if (r->intNo < 32) {
-        //send exception to the task
+        if ((ulong)Task::currentThread() == 0xFFFFFFFFFFFFFFFF || !Task::currentThread())
+            panic("Exception cannot be handled!");
+        
+        Task::currentThread()->handleException(r);
     } else if (r->intNo < 48) {
         if (r->intNo >= 40)
             IO::outB(0xA0, 0x20);
         IO::outB(0x20, 0x20);
     
-       // IO::sti();
+        IO::sti();
         Device::handler(r);
-      //  IO::cli();
-    } else if (r->intNo == 88) {
-        *kvt << "thread switch\n";
+        IO::cli();
+        
+        doSwitch = doSwitch || Task::IRQwakeup(r->intNo - 32);
+    } else if (r->intNo == 64) {
+        IO::sti();
+        
+        uint res = r->rax >> 32;
+        uint wat = r->rax & 0xFFFFFFFF;
+        
+        if (res == 0xFFFFFFFF) {
+            //test
+        } else {
+            //res call...
+        }
+        
+        Task::currentProcess()->getPageDir()->switchTo();
+        IO::cli();
+    } else if (r->intNo == 66) {
+        Task::currentThreadExits(r->rax);
     }
     
-    *kvt << ".";
     if (doSwitch)
         Task::doSwitch();
 }

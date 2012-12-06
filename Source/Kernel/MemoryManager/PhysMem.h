@@ -13,7 +13,6 @@ public:
     static PageDirectory* kernelPageDirectory;
     
     PhysMem();
-    static void removeTemporaryPages();
     
     static void allocFrame(PageDirectory::PTE* page, bool isUser, bool isWritable);
     static void freeFrame(PageDirectory::PTE* page);

@@ -5,6 +5,7 @@
 #include "SB.h"
 #include "IO.h"
 #include "DeviceManager/Time.h"
+#include "DeviceManager/Keyboard.h"
 #include <C++/Runtime.h>
 
 #include <MemoryManager/Memory.h>
@@ -21,31 +22,34 @@
 
 #include <TaskManager/Task.h>
 
+//basicstring uvolnit pamet v destructore
 //dorobit irq handler
 //dorobit display dm, chyba tam select mode....
 //VGATextoutput dokoncit a nahodit V86
 //Virtual terminal keyboard - chyba task ...
 //Definovat EOF
 //Simple VT - handle escape
-//DOkoncit keyboard process
 //ScrollableVT - redraw()....
-//opravit free() v heape
 //dorobit page directory
 
-//dorobit multitasking
 //v task.cpp dorobit allocKernelPage
 //v thread::run sa to sekne asi
+//mutex
 
 /* Syscall
- * request task switch - 66
- * signal that thread ended - 77
- * main - 88
- * debug - 99
+ * request task switch - 64
+ * signal that thread ended - 65
+ * main - 66
+ * debug - 67
  */
 
 ulong test() {
-    while (true)
-        asm ("int $88");
+    while (true) {
+        for (uint i = 0; i < 1000000; i++);
+        //asm ("int $77");
+        for (uint i = 0; i < 1000000; i++);
+        //asm ("int $88");
+    }
     
     return 1;
 }
@@ -105,17 +109,16 @@ extern "C" void Loader() {
     
     IO::sti();
     
+    //Keyboard();
+    //Device::registerDevice(new PS2Keyboard());
+    //Keyboard::setFocus(kvt);
+    
     new Thread((ThreadEntry)test, 0, true);
     
-    while (true) {
+    //while (true) {
      //   *kvt << (uint)Task::processes->size() << "\n";
-        for (uint i = 0; i < 50000000; i++);
-    }
-    
- 
-    //*kvt << "lol";
-    //Device::registerDevice(new PS2Keyboard());
-    //panic("test");
+        //for (uint i = 0; i < 50000000; i++);
+    //}
     
     for (;;);
 }

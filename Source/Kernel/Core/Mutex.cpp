@@ -15,9 +15,9 @@ bool Mutex::lock() {
 
 void Mutex::waitLock() {
     while (atomicExchange(&m_locked, MUTEX_TRUE) == MUTEX_TRUE) {
-        if (Task::currentThread())
-            Task::currentThread()->sleep(10);
-        else
+   //     if (Task::currentThread())
+    //        Task::currentThread()->sleep(10);
+     //   else
             return;
     }
 }

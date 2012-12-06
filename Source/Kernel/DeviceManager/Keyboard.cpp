@@ -7,6 +7,7 @@
 #include <Core/Loader.h>
 
 uint Keyboard::status;
+VirtualTerminal* Keyboard::focusedVT;
 
 const uchar Keyboard::controllKeys[] = {
 /* 0x00 */	0, KBDC_ESCAPE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, KBDC_BACKSPACE, KBDC_TAB,
@@ -37,7 +38,7 @@ void Keyboard::updateLeds() {
         ((KeyboardProto *)(kbd[i]))->updateLeds(status);
 }
 
-void Keyboard::keyPress(uchar code) { *kvt << "A";
+void Keyboard::keyPress(uchar code) {
     keyStatus ks;
     ks.pressed = true;
     ks.modifiers = status & 0x0F;
@@ -169,5 +170,12 @@ void Keyboard::keyRelease(uchar code) {
 }
 
 void Keyboard::process(const keyStatus& ks) {
-    *kvt << ks.character << " ";
+    if (focusedVT) {
+        if (((ks.hasChar && ks.character) || (ks.hasCmd && ks.command < 100)) && ks.pressed)
+            focusedVT->keyPress(ks);
+    }
+}
+
+void Keyboard::setFocus(VirtualTerminal* vt) {
+    focusedVT = vt;
 }

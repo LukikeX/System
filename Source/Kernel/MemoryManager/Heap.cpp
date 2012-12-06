@@ -25,10 +25,11 @@ void* Heap::alloc(ulong size, bool noExpand) {
     if (iter == index.size) {
         if (noExpand) {
             mutex.unlock();
+            //throw new MemoryException...
             return 0;
         }
         
-        expand((size + 4095) & ~(ulong)4095);
+        expand((size & 0xFFFFFFFFFFFFF000) & 0x1000);
         mutex.unlock();
         return alloc(size, true);
     }
@@ -88,13 +89,13 @@ void Heap::free(void* ptr) {
     if (nextHeader->magic == HEAP_MAGIC && nextHeader->isHole) {
         removeFromIndex(nextHeader);
         footer = (footerT *)((ulong)footer + nextHeader->size);
-        
+
         footer->header = header;
         header->size = ((ulong)footer - (ulong)header + sizeof(footerT));
     }
     
-    //header->isHole = true;
-   // insertIntoIndex(header);
+    header->isHole = true;
+    insertIntoIndex(header);
     
     if ((ulong)footer == (end - sizeof(footerT)) && header->size >= 0x2000 && (end - start > HEAP_MIN_SIZE))
         contract();

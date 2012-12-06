@@ -85,7 +85,7 @@ List<Thread *>* Task::nextThread() {
 void Task::doSwitch() {
     if (!currThread || !currProcess)
         return;
-    
+
     ulong rsp, rbp, rip;
     asm volatile ("mov %%rsp, %0" : "=r"(rsp));
     asm volatile ("mov %%rbp, %0" : "=r"(rbp));
@@ -146,4 +146,8 @@ void Task::currentThreadExitsProceed(uint errorCode) {
     currThread->v()->finish(errorCode);
     currThread = (List<Thread *> *)INVALID_TASK_MAGIC;
     doSwitch();
+}
+
+void Task::allocKernelPageTable(uint id, PageDirectory::PTE* table, uint tablePhys) {
+    
 }
