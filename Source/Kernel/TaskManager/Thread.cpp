@@ -1,8 +1,8 @@
 #include "Thread.h"
 #include "Task.h"
-#include "Core/IO.h"
-#include "DeviceManager/Time.h"
-#include "MemoryManager/GDT.h"
+#include <Core/IO.h>
+#include <DeviceManager/Time.h>
+#include <MemoryManager/GDT.h>
 
 void Thread::run(Thread* t, void* data, ThreadEntry entryPoint) {
     t->process->getPageDir()->switchTo();
@@ -136,7 +136,7 @@ void Thread::handleException(IDT::regs* r) {
     }
     
     if (isKernel)
-        panic("Exception in kernel thread");
+        panic("Exception in kernel thread!");
     
     if (r->intNo == 14) {
         ulong fAddress;

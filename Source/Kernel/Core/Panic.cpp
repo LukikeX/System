@@ -1,12 +1,14 @@
 #include "Panic.h"
 #include "IO.h"
 #include "TaskManager/V86/V86.h"
+#include "VTManager/VT.h"
 #include <VTManager/SimpleVT.h>
 #include <DeviceManager/Display.h>
 
-void panic(const String&) {
+void panic(const String& str) {
     IO::cli();
     SimpleVT* vt = new SimpleVT(Display::textRows(), Display::textCols());
+    VT::unmapAll();
     vt->map(0, 0);
     
     vt->setColor(4);
@@ -26,7 +28,7 @@ void panic(const String&) {
     *vt << "----------------------------------------------------\n";
     
     vt->setColor(3);
-    *vt << "           Unhandled exception in Kernel!\n\n";
+    *vt << "           " << str << "\n\n";
     
     vt->setColor(7);
     *vt << "   Dumping registers:\n";

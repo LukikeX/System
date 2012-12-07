@@ -194,6 +194,7 @@ void IDT::handler(regs* r) {
         Task::currentThreadExits(r->rax);
     }
     
+    kvt->put('.');
     if (doSwitch)
         Task::doSwitch();
 }

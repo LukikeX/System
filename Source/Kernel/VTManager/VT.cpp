@@ -25,3 +25,10 @@ void VT::redrawScreen() {
     for (uint i = 0; i < mappedVTs.size(); i++)
         mappedVTs[i]->redraw();
 }
+
+void VT::unmapAll() {
+    for (uint i = 0; i < mappedVTs.size(); i++) {
+        mappedVTs.pop();
+        redrawScreen();
+    }
+}

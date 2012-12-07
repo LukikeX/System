@@ -12,6 +12,7 @@ private:
 public:
     static void map(SimpleVT* vt);
     static void unmap(SimpleVT* vt);
+    static void unmapAll();
     static void redrawScreen();
 };
 

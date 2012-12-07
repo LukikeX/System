@@ -23,7 +23,6 @@
 #include <TaskManager/Task.h>
 
 //basicstring uvolnit pamet v destructore
-//dorobit irq handler
 //dorobit display dm, chyba tam select mode....
 //VGATextoutput dokoncit a nahodit V86
 //Virtual terminal keyboard - chyba task ...
@@ -46,9 +45,7 @@
 ulong test() {
     while (true) {
         for (uint i = 0; i < 1000000; i++);
-        //asm ("int $77");
-        for (uint i = 0; i < 1000000; i++);
-        //asm ("int $88");
+        asm ("int $64");
     }
     
     return 1;
