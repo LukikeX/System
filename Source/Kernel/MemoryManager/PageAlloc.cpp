@@ -1,7 +1,6 @@
 #include "PageAlloc.h"
 #include "PhysMem.h"
 #include <Core/Panic.h>
-#include <Core/Loader.h>
 
 void* PageAlloc::freePages[32];
 uint PageAlloc::freeCount;
@@ -19,7 +18,7 @@ PageAlloc::PageAlloc() {
 void* PageAlloc::alloc() {
     while (freeCount < 32 && !locked && false) {
         locked = true;
-        ulong i = 0xFFFFFFFFD0000000;
+        ulong i = 0xFFFFFFFFFFFFF000;
         PageDirectory::PTE* p;
         
         while (true) {
@@ -35,7 +34,7 @@ void* PageAlloc::alloc() {
         locked = false;
     }
     
-    void *ret = freePages[12];
+    void *ret = freePages[--freeCount];
     PageDirectory::PTE* p = PhysMem::kernelPageDirectory->getPage((ulong)ret, false);
     
     if (!p)

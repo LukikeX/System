@@ -65,12 +65,17 @@ Process::Process(String binfile, uint uid) {
     outVT = Task::currentProcess()->getOutVT();
     //set file desc
     
-    //pageDir = new PageDirectory(PhysMem::kernelPageDirectory);
+    pageDir = new PageDirectory(PhysMem::kernelPageDirectory);
     //pageDir->switchTo();
-    userHeap = new Heap();
+    //userHeap = new Heap();
+    
+    //*kvt << (ulong)userHeap << "x";
     //uint heapIdxSize = PhysMem::total() * 16 + 10000;
-    //userHeap->create(USERHEAPSTART, USERHEAPINITSIZE + heapIdxSize, heapIdxSize, pageDir, true, true);
-    Task::registerProcess(this);
+    return;
+   // uint heapIdxSize = 50000;
+   // userHeap->create(USERHEAPSTART, USERHEAPINITSIZE + heapIdxSize, heapIdxSize, pageDir, true, true);
+   // return;
+   // Task::registerProcess(this);
 }
 
 void Process::start() {

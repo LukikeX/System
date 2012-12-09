@@ -36,6 +36,7 @@
 //mutex
 //String number
 //Opravit bitset, nejako vynechava bity
+//Opravit v pagingu getphysAddress
 
 //Task:
 // Dorobit allocKernelPage
@@ -82,10 +83,10 @@ extern "C" void Loader() {
     VGATextoutput* vgaout = new VGATextoutput();
     Display::setText(vgaout);
     
-    SB* sb = new SB(10);
-   // kvt = new SimpleVT(Display::textRows(), Display::textCols());
-   // kvt->map(0, 0);
+    kvt = new SimpleVT(Display::textRows(), Display::textCols());
+    kvt->map(0, 0);
     
+    SB* sb = new SB(10);    
     SB::progress("Initializing paging...");
     PhysMem();
     SB::ok();
@@ -136,7 +137,10 @@ extern "C" void Loader() {
     //Keyboard();
     //Device::registerDevice(new PS2Keyboard());
     //Keyboard::setFocus(kvt);
-
+    
+    PageDirectory *pd = new PageDirectory(PhysMem::kernelPageDirectory);
+ //   pd->switchTo();
+    
     //Process* p = new Process("test", 1);
     //new Thread(p, (ThreadEntry)test, 0);
     //p->start();

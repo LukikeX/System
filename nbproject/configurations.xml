@@ -74,6 +74,8 @@
           <in>Heap.h</in>
           <in>Memory.cpp</in>
           <in>Memory.h</in>
+          <in>PageAlloc.cpp</in>
+          <in>PageAlloc.h</in>
           <in>PageDirectory.cpp</in>
           <in>PageDirectory.h</in>
           <in>PhysMem.cpp</in>

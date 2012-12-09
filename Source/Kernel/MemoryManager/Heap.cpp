@@ -122,7 +122,7 @@ void Heap::create(ulong start, ulong size, ulong idxSize, PageDirectory* pageDir
     for (ulong i = start; i < end; i += 0x1000)
         pageDir->allocFrame(i, user, rw);
     pageDir->switchTo();
-    
+    return;
     index.data = (headerT **)start;
     index.size = 0;
     

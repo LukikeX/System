@@ -103,7 +103,7 @@ public:
     void map(PTE* page, ulong physAddress, bool user, bool rw);
     void switchTo();
     
-    PTE* getPage(ulong virtualAddress, bool make);
+    PTE* getPage(ulong virtualAddress, bool make, PageDirectory* pageDir = 0);
     void allocFrame(ulong address, bool isUser, bool isWritable);
     void freeFrame(ulong address);
     
