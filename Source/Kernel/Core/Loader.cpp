@@ -4,8 +4,8 @@
 #include "Panic.h"
 #include "SB.h"
 #include "IO.h"
-#include "DeviceManager/Time.h"
-#include "DeviceManager/Keyboard.h"
+
+#include "MemoryManager/PageAlloc.h"
 #include <C++/Runtime.h>
 
 #include <MemoryManager/Memory.h>
@@ -13,6 +13,8 @@
 
 #include <DeviceManager/Device.h>
 #include <DeviceManager/Display.h>
+#include <DeviceManager/Time.h>
+#include <DeviceManager/Keyboard.h>
 
 #include <Devices/Display/VGATextOutput.h>
 #include <Devices/Keyboard/PS2Keyboard.h>
@@ -30,10 +32,29 @@
 //Simple VT - handle escape
 //ScrollableVT - redraw()....
 //dorobit page directory
-
-//v task.cpp dorobit allocKernelPage
 //v thread::run sa to sekne asi
 //mutex
+//String number
+//Opravit bitset, nejako vynechava bity
+
+//Task:
+// Dorobit allocKernelPage
+//inak vsetko ostatne je hotovo!
+//dorobit nextThread
+
+//Process:
+//DirectoryNode* cwd
+//List<File *> fileDescriptors
+//syscalls
+//register/unregister file descriptor - metody
+//set/get cwd - metody
+//exit() - file desc
+//run()
+
+//Thread:
+//syscall
+//
+
 
 /* Syscall
  * request task switch - 64
@@ -61,12 +82,18 @@ extern "C" void Loader() {
     VGATextoutput* vgaout = new VGATextoutput();
     Display::setText(vgaout);
     
-    SB* sb = new SB(9);
+    SB* sb = new SB(10);
+   // kvt = new SimpleVT(Display::textRows(), Display::textCols());
+   // kvt->map(0, 0);
     
     SB::progress("Initializing paging...");
     PhysMem();
     SB::ok();
     
+    SB::progress("Initializing free pages...");
+    PageAlloc();
+    SB::ok();
+
     SB::progress("Initializing memory heap...");
     Memory();
     SB::ok();
@@ -109,13 +136,10 @@ extern "C" void Loader() {
     //Keyboard();
     //Device::registerDevice(new PS2Keyboard());
     //Keyboard::setFocus(kvt);
-    
-    new Thread((ThreadEntry)test, 0, true);
-    
-    //while (true) {
-     //   *kvt << (uint)Task::processes->size() << "\n";
-        //for (uint i = 0; i < 50000000; i++);
-    //}
+
+    //Process* p = new Process("test", 1);
+    //new Thread(p, (ThreadEntry)test, 0);
+    //p->start();
     
     for (;;);
 }

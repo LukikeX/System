@@ -12,6 +12,9 @@
 
 #define STACKSIZE 4096
 
+#define USERHEAPINITSIZE 0x00010000 //Heap initially is 64k, but can grow
+#define USERHEAPSTART    0xB7000000 //Heap is at 0xB7000000, 128Mo before kernel space.
+
 class Thread;
 
 class Process {
@@ -30,7 +33,7 @@ private:
     Vector<Thread *>threads;
     //list file * file descriptors
     
-    Process() { }
+    Process() {}
     
 public:
     enum {

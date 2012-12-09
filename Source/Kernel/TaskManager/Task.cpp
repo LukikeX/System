@@ -72,7 +72,7 @@ List<Thread *>* Task::nextThread() {
         if (!iter)
             iter = threads;
         
-        if (iter->v()->runnable() && iter->v() != idleThread->v())
+        if (iter->v()->runnable())// && iter->v() != idleThread->v())
             return iter;
         
         if (iter == currThread)
@@ -107,7 +107,7 @@ void Task::doSwitch() {
 
     IO::cli();
     t->setKernelStack();
-
+    
     asm volatile ("mov %0, %%rbp \n"
                   "mov %1, %%rsp \n"
                   "mov %2, %%rcx \n"
@@ -139,7 +139,7 @@ void Task::currentThreadExits(uint errorCode) {
                   "mov %2, %%rcx \n"
                   "mov %3, %%cr3 \n"
                   "jmp *%%rcx"
-                  : : "r"(rsp), "r"(rbp), "r"(rip), "r"(PhysMem::kernelPageDirectory->getPhysicalAddr()));
+                  : : "r"(rsp), "r"(rbp), "r"(rip), "r"(PhysMem::kernelPageDirectory->getPhysAddress()));
 }
 
 void Task::currentThreadExitsProceed(uint errorCode) {
@@ -148,6 +148,6 @@ void Task::currentThreadExitsProceed(uint errorCode) {
     doSwitch();
 }
 
-void Task::allocKernelPageTable(uint id, PageDirectory::PTE* table, uint tablePhys) {
+//void Task::allocKernelPageTable(uint id, PageDirectory::PTE* table, uint tablePhys) {
     
-}
+//}

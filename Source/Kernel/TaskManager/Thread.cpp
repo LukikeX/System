@@ -5,9 +5,12 @@
 #include <MemoryManager/GDT.h>
 
 void Thread::run(Thread* t, void* data, ThreadEntry entryPoint) {
+    
+    while (true) *kvt << "x";
+    
     t->process->getPageDir()->switchTo();
     if (t->isKernel) {
-        IO::cli();
+        IO::sti();
         ulong ret = entryPoint(data);
         asm volatile ("mov %0, %%rax\n int $66" :: "r"(ret));
     } else {
@@ -79,7 +82,7 @@ void Thread::setup(Process* process, ThreadEntry entryPoint, void* data, bool is
         userStack.address = 0;
         userStack.size = 0;
     } else {
-        userStack.address = process->heap().alloc(STACKSIZE);
+    //    userStack.address = process->heap().alloc(STACKSIZE);
         userStack.size = STACKSIZE;
     }
     
@@ -99,6 +102,7 @@ void Thread::setup(Process* process, ThreadEntry entryPoint, void* data, bool is
     state = RUNNING;
     
     process->registerThread(this);
+    return;
     Task::registerThread(this);
 }
 
@@ -193,7 +197,7 @@ void Thread::waitIRQ(uchar irq) {
 }
 
 bool Thread::runnable() {
-    if (process->getState() != RUNNING)
+    if (process->getState() != Process::RUNNING)
         return false;
     
     if (state == RUNNING)

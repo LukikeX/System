@@ -165,7 +165,7 @@ void IDT::handler(regs* r) {
         if ((ulong)Task::currentThread() == 0xFFFFFFFFFFFFFFFF || !Task::currentThread())
             panic("Exception cannot be handled!");
         
-        Task::currentThread()->handleException(r);
+       // Task::currentThread()->handleException(r);
     } else if (r->intNo < 48) {
         if (r->intNo >= 40)
             IO::outB(0xA0, 0x20);
@@ -180,7 +180,7 @@ void IDT::handler(regs* r) {
         IO::sti();
         
         uint res = r->rax >> 32;
-        uint wat = r->rax & 0xFFFFFFFF;
+        //uint wat = r->rax & 0xFFFFFFFF;
         
         if (res == 0xFFFFFFFF) {
             //test
@@ -194,7 +194,26 @@ void IDT::handler(regs* r) {
         Task::currentThreadExits(r->rax);
     }
     
-    kvt->put('.');
+   // kvt->put('.');
+    
+    if (r->intNo == 14) {
+        ulong fAddress;
+        asm volatile ("mov %%cr2, %0" : "=r" (fAddress));
+    
+        String str;
+        str = "\n\n";
+        str += (r->errorCode & 0x1 ? "" : "Present");
+        str += (r->errorCode & 0x2 ? " Read only" : "");
+        str += (r->errorCode & 0x4 ? " User mode" : "");
+        str += (r->errorCode & 0x8 ? " Reserved" : "");
+        str += " @ ";
+        str += String::hex(fAddress);
+        
+        *kvt << str;
+        IO::cli();
+        for (;;);
+    }
+    
     if (doSwitch)
         Task::doSwitch();
 }

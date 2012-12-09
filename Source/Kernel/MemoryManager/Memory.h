@@ -9,8 +9,8 @@ class Memory {
 public:
     Memory();
     
-    static void* alloc(ulong size);
-    static void* allocInternal(ulong size);
+    static void* alloc(ulong size, bool align = false);
+    static void* allocInternal(ulong size, bool align);
     static void free(void* p);
     
     static ulong kernelHeapFree() { return kernelHeap.free(); }

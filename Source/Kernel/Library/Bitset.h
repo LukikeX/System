@@ -16,7 +16,7 @@ public:
     Bitset() {}
     Bitset(uint size);
     Bitset(uint size, uint* ptr);
-    ~Bitset() { delete data; }
+    ~Bitset() { if (data) delete[] data; }
     
     void init(uint size, uint* ptr);
     

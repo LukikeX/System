@@ -5,10 +5,10 @@ Bitset* PhysMem::frames;
 PageDirectory* PhysMem::kernelPageDirectory;
 
 PhysMem::PhysMem() {
-    nFrames = 0x800000 / 0x1000;
+    nFrames = 0x20000;
     frames = new Bitset(nFrames);
     
-    kernelPageDirectory = new PageDirectory();
+    kernelPageDirectory = new PageDirectory(true);
     
     for (ulong i = 0xFFFFFFFFC0000000; i < 0xFFFFFFFFC0800000; i += 0x1000)
         kernelPageDirectory->allocFrame(i, false, true);

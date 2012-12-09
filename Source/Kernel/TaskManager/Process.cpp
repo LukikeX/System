@@ -35,6 +35,44 @@ Process::~Process() {
     Task::unregisterProcess(this);
 }
 
+Process* Process::run(String filename, uint uid) {
+    //file...
+    //bin load...
+    Process* p = new Process(filename, uid);
+    //threadEntry b->toprocess....
+    ThreadEntry e = (ThreadEntry)0;
+    //delete b;
+    
+    if (e) {
+        new Thread(p, e, 0);
+        return p;
+    } else {
+        delete p;
+        return 0;
+    }
+}
+
+Process::Process(String binfile, uint uid) {
+    pid = Task::nextPid();
+    ppid = Task::currentProcess()->getPid();
+    args.push(binfile);
+    retval = 0;
+    state = STARTING;
+    this->uid = uid;
+    autoDelete = false;
+    //set cwd
+    inVT = Task::currentProcess()->getInVT();
+    outVT = Task::currentProcess()->getOutVT();
+    //set file desc
+    
+    //pageDir = new PageDirectory(PhysMem::kernelPageDirectory);
+    //pageDir->switchTo();
+    userHeap = new Heap();
+    //uint heapIdxSize = PhysMem::total() * 16 + 10000;
+    //userHeap->create(USERHEAPSTART, USERHEAPINITSIZE + heapIdxSize, heapIdxSize, pageDir, true, true);
+    Task::registerProcess(this);
+}
+
 void Process::start() {
     if (state == STARTING)
         state = RUNNING;
@@ -49,8 +87,7 @@ void Process::exit() {
         delete threads[i];
     
     threads.clear();
-    
-    
+    //add file descriptors
     state = FINISHED;
 }
 

@@ -90,14 +90,15 @@ private:
     } __attribute__((packed));
     
     PML4* pages;
+    bool isKernel;
     
    // PageDirectory(const PageDirectory& other);
   //  void operator =(const PageDirectory& other);
     
 public:
-    PageDirectory();
-   // PageDirectory(PageDirectory* other);
-    //~PageDirectory();
+    PageDirectory(bool isKernel = false);
+    PageDirectory(PageDirectory* other);
+    ~PageDirectory();
     
     void map(PTE* page, ulong physAddress, bool user, bool rw);
     void switchTo();
@@ -107,8 +108,8 @@ public:
     void freeFrame(ulong address);
     
     //void faultHandler();
-    inline static ulong getPhysAddress(ulong address) { return address & ~0xFFFFFFFFC0000000; }
-    inline ulong getPhysicalAddr() { return getPhysAddress((ulong)pages); }
+    ulong getPhysAddress();
+    ulong getPhysAddress(ulong address);
 };
 
 #endif
