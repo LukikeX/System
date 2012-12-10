@@ -31,12 +31,10 @@
 //Definovat EOF
 //Simple VT - handle escape
 //ScrollableVT - redraw()....
-//dorobit page directory
-//v thread::run sa to sekne asi
 //mutex
 //String number
 //Opravit bitset, nejako vynechava bity
-//Opravit v pagingu getphysAddress
+//Dorobit PageAlloc - alokovanie novych blokov trochu blbne
 
 //Task:
 // Dorobit allocKernelPage
@@ -64,15 +62,8 @@
  * debug - 67
  */
 
-ulong test() {
-    while (true) {
-        for (uint i = 0; i < 1000000; i++);
-        asm ("int $64");
-    }
-    
-    return 1;
-}
 
+extern "C" void _program_test();
 
 SimpleVT* kvt;
 
@@ -82,10 +73,7 @@ extern "C" void Loader() {
     
     VGATextoutput* vgaout = new VGATextoutput();
     Display::setText(vgaout);
-    
-    kvt = new SimpleVT(Display::textRows(), Display::textCols());
-    kvt->map(0, 0);
-    
+
     SB* sb = new SB(10);    
     SB::progress("Initializing paging...");
     PhysMem();
@@ -117,7 +105,7 @@ extern "C" void Loader() {
     SB::ok();
     
     SB::progress("Setting up timer...");
-    Device::registerDevice(new Timer());
+    Device::registerDevice(new Timer(20));
     SB::ok();
     
     SB::progress("Initializing multitasking...");
@@ -138,12 +126,13 @@ extern "C" void Loader() {
     //Device::registerDevice(new PS2Keyboard());
     //Keyboard::setFocus(kvt);
     
-    PageDirectory *pd = new PageDirectory(PhysMem::kernelPageDirectory);
- //   pd->switchTo();
+    Process* p = new Process("test", 1);
     
-    //Process* p = new Process("test", 1);
-    //new Thread(p, (ThreadEntry)test, 0);
-    //p->start();
+    p->getPageDir()->allocFrame(0, true, true);
+    Memory::copy((char *)_program_test, (char *)0, 512);
+    
+    new Thread(p, (ThreadEntry)0x1234, 0);
+    p->start();
     
     for (;;);
 }

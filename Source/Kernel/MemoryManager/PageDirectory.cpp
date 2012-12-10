@@ -3,10 +3,7 @@
 #include "Memory.h"
 #include "PageAlloc.h"
 
-#include <Core/Loader.h>
-
-PageDirectory::PageDirectory(bool isKernel) {
-    this->isKernel = isKernel;
+PageDirectory::PageDirectory() {
     pages = (PML4 *)Memory::alloc(sizeof(PML4), true);
     Memory::clear(pages);
 }
@@ -26,8 +23,8 @@ PageDirectory::PageDirectory(PageDirectory* other) {
                                     PTE* pres = &other->pages->tables[i]->tables[j]->tables[k]->entries[m];
                                     
                                     ulong virtualAddress = (i << 39) | (j << 30) | (k << 21) | (m << 12);  
-                                    PTE* pte = getPage(virtualAddress, true, PhysMem::kernelPageDirectory);
-                                    map(pte, pres->address >> 12, pres->user, pres->readWrite);
+                                    PTE* pte = getPage(virtualAddress, true);
+                                    map(pte, pres->address << 12, pres->user, pres->readWrite);
                                 }
                             }
                         }
@@ -64,13 +61,10 @@ void PageDirectory::map(PTE* page, ulong physAddress, bool user, bool rw) {
 }
 
 void PageDirectory::switchTo() {
-    asm volatile ("mov %0, %%cr3" : : "r"(PhysMem::kernelPageDirectory->getPhysAddress((ulong)pages)));
+    asm volatile ("mov %0, %%cr3" : : "r"(getPhysAddress()));
 }
 
-PageDirectory::PTE* PageDirectory::getPage(ulong virtualAddress, bool make, PageDirectory* pageDir) {
-    if (!pageDir)
-        pageDir = this;
-    
+PageDirectory::PTE* PageDirectory::getPage(ulong virtualAddress, bool make) {
     ulong startPML4E = (virtualAddress >> 39) & 511,
           startPDPTE = (virtualAddress >> 30) & 511,
           startPDE   = (virtualAddress >> 21) & 511,
@@ -84,7 +78,7 @@ PageDirectory::PTE* PageDirectory::getPage(ulong virtualAddress, bool make, Page
         Memory::clear(pdpt);
         pages->entries[startPML4E].present = 1;
         pages->entries[startPML4E].readWrite = 1;
-        pages->entries[startPML4E].address = pageDir->getPhysAddress((ulong)pdpt) >> 12;
+        pages->entries[startPML4E].address = getPhysAddress((ulong)pdpt) >> 12;
         pages->tables[startPML4E] = pdpt;
     } else
         return 0;
@@ -97,7 +91,7 @@ PageDirectory::PTE* PageDirectory::getPage(ulong virtualAddress, bool make, Page
         Memory::clear(pd);
         pdpt->entries[startPDPTE].present = 1;
         pdpt->entries[startPDPTE].readWrite = 1;
-        pdpt->entries[startPDPTE].address = pageDir->getPhysAddress((ulong)pd) >> 12;
+        pdpt->entries[startPDPTE].address = getPhysAddress((ulong)pd) >> 12;
         pdpt->tables[startPDPTE] = pd;
     } else
         return 0;
@@ -110,7 +104,7 @@ PageDirectory::PTE* PageDirectory::getPage(ulong virtualAddress, bool make, Page
         Memory::clear(pt);
         pd->entries[startPDE].present = 1;
         pd->entries[startPDE].readWrite = 1;
-        pd->entries[startPDE].address = pageDir->getPhysAddress((ulong)pt) >> 12;
+        pd->entries[startPDE].address = getPhysAddress((ulong)pt) >> 12;
         pd->tables[startPDE] = pt;
     } else
         return 0;
@@ -132,28 +126,33 @@ void PageDirectory::freeFrame(ulong address) {
 }
 
 ulong PageDirectory::getPhysAddress(ulong address) {
-    if (isKernel)
+    ulong startPML4E = (address >> 39) & 511,
+            startPDPTE = (address >> 30) & 511,
+            startPDE   = (address >> 21) & 511,
+            startPTE   = (address >> 12) & 511;
+
+    PDPT* pdpt;
+    if (pages->entries && pages->entries[startPML4E].present)
+        pdpt = pages->tables[startPML4E];
+    else
         return address & ~0xFFFFFFFFC0000000;
-    else {
-        ulong startPML4E = (address >> 39) & 511,
-              startPDPTE = (address >> 30) & 511,
-              startPDE   = (address >> 21) & 511,
-              startPTE   = (address >> 12) & 511;
 
-        PDPT* pdpt;
-        if (pages->entries[startPML4E].present)
-            pdpt = pages->tables[startPML4E];
+    PD* pd;
+    if (pdpt->entries && pdpt->entries[startPDPTE].present)
+        pd = pdpt->tables[startPDPTE];
+    else
+        return address & ~0xFFFFFFFFC0000000;
 
-        PD* pd;
-        if (pdpt->entries[startPDPTE].present)
-            pd = pdpt->tables[startPDPTE];
+    PT* pt;
+    if (pd->entries && pd->entries[startPDE].present)
+        pt = pd->tables[startPDE];
+    else
+        return address & ~0xFFFFFFFFC0000000;
 
-        PT* pt;
-        if (pd->entries[startPDE].present)
-            pt = pd->tables[startPDE];
+    if (!pt->entries)
+        return address & ~0xFFFFFFFFC0000000;
 
-        return (ulong)pt->entries[startPTE].address << 12;
-    }
+    return (ulong)pt->entries[startPTE].address << 12;
 }
 
 ulong PageDirectory::getPhysAddress() {

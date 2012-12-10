@@ -95,7 +95,7 @@ void Task::doSwitch() {
         return;
     
     if ((ulong)currThread != INVALID_TASK_MAGIC)
-        currThread->v()->setState(rsp, rbp, rip);
+       currThread->v()->setState(rsp, rbp, rip);
     
     currThread = nextThread();
     Thread* t = currThread->v();
@@ -106,7 +106,7 @@ void Task::doSwitch() {
     rip = t->getRip();
 
     IO::cli();
-    t->setKernelStack();
+    //t->setKernelStack();
     
     asm volatile ("mov %0, %%rbp \n"
                   "mov %1, %%rsp \n"

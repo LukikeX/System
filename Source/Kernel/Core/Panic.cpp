@@ -5,7 +5,7 @@
 #include <VTManager/SimpleVT.h>
 #include <DeviceManager/Display.h>
 
-void panic(const String& str) {
+void panic(const String& str, IDT::regs *rgs) {
     IO::cli();
     SimpleVT* vt = new SimpleVT(Display::textRows(), Display::textCols());
     VT::unmapAll();
@@ -55,7 +55,7 @@ void panic(const String& str) {
     r.intNo = 0x1000;
     r.errorCode = 0;
     
-    dumpRegisters(&r, vt);
+    dumpRegisters((rgs ? &r : &r), vt);
     for (;;);
 }
 

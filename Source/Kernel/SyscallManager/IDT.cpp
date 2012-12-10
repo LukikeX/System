@@ -140,10 +140,10 @@ IDT::IDT() {
     setGate(46, (ulong)irq14, 0x08, 0x8E);
     setGate(47, (ulong)irq15, 0x08, 0x8E);
     
-    setGate(66, (ulong)int64, 0x08, 0x8E);
-    setGate(77, (ulong)int65, 0x08, 0x8E);
-    setGate(88, (ulong)int66, 0x08, 0x8E);
-    setGate(88, (ulong)int67, 0x08, 0x8E);
+    setGate(64, (ulong)int64, 0x08, 0x8E);
+    setGate(65, (ulong)int65, 0x08, 0x8E);
+    setGate(66, (ulong)int66, 0x08, 0x8E);
+    setGate(67, (ulong)int67, 0x08, 0x8E);
     
     asm volatile ("lidt (%0)" : : "r"((ulong)ptr));
 }
@@ -176,6 +176,8 @@ void IDT::handler(regs* r) {
         str += String::hex(fAddress);
         
         *kvt << str;
+        
+        //panic("posralo sa to pri pagingu...", r);
         IO::cli();
         for (;;);
     }
@@ -185,6 +187,9 @@ void IDT::handler(regs* r) {
         if ((ulong)Task::currentThread() == 0xFFFFFFFFFFFFFFFF || !Task::currentThread())
             panic("Exception cannot be handled!");
         
+        if (r->intNo == 6)
+            panic("posrate...", r);
+        *kvt << "ERR: " << (int)r->intNo;
        // Task::currentThread()->handleException(r);
     } else if (r->intNo < 48) {
         if (r->intNo >= 40)
@@ -197,24 +202,25 @@ void IDT::handler(regs* r) {
         
         doSwitch = doSwitch || Task::IRQwakeup(r->intNo - 32);
     } else if (r->intNo == 64) {
-        IO::sti();
+        *kvt << "t";
+     //   IO::sti();
         
-        uint res = r->rax >> 32;
+    //    uint res = r->rax >> 32;
         //uint wat = r->rax & 0xFFFFFFFF;
         
-        if (res == 0xFFFFFFFF) {
+      //  if (res == 0xFFFFFFFF) {
             //test
-        } else {
+      //  } else {
             //res call...
-        }
+     //   }
         
-        Task::currentProcess()->getPageDir()->switchTo();
-        IO::cli();
+      //  Task::currentProcess()->getPageDir()->switchTo();
+     //   IO::cli();
     } else if (r->intNo == 66) {
         Task::currentThreadExits(r->rax);
     }
     
-    kvt->put('.');
+   // kvt->put('.');
     
     if (doSwitch)
         Task::doSwitch();

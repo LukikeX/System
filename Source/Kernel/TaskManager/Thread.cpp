@@ -5,25 +5,26 @@
 #include <MemoryManager/GDT.h>
 
 void Thread::run(Thread* t, void* data, ThreadEntry entryPoint) {
-    
-    while (true) *kvt << "x";
-    
     t->process->getPageDir()->switchTo();
+
     if (t->isKernel) {
         IO::sti();
-        ulong ret = entryPoint(data);
-        asm volatile ("mov %0, %%rax\n int $66" :: "r"(ret));
+        //ulong ret = entryPoint(data);
+        //for (;;);
+        //asm volatile ("mov %0, %%rax\n int $66" :: "r"(ret));
+        for (;;);
     } else {
         ulong* stack = (ulong *)((ulong)t->userStack.address + t->userStack.size);
-        stack--;
-        *stack = (ulong)data;
+        //stack--;
+        //*stack = (ulong)data;
         stack--;
         *stack = 0;
         
-        ulong rsp = (ulong)stack;
-        ulong rip = (ulong)entryPoint;
+        *kvt << " >> " << (ulong)data;
+        //entryPoint = 0;
+        for (;;);
         
-        asm volatile ("mov $0x23, %%ax \n"
+        asm volatile ("mov $0x10, %%ax \n"
                       "mov %%ax, %%ds \n"
                       "mov %%ax, %%es \n"
                       "mov %%ax, %%fs \n"
@@ -31,15 +32,16 @@ void Thread::run(Thread* t, void* data, ThreadEntry entryPoint) {
                       
                       "mov %0, %%rbx \n"
                       "mov %1, %%rcx \n"
-                      "push $0x23 \n"
+                      "push $0x10 \n"
                       "push %%rbx \n"
-                      "pushf \n"
+                      "pushfq \n"
                       "pop %%rax \n"
                       "or $0x200, %%rax \n"
                       "push %%rax \n"
-                      "push $0x1B \n"
-                      "iret"
-                      : : "r"(rsp), "r"(rip)
+                      "push $0x08 \n"
+                      "push %%rcx \n"
+                      "iretq"
+                      : : "r"((ulong)stack), "r"((ulong)entryPoint)
         );
     }
 }
@@ -82,12 +84,13 @@ void Thread::setup(Process* process, ThreadEntry entryPoint, void* data, bool is
         userStack.address = 0;
         userStack.size = 0;
     } else {
-    //    userStack.address = process->heap().alloc(STACKSIZE);
+        userStack.address = process->heap().alloc(STACKSIZE);
         userStack.size = STACKSIZE;
     }
     
     ulong* stack = (ulong *)((ulong)kernelStack.address) + kernelStack.size;
-    rbp = (ulong)stack;
+ //   rbp = (ulong)stack;
+    
     stack--;
     *stack = (ulong)entryPoint;
     stack--;
@@ -98,11 +101,15 @@ void Thread::setup(Process* process, ThreadEntry entryPoint, void* data, bool is
     *stack = 0;
     
     rsp = (ulong)stack;
+    rbp = rsp + 4;
     rip = (ulong)run;
     state = RUNNING;
     
+    *kvt << "rbp: " << rbp << "\nrsp: " << rsp << "\n" << (ulong)entryPoint << "\n";
+
+    
+    
     process->registerThread(this);
-    return;
     Task::registerThread(this);
 }
 

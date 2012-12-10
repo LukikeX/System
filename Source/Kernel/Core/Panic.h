@@ -5,7 +5,7 @@
 #include "Loader.h"
 #include <SyscallManager/IDT.h>
 
-void panic(const String& str);
+void panic(const String& str, IDT::regs *rgs = 0);
 void dumpRegisters(IDT::regs* r, VirtualTerminal* vt);
 
 #endif

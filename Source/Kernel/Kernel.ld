@@ -1,7 +1,7 @@
 OUTPUT_FORMAT("binary")
 
 SECTIONS
-{
+{   
     . = 0xFFFFFFFFC0100000;
 
     .text ALIGN (0x1000) :

@@ -8,7 +8,7 @@ PhysMem::PhysMem() {
     nFrames = 0x20000;
     frames = new Bitset(nFrames);
     
-    kernelPageDirectory = new PageDirectory(true);
+    kernelPageDirectory = new PageDirectory();
     
     for (ulong i = 0xFFFFFFFFC0000000; i < 0xFFFFFFFFC0800000; i += 0x1000)
         kernelPageDirectory->allocFrame(i, false, true);

@@ -90,20 +90,19 @@ private:
     } __attribute__((packed));
     
     PML4* pages;
-    bool isKernel;
     
    // PageDirectory(const PageDirectory& other);
   //  void operator =(const PageDirectory& other);
     
 public:
-    PageDirectory(bool isKernel = false);
+    PageDirectory();
     PageDirectory(PageDirectory* other);
     ~PageDirectory();
     
     void map(PTE* page, ulong physAddress, bool user, bool rw);
     void switchTo();
     
-    PTE* getPage(ulong virtualAddress, bool make, PageDirectory* pageDir = 0);
+    PTE* getPage(ulong virtualAddress, bool make);
     void allocFrame(ulong address, bool isUser, bool isWritable);
     void freeFrame(ulong address);
     
