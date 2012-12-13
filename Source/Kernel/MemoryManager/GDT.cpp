@@ -15,7 +15,7 @@ GDT::GDT() {
     setGate(2, 0, 0xFFFFFFFF, 0x92, 0x20);
     setGate(3, 0, 0xFFFFFFFF, 0xFA, 0x20);
     setGate(4, 0, 0xFFFFFFFF, 0xF2, 0x20);
-    //writeTSS(5, 0x10, 0x00);
+    writeTSS(5, 0x10, 0x00);
     
     asm volatile ("lgdt (%0)" :: "r"((ulong)ptr));
     //asm ("ltr 0x2B");

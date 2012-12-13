@@ -62,6 +62,10 @@ void PageDirectory::map(PTE* page, ulong physAddress, bool user, bool rw) {
 
 void PageDirectory::switchTo() {
     asm volatile ("mov %0, %%cr3" : : "r"(getPhysAddress()));
+    ulong cr0;
+    asm volatile ("mov %%cr0, %0" : "=r"(cr0));
+    cr0 |= 0x80000000;
+    asm volatile ("mov %0, %%cr0" : : "r"(cr0));    
 }
 
 PageDirectory::PTE* PageDirectory::getPage(ulong virtualAddress, bool make) {

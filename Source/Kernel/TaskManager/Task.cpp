@@ -33,7 +33,7 @@ Task::Task(String cmdline, VirtualTerminal* vt) {
 
 Process* Task::getKernelProcess() {
     if (!processes)
-        panic("Kernel process doesn't exist!");
+        panic("Kernel process does not exist!");
     
     return processes->last()->v();
 }
@@ -106,13 +106,14 @@ void Task::doSwitch() {
     rip = t->getRip();
 
     IO::cli();
-    //t->setKernelStack();
+    t->setKernelStack();
     
     asm volatile ("mov %0, %%rbp \n"
                   "mov %1, %%rsp \n"
                   "mov %2, %%rcx \n"
                   "mov $0x12345, %%rax \n"
-                  "jmp *%%rcx"
+                  "jmp *%%rcx \n"
+                  "sti \n"
                   : : "r"(rbp), "r"(rsp), "r"(rip));
 }
 

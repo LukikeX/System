@@ -202,7 +202,7 @@ void IDT::handler(regs* r) {
         
         doSwitch = doSwitch || Task::IRQwakeup(r->intNo - 32);
     } else if (r->intNo == 64) {
-        *kvt << "t";
+        *kvt << "syscall: " << r->rax << " | " << r->rbx << "\n";
      //   IO::sti();
         
     //    uint res = r->rax >> 32;
