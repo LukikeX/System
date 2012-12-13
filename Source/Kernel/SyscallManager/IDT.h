@@ -25,6 +25,7 @@ private:
     
 public:
     struct regs {
+        ulong ds;
         ulong rax, rbx, rcx, rdx, rsp, rbp, rsi, rdi;
         ulong intNo, errorCode;
         ulong rip, cs, flags, useresp, ss;

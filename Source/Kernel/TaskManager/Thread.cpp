@@ -9,9 +9,8 @@ void Thread::run(Thread* t, void* data, ThreadEntry entryPoint) {
 
     if (t->isKernel) {
         IO::sti();
-        //ulong ret = entryPoint(data);
-        //for (;;);
-        //asm volatile ("mov %0, %%rax\n int $66" :: "r"(ret));
+        ulong ret = entryPoint(data);
+        asm volatile ("int $66" : : "a"(ret));
         for (;;);
     } else {
         ulong* stack = (ulong *)((ulong)t->userStack.address + t->userStack.size);
@@ -20,12 +19,11 @@ void Thread::run(Thread* t, void* data, ThreadEntry entryPoint) {
         //stack--;
         //*stack = 0;
         
-        //entryPoint = 0;
-        
-        ulong rsp, rbp;
-        asm volatile ("mov %%rsp, %0" : "=r"(rsp));
-        asm volatile ("mov %%rbp, %0" : "=r"(rbp));
-        *kvt << ">> " << rsp << " : " << rbp << " : " << (ulong)entryPoint;
+        asm ("mov %%rsp, %%rax \n mov %%rbp, %%rbx \n int $64" : : "c"(entryPoint));
+        //ulong rsp, rbp;
+        //asm volatile ("mov %%rsp, %0" : "=r"(rsp));
+        //asm volatile ("mov %%rbp, %0" : "=r"(rbp));
+        //*kvt << ">> " << rsp << " : " << rbp << " : " << (ulong)entryPoint;
         for (;;);
         
         asm volatile ("mov $0x10, %%ax \n"
@@ -107,7 +105,7 @@ void Thread::setup(Process* process, ThreadEntry entryPoint, void* data, bool is
     rip = (ulong)run;
     state = RUNNING;
     
-    *kvt << "rbp: " << rbp << "\nrsp: " << rsp << "\n";
+    *kvt << "st " << rsp << " : " << rbp << " : " << (ulong)entryPoint << "\n";
     
     process->registerThread(this);
     Task::registerThread(this);

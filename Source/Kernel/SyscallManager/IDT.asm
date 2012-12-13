@@ -93,6 +93,7 @@ SYSCALL 67
 
 
 interrupt_common_stub:
+    cli
     push rdi
     push rsi
     push rbp
@@ -100,6 +101,9 @@ interrupt_common_stub:
     push rdx
     push rcx
     push rbx
+    push rax
+
+    mov ax, ds
     push rax
 
     mov ax, 0x10
@@ -112,6 +116,12 @@ interrupt_common_stub:
     call interrupt_handler
 
     pop rax
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+
+    pop rax
     pop rbx
     pop rcx
     pop rdx
@@ -121,4 +131,5 @@ interrupt_common_stub:
     pop rdi
 
     add rsp, 16
+    sti
     iretq

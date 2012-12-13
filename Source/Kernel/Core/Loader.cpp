@@ -121,6 +121,9 @@ extern "C" void Loader() {
     kvt->map(0, 0);
     IO::sti(); 
     
+    
+    //for (;;);
+    
     Process* p = new Process("test", 1);
     p->getPageDir()->allocFrame(0, true, true);
     Memory::copy((char *)_program_test, (char *)0, 512);

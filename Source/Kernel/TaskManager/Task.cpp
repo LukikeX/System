@@ -1,8 +1,8 @@
 #include "Task.h"
 #include "Core/IO.h"
 
-extern "C" long unsigned int read_rip();
-extern "C" long unsigned int idle_task(void *);
+extern "C" ulong read_rip();
+extern "C" ulong idle_task(void *);
 
 List<Process *>* Task::processes;
 List<Thread *>* Task::threads;
@@ -72,7 +72,7 @@ List<Thread *>* Task::nextThread() {
         if (!iter)
             iter = threads;
         
-        if (iter->v()->runnable())// && iter->v() != idleThread->v())
+        if (iter->v()->runnable() && iter->v() != idleThread->v())
             return iter;
         
         if (iter == currThread)
@@ -82,9 +82,9 @@ List<Thread *>* Task::nextThread() {
     return idleThread;
 }
 
-void Task::doSwitch() {
+int Task::doSwitch() {
     if (!currThread || !currProcess)
-        return;
+        return 5;
 
     ulong rsp, rbp, rip;
     asm volatile ("mov %%rsp, %0" : "=r"(rsp));
@@ -92,7 +92,7 @@ void Task::doSwitch() {
     rip = read_rip();
     
     if (rip == 0x12345)
-        return;
+        return 6;
     
     if ((ulong)currThread != INVALID_TASK_MAGIC)
        currThread->v()->setState(rsp, rbp, rip);
@@ -104,17 +104,17 @@ void Task::doSwitch() {
     rsp = t->getRsp();
     rbp = t->getRbp();
     rip = t->getRip();
-
+    
     IO::cli();
     t->setKernelStack();
     
     asm volatile ("mov %0, %%rbp \n"
                   "mov %1, %%rsp \n"
-                  "mov %2, %%rcx \n"
                   "mov $0x12345, %%rax \n"
-                  "jmp *%%rcx \n"
                   "sti \n"
-                  : : "r"(rbp), "r"(rsp), "r"(rip));
+                  "jmp *%%rcx \n"
+                  : : "r"(rbp), "r"(rsp), "c"(rip));
+    return 1;
 }
 
 bool Task::IRQwakeup(uchar irq) {
