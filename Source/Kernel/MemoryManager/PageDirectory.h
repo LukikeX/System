@@ -91,7 +91,7 @@ private:
     
     PML4* pages;
     
-   // PageDirectory(const PageDirectory& other);
+    PageDirectory(const PageDirectory& other);
   //  void operator =(const PageDirectory& other);
     
 public:
@@ -100,6 +100,7 @@ public:
     ~PageDirectory();
     
     void map(PTE* page, ulong physAddress, bool user, bool rw);
+    inline void unmap(PTE* page) { page->present = 0; }
     void switchTo();
     
     PTE* getPage(ulong virtualAddress, bool make);

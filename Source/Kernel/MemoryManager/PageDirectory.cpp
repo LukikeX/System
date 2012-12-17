@@ -8,6 +8,33 @@ PageDirectory::PageDirectory() {
     Memory::clear(pages);
 }
 
+PageDirectory::PageDirectory(const PageDirectory& other) {
+    pages = (PML4 *)Memory::alloc(sizeof(PML4), true);
+    Memory::clear(pages);
+    
+    for (ulong i = 0; i < 512; i++) {
+        if (other.pages->entries[i].present) {
+            for (ulong j = 0; j < 512; j++) { 
+                if (other.pages->tables[i]->entries[j].address) {
+                    for (ulong k = 0; k < 512; k++) {
+                        if (other.pages->tables[i]->tables[j]->entries[k].present) {
+                            for (ulong m = 0; m < 512; m++) {
+                                if (other.pages->tables[i]->tables[j]->tables[k]->entries[m].present) {
+                                    PTE* pres = &other.pages->tables[i]->tables[j]->tables[k]->entries[m];
+                                    
+                                    ulong virtualAddress = (i << 39) | (j << 30) | (k << 21) | (m << 12);  
+                                    PTE* pte = getPage(virtualAddress, true);
+                                    map(pte, pres->address << 12, pres->user, pres->readWrite);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+#include <Core/Loader.h>
 PageDirectory::PageDirectory(PageDirectory* other) {
     pages = (PML4 *)Memory::alloc(sizeof(PML4), true);
     Memory::clear(pages);
@@ -20,11 +47,14 @@ PageDirectory::PageDirectory(PageDirectory* other) {
                         if (other->pages->tables[i]->tables[j]->entries[k].present) {
                             for (ulong m = 0; m < 512; m++) {
                                 if (other->pages->tables[i]->tables[j]->tables[k]->entries[m].present) {
-                                    PTE* pres = &other->pages->tables[i]->tables[j]->tables[k]->entries[m];
-                                    
                                     ulong virtualAddress = (i << 39) | (j << 30) | (k << 21) | (m << 12);  
-                                    PTE* pte = getPage(virtualAddress, true);
-                                    map(pte, pres->address << 12, pres->user, pres->readWrite);
+                                    PTE* p = getPage(virtualAddress, true);
+                                    PhysMem::allocFrame(p, false, true);
+                                    
+                                    PTE* vp = PhysMem::kernelPageDirectory->getPage(0, true);
+                                    PhysMem::kernelPageDirectory->map(vp, p->address * 0x1000, false, true);
+                                    Memory::copy((char *)(other->pages->tables[i]->tables[j]->tables[k]->entries[m].address >> 12), (char *)0, 0x1000);
+                                    PhysMem::kernelPageDirectory->unmap(vp);
                                 }
                             }
                         }

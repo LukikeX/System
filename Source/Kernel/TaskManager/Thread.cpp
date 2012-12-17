@@ -6,25 +6,20 @@
 
 void Thread::run(Thread* t, void* data, ThreadEntry entryPoint) {
     t->process->getPageDir()->switchTo();
+    
+    //asm ("mov %%rsp, %%rax \n mov %%rbp, %%rbx \n int $64" : : "c"(entryPoint));
+    //for (;;);
 
     if (t->isKernel) {
         IO::sti();
         ulong ret = entryPoint(data);
         asm volatile ("int $66" : : "a"(ret));
-        for (;;);
     } else {
         ulong* stack = (ulong *)((ulong)t->userStack.address + t->userStack.size);
-        //stack--;
-        //*stack = (ulong)data;
-        //stack--;
-        //*stack = 0;
-        
-        asm ("mov %%rsp, %%rax \n mov %%rbp, %%rbx \n int $64" : : "c"(entryPoint));
-        //ulong rsp, rbp;
-        //asm volatile ("mov %%rsp, %0" : "=r"(rsp));
-        //asm volatile ("mov %%rbp, %0" : "=r"(rbp));
-        //*kvt << ">> " << rsp << " : " << rbp << " : " << (ulong)entryPoint;
-        for (;;);
+        stack--;
+        *stack = (ulong)data;
+        stack--;
+        *stack = 0;
         
         asm volatile ("mov $0x10, %%ax \n"
                       "mov %%ax, %%ds \n"

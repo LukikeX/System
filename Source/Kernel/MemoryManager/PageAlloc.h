@@ -6,7 +6,7 @@
 class PageAlloc {
 private:
     static void* freePages[32];
-    static uint freeCount;
+    static uint freeCount, pointer;
     static bool usable, locked;
     
 public:
