@@ -32,7 +32,7 @@ public:
     static Process* currentProcess() { return currProcess; }
     static Process* getKernelProcess();
     
-    static int doSwitch();
+    static void doSwitch();
     static inline void triggerSwitch() { asm ("int $65"); }
     static inline uint nextPid() { return nextpid++; }
     static bool IRQwakeup(uchar irq);

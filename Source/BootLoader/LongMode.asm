@@ -86,26 +86,20 @@ SwitchToLongMode:
 ; Global Descriptor Table
 GDT:
     .Null:
-        dw 0                         ; Limit (low).
-        dw 0                         ; Base (low).
-        db 0                         ; Base (middle)
-        db 0                         ; Access.
-        db 0                         ; Granularity.
-        db 0                         ; Base (high).
-
+        dq 0
     .Code:
         dw 0                         ; Limit (low).
         dw 0                         ; Base (low).
         db 0                         ; Base (middle)
-        db 0x9A                 ; Access.
-        db 0x20                 ; Granularity.
+        db 0x9A                      ; Access.
+        db 0x20                      ; Granularity.
         db 0                         ; Base (high).
     .Data:
         dw 0                         ; Limit (low).
         dw 0                         ; Base (low).
         db 0                         ; Base (middle)
-        db 0x92                 ; Access.
-        db 0x0                 ; Granularity.
+        db 0x92                      ; Access.
+        db 0x20                      ; Granularity.
         db 0                         ; Base (high).
 
     ALIGN 4

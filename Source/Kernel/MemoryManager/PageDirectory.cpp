@@ -47,14 +47,20 @@ PageDirectory::PageDirectory(PageDirectory* other) {
                         if (other->pages->tables[i]->tables[j]->entries[k].present) {
                             for (ulong m = 0; m < 512; m++) {
                                 if (other->pages->tables[i]->tables[j]->tables[k]->entries[m].present) {
-                                    ulong virtualAddress = (i << 39) | (j << 30) | (k << 21) | (m << 12);  
+                                    PTE* pres = &other->pages->tables[i]->tables[j]->tables[k]->entries[m];
+                                    ulong virtualAddress = (i << 39) | (j << 30) | (k << 21) | (m << 12); 
                                     PTE* p = getPage(virtualAddress, true);
-                                    PhysMem::allocFrame(p, false, true);
                                     
-                                    PTE* vp = PhysMem::kernelPageDirectory->getPage(0, true);
-                                    PhysMem::kernelPageDirectory->map(vp, p->address * 0x1000, false, true);
-                                    Memory::copy((char *)(other->pages->tables[i]->tables[j]->tables[k]->entries[m].address >> 12), (char *)0, 0x1000);
-                                    PhysMem::kernelPageDirectory->unmap(vp);
+                                    if (virtualAddress & 0xFFFFFFFFC0000000)
+                                        map(p, pres->address << 12, pres->user, pres->readWrite);
+                                    else {
+                                        PhysMem::allocFrame(p, false, true);
+
+                                        PTE* vp = PhysMem::kernelPageDirectory->getPage(0, true);
+                                        PhysMem::kernelPageDirectory->map(vp, p->address * 0x1000, false, true);
+                                        Memory::copy((char *)(pres->address >> 12), (char *)0, 0x1000);
+                                        PhysMem::kernelPageDirectory->unmap(vp);
+                                    }
                                 }
                             }
                         }

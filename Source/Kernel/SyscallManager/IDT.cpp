@@ -161,36 +161,13 @@ void IDT::setGate(uint num, ulong base, ushort sel, uint flags) {
 void IDT::handler(regs* r) {
     bool doSwitch = r->intNo == 32 || r->intNo >= 66;
     
-        
-    if (r->intNo == 14) {// potom odstranit
-        ulong fAddress;
-        asm volatile ("mov %%cr2, %0" : "=r" (fAddress));
-    
-        String str;
-        str = "\n\n";
-        str += (r->errorCode & 0x1 ? "" : "Present");
-        str += (r->errorCode & 0x2 ? " Read only" : "");
-        str += (r->errorCode & 0x4 ? " User mode" : "");
-        str += (r->errorCode & 0x8 ? " Reserved" : "");
-        str += " @ ";
-        str += String::hex(fAddress);
-        
-        *kvt << str;
-        
-        //panic("posralo sa to pri pagingu...", r);
-        IO::cli();
-        for (;;);
-    }
-    
-    
     if (r->intNo < 32) {
         if ((ulong)Task::currentThread() == 0xFFFFFFFFFFFFFFFF || !Task::currentThread())
             panic("Exception cannot be handled!");
         
-        if (r->intNo == 6)
-            panic("posrate...", r);
         *kvt << "ERR: " << (int)r->intNo;
-       // Task::currentThread()->handleException(r);
+        for (;;);
+        Task::currentThread()->handleException(r);
     } else if (r->intNo < 48) {
         if (r->intNo >= 40)
             IO::outB(0xA0, 0x20);
@@ -200,9 +177,10 @@ void IDT::handler(regs* r) {
         Device::handler(r);
         IO::cli();
         
-        doSwitch = doSwitch || Task::IRQwakeup(r->intNo - 32);
+      //  doSwitch = doSwitch || Task::IRQwakeup(r->intNo - 32);
     } else if (r->intNo == 64) {
         *kvt << "syscall: " << r->rax << " | " << r->rbx << " | " << r->rcx << "\n";
+        for (;;);
      //   IO::sti();
         
     //    uint res = r->rax >> 32;
@@ -221,10 +199,7 @@ void IDT::handler(regs* r) {
         Task::currentThreadExits(r->rax);
     }
     
-    kvt->put('.');
-    
-   // if (doSwitch)
-        *kvt << Task::doSwitch();
-     
-    kvt->put('*');
+    kvt->put('-');
+    if (doSwitch)
+        Task::doSwitch();
 }

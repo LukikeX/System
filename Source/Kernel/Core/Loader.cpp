@@ -73,8 +73,6 @@ extern "C" void Loader() {
     
     VGATextoutput* vgaout = new VGATextoutput();
     Display::setText(vgaout);
-    
-    kvt = new SimpleVT(Display::textRows(), Display::textCols());
 
     SB* sb = new SB(10);    
     SB::progress("Initializing paging...");
@@ -95,13 +93,13 @@ extern "C" void Loader() {
     
     SB::progress("Creating Kernel VT...");
     //kvt = new ScrollableVT(Display::textRows(), Display::textCols(), 20);
-    //kvt = new SimpleVT(Display::textRows(), Display::textCols());
+    kvt = new SimpleVT(Display::textRows(), Display::textCols());
     SB::ok();
     
     SB::progress("Initializing IDT...");
     IDT();
     SB::ok();
-    
+
     SB::progress("Setting up device manager...");
     Device();
     SB::ok();
@@ -121,6 +119,7 @@ extern "C" void Loader() {
     kvt->map(0, 0);
     IO::sti(); 
     
+    
     Process* p = new Process("test", 1);
     p->getPageDir()->allocFrame(0, true, true);
     Memory::copy((char *)_program_test, (char *)0, 512);
@@ -129,6 +128,9 @@ extern "C" void Loader() {
     p->start();
     
     //new Thread(p, (ThreadEntry)0x12345, 0);
+    
+    //for (uint i = 0; i < 10000000; i++);
+    //new Thread(p, (ThreadEntry)0, 0);
     
     for (;;);
 }

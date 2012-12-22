@@ -6,7 +6,7 @@ extern "C" ulong idle_task(void *);
 
 List<Process *>* Task::processes;
 List<Thread *>* Task::threads;
-    
+
 List<Thread *>* Task::currThread;
 List<Thread *>* Task::idleThread;
 Process* Task::currProcess;
@@ -82,9 +82,9 @@ List<Thread *>* Task::nextThread() {
     return idleThread;
 }
 
-int Task::doSwitch() {
+void Task::doSwitch() {
     if (!currThread || !currProcess)
-        return 5;
+        return;
 
     ulong rsp, rbp, rip;
     asm volatile ("mov %%rsp, %0" : "=r"(rsp));
@@ -92,7 +92,7 @@ int Task::doSwitch() {
     rip = read_rip();
     
     if (rip == 0x12345)
-        return 6;
+        return;
     
     if ((ulong)currThread != INVALID_TASK_MAGIC)
        currThread->v()->setState(rsp, rbp, rip);
@@ -106,15 +106,17 @@ int Task::doSwitch() {
     rip = t->getRip();
     
     IO::cli();
-    t->setKernelStack();
+   // t->setKernelStack();
     
+   // *kvt << rsp << " | " << rbp << "\n";
+    //for (uint i = 0; i < 10000000; i++);
+   // return;
     asm volatile ("mov %0, %%rbp \n"
                   "mov %1, %%rsp \n"
                   "mov $0x12345, %%rax \n"
                   "sti \n"
                   "jmp *%%rcx \n"
                   : : "r"(rbp), "r"(rsp), "c"(rip));
-    return 1;
 }
 
 bool Task::IRQwakeup(uchar irq) {

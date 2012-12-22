@@ -5,10 +5,10 @@
 #include <MemoryManager/GDT.h>
 
 void Thread::run(Thread* t, void* data, ThreadEntry entryPoint) {
-    t->process->getPageDir()->switchTo();
+    //t->process->getPageDir()->switchTo();
     
-    //asm ("mov %%rsp, %%rax \n mov %%rbp, %%rbx \n int $64" : : "c"(entryPoint));
-    //for (;;);
+    asm ("mov %%rsp, %%rax \n mov %%rbp, %%rbx \n int $64" : : "c"(entryPoint));
+    for (;;);
 
     if (t->isKernel) {
         IO::sti();
@@ -70,6 +70,13 @@ Thread::~Thread() {
         process->heap().free(xchSpace);
 }
 
+
+void test() {
+    asm ("mov %%rsp, %%rax \n mov %%rbp, %%rbx \n int $64" : : "c"(0x1234));
+    for (;;);
+}
+
+
 void Thread::setup(Process* process, ThreadEntry entryPoint, void* data, bool isKernel) {
     xchSpace = 0;
     this->isKernel = isKernel;
@@ -85,25 +92,26 @@ void Thread::setup(Process* process, ThreadEntry entryPoint, void* data, bool is
         userStack.size = STACKSIZE;
     }
 
-    ulong* stack = (ulong *)((ulong)kernelStack.address) + kernelStack.size;
-    stack--;
-    *stack = (ulong)entryPoint;
-    stack--;
-    *stack = (ulong)data;
-    stack--;
-    *stack = (ulong)this;
-    stack--;
-    *stack = 0;
+    ulong* stack = (ulong *)0xFFFFFFFFC0010000;
+    //ulong* stack = (ulong *)((ulong)kernelStack.address) + kernelStack.size;
+    rbp  = (ulong)stack;
+  //  stack--;
+   // *stack = (ulong)entryPoint;
+    //stack--;
+   // *stack = (ulong)data;
+   // stack--;
+   // *stack = (ulong)this;
+   // stack--;
+   // *stack = 0;
     
     rsp = (ulong)stack;
-    rbp = rsp + 4;
-    rip = (ulong)run;
+    rip = (ulong)test;
     state = RUNNING;
-    
-    *kvt << "st " << rsp << " : " << rbp << " : " << (ulong)entryPoint << "\n";
     
     process->registerThread(this);
     Task::registerThread(this);
+    
+    //*kvt << "st " << rsp << " : " << rbp << "\n";
 }
 
 void Thread::finish(uint errorCode) {
