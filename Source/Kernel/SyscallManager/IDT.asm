@@ -5,6 +5,7 @@
     [global isr%1]
 
     isr%1:
+        cli
         push qword 0
         push qword %1
         jmp interrupt_common_stub
@@ -14,6 +15,7 @@
     [global isr%1]
 
     isr%1:
+        cli
         push qword %1
         jmp interrupt_common_stub
 %endmacro
@@ -22,6 +24,7 @@
     [global irq%1]
     
     irq%1:
+        cli
         push qword 0
         push qword 32+%1
         jmp interrupt_common_stub
@@ -31,6 +34,7 @@
     [global int%1]
     
     int%1:
+        cli
         push qword 0
         push qword %1
         jmp interrupt_common_stub

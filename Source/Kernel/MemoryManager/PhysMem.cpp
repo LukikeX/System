@@ -1,4 +1,5 @@
 #include "PhysMem.h"
+#include "Memory.h"
 
 uint PhysMem::nFrames;
 Bitset* PhysMem::frames;

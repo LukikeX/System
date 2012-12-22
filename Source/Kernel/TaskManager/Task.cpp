@@ -106,14 +106,13 @@ void Task::doSwitch() {
     rip = t->getRip();
     
     IO::cli();
-   // t->setKernelStack();
+    t->setKernelStack();
     
-   // *kvt << rsp << " | " << rbp << "\n";
-    //for (uint i = 0; i < 10000000; i++);
-   // return;
+    *kvt << rsp << " | " << rbp << "\n";
+    
     asm volatile ("mov %0, %%rbp \n"
                   "mov %1, %%rsp \n"
-                  "mov $0x12345, %%rax \n"
+                  "mov $0x12345, %%rax \n"    
                   "sti \n"
                   "jmp *%%rcx \n"
                   : : "r"(rbp), "r"(rsp), "c"(rip));

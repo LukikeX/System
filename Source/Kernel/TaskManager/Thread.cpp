@@ -4,16 +4,23 @@
 #include <DeviceManager/Time.h>
 #include <MemoryManager/GDT.h>
 
-void Thread::run(Thread* t, void* data, ThreadEntry entryPoint) {
-    //t->process->getPageDir()->switchTo();
+void Thread::run() {
+    Thread* t;
+    void* data;
+    ThreadEntry entryPoint;
     
-    asm ("mov %%rsp, %%rax \n mov %%rbp, %%rbx \n int $64" : : "c"(entryPoint));
-    for (;;);
+    asm volatile ("mov 16(%%rbp), %0 \n"
+                  "mov 24(%%rbp), %1 \n"
+                  "mov 32(%%rbp), %2 \n"
+                  : "=r"((ulong)t), "=r"((ulong)data), "=r"((ulong)entryPoint)
+    );
+    
+    
+    t->process->getPageDir()->switchTo();
 
     if (t->isKernel) {
         IO::sti();
-        ulong ret = entryPoint(data);
-        asm volatile ("int $66" : : "a"(ret));
+        asm volatile ("int $66" : : "a"(entryPoint(data)));
     } else {
         ulong* stack = (ulong *)((ulong)t->userStack.address + t->userStack.size);
         stack--;
@@ -21,7 +28,7 @@ void Thread::run(Thread* t, void* data, ThreadEntry entryPoint) {
         stack--;
         *stack = 0;
         
-        asm volatile ("mov $0x10, %%ax \n"
+        asm volatile ("mov $0x23, %%ax \n"
                       "mov %%ax, %%ds \n"
                       "mov %%ax, %%es \n"
                       "mov %%ax, %%fs \n"
@@ -29,15 +36,15 @@ void Thread::run(Thread* t, void* data, ThreadEntry entryPoint) {
                       
                       "mov %0, %%rbx \n"
                       "mov 0, %%rcx \n"
-                      "push $0x10 \n"
-                      "push %%rbx \n"
+                      "pushq $0x23 \n"
+                      "pushq %%rbx \n"
                       "pushfq \n"
                       "pop %%rax \n"
                       "or $0x200, %%rax \n"
-                      "push %%rax \n"
-                      "push $0x08 \n"
-                      "push %%rcx \n"
-                      "iretq"
+                      "pushq %%rax \n"
+                      "pushq $0x1B \n"
+                      "pushq %%rcx \n"
+                      "iret"
                       : : "r"((ulong)stack), "r"((ulong)entryPoint)
         );
     }
@@ -70,13 +77,6 @@ Thread::~Thread() {
         process->heap().free(xchSpace);
 }
 
-
-void test() {
-    asm ("mov %%rsp, %%rax \n mov %%rbp, %%rbx \n int $64" : : "c"(0x1234));
-    for (;;);
-}
-
-
 void Thread::setup(Process* process, ThreadEntry entryPoint, void* data, bool isKernel) {
     xchSpace = 0;
     this->isKernel = isKernel;
@@ -92,26 +92,23 @@ void Thread::setup(Process* process, ThreadEntry entryPoint, void* data, bool is
         userStack.size = STACKSIZE;
     }
 
-    ulong* stack = (ulong *)0xFFFFFFFFC0010000;
-    //ulong* stack = (ulong *)((ulong)kernelStack.address) + kernelStack.size;
+    ulong* stack = (ulong *)((ulong)kernelStack.address) + kernelStack.size;
     rbp  = (ulong)stack;
-  //  stack--;
-   // *stack = (ulong)entryPoint;
-    //stack--;
-   // *stack = (ulong)data;
-   // stack--;
-   // *stack = (ulong)this;
-   // stack--;
-   // *stack = 0;
+    stack--;
+    *stack = (ulong)entryPoint;
+    stack--;
+    *stack = (ulong)data;
+    stack--;
+    *stack = (ulong)this;
+    stack--;
+    *stack = 0;
     
     rsp = (ulong)stack;
-    rip = (ulong)test;
+    rip = (ulong)run;
     state = RUNNING;
     
     process->registerThread(this);
     Task::registerThread(this);
-    
-    //*kvt << "st " << rsp << " : " << rbp << "\n";
 }
 
 void Thread::finish(uint errorCode) {

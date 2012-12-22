@@ -17,9 +17,7 @@ CFLAGS = -c \
 -mno-3dnow \
 -mno-red-zone \
 -I . \
--mcmodel=kernel\
-#-fexceptions \
-#-O2
+-mcmodel=kernel \
 
 SRC += $(wildcard Core/*.asm Core/*.cpp)
 SRC += $(wildcard C++/*.cpp)
@@ -60,7 +58,7 @@ Clean:
 	
 %.o: %.cpp
 	@echo "[C++]     " $@
-	@gcc $(CFLAGS) $^ -o $@
+	@g++ $(CFLAGS) $^ -o $@
 
 %.a.o: %.asm
 	@echo "[ASM]     " $@

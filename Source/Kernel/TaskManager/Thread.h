@@ -27,7 +27,7 @@ protected:
         uint size;
     } userStack, kernelStack;
     
-    static void run(Thread* t, void* data, ThreadEntry entryPoint);
+    static void run();
     Thread();
     
     void setup(Process* process, ThreadEntry entryPoint, void* data, bool isKernel);

@@ -73,7 +73,7 @@ extern "C" void Loader() {
     
     VGATextoutput* vgaout = new VGATextoutput();
     Display::setText(vgaout);
-
+    
     SB* sb = new SB(10);    
     SB::progress("Initializing paging...");
     PhysMem();
@@ -117,7 +117,7 @@ extern "C" void Loader() {
     
     delete sb;
     kvt->map(0, 0);
-    IO::sti(); 
+    IO::sti();
     
     
     Process* p = new Process("test", 1);
