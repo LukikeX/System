@@ -17,7 +17,6 @@ void Thread::run() {
     
     
     t->process->getPageDir()->switchTo();
-
     if (t->isKernel) {
         IO::sti();
         asm volatile ("int $66" : : "a"(entryPoint(data)));
@@ -28,23 +27,25 @@ void Thread::run() {
         stack--;
         *stack = 0;
         
+        //for (;;);
+                
         asm volatile ("mov $0x23, %%ax \n"
                       "mov %%ax, %%ds \n"
                       "mov %%ax, %%es \n"
                       "mov %%ax, %%fs \n"
                       "mov %%ax, %%gs \n"
                       
-                      "mov %0, %%rbx \n"
-                      "mov 0, %%rcx \n"
                       "pushq $0x23 \n"
-                      "pushq %%rbx \n"
+                      "pushq %0 \n"
                       "pushfq \n"
+        
                       "pop %%rax \n"
                       "or $0x200, %%rax \n"
                       "pushq %%rax \n"
+        
                       "pushq $0x1B \n"
-                      "pushq %%rcx \n"
-                      "iret"
+                      "pushq %1 \n"
+                      "iretq"
                       : : "r"((ulong)stack), "r"((ulong)entryPoint)
         );
     }

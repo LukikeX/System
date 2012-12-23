@@ -17,8 +17,32 @@ GDT::GDT() {
     setGate(4, 0, 0xFFFFFFFF, 0xF2, 0x20);
     writeTSS(5, 0x10, 0x00);
     
-    asm volatile ("lgdt (%0)" :: "r"((ulong)ptr));
-    //asm ("ltr 0x2B");
+    asm volatile ("lgdt (%0) \n"
+                  "mov $0x10, %%ax \n"
+                  "mov %%ax, %%ds \n"
+                  "mov %%ax, %%es \n"
+                  "mov %%ax, %%fs \n"
+                  "mov %%ax, %%gs \n"
+                  "mov %%ax, %%ss \n"
+                     
+                  "pushq $0x10 \n"
+                  "pushq %%rsp \n"
+                  "pushfq \n"
+        
+                  "pushq $0x8 \n"
+                  "pushq $return \n"
+                  "iretq \n"
+                  "return:"
+    : : "r"((ulong)ptr));
+    
+    ulong *add = new ulong;
+    *add = (ulong)entry;
+    //asm ("ltr %0" : : "m"(entry));
+    
+    asm ("mov $0x8, %ax \n"
+         "ltr %ax");
+    
+    for (;;);
 }
 
 void GDT::setGate(uint p, uint base, uint limit, ushort access, uchar granularity) {

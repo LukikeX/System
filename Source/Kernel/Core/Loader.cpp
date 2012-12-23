@@ -121,10 +121,10 @@ extern "C" void Loader() {
     
     
     Process* p = new Process("test", 1);
-    p->getPageDir()->allocFrame(0, true, true);
-    Memory::copy((char *)_program_test, (char *)0, 512);
+    p->getPageDir()->allocFrame(0x1000, true, true);
+    Memory::copy((char *)_program_test, (char *)0x1000, 512);
     
-    new Thread(p, (ThreadEntry)0, 0);
+    new Thread(p, (ThreadEntry)0x1000, 0);
     p->start();
     
     //new Thread(p, (ThreadEntry)0x12345, 0);

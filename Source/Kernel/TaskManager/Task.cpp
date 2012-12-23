@@ -112,8 +112,7 @@ void Task::doSwitch() {
     
     asm volatile ("mov %0, %%rbp \n"
                   "mov %1, %%rsp \n"
-                  "mov $0x12345, %%rax \n"    
-                  "sti \n"
+                  "mov $0x12345, %%rax \n"
                   "jmp *%%rcx \n"
                   : : "r"(rbp), "r"(rsp), "c"(rip));
 }
