@@ -34,7 +34,7 @@ PageDirectory::PageDirectory(const PageDirectory& other) {
         }
     }
 }
-#include <Core/Loader.h>
+
 PageDirectory::PageDirectory(PageDirectory* other) {
     pages = (PML4 *)Memory::alloc(sizeof(PML4), true);
     Memory::clear(pages);

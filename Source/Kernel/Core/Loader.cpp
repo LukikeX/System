@@ -5,9 +5,9 @@
 #include "SB.h"
 #include "IO.h"
 
-#include "MemoryManager/PageAlloc.h"
 #include <C++/Runtime.h>
 
+#include <MemoryManager/PageAlloc.h>
 #include <MemoryManager/Memory.h>
 #include <MemoryManager/GDT.h>
 
@@ -38,8 +38,6 @@
 
 //Task:
 // Dorobit allocKernelPage
-//inak vsetko ostatne je hotovo!
-//dorobit nextThread
 
 //Process:
 //DirectoryNode* cwd
@@ -90,7 +88,7 @@ extern "C" void Loader() {
     SB::progress("Initializing GDT...");
     GDT();
     SB::ok();
-    
+
     SB::progress("Creating Kernel VT...");
     //kvt = new ScrollableVT(Display::textRows(), Display::textCols(), 20);
     kvt = new SimpleVT(Display::textRows(), Display::textCols());
@@ -119,10 +117,12 @@ extern "C" void Loader() {
     kvt->map(0, 0);
     IO::sti();
     
-    
     Process* p = new Process("test", 1);
     p->getPageDir()->allocFrame(0x1000, true, true);
     Memory::copy((char *)_program_test, (char *)0x1000, 512);
+    
+    //PhysMem::kernelPageDirectory->allocFrame(0x1000, false, true);
+    //new Thread((ThreadEntry)0x1000, 0, true);
     
     new Thread(p, (ThreadEntry)0x1000, 0);
     p->start();
@@ -131,6 +131,12 @@ extern "C" void Loader() {
     
     //for (uint i = 0; i < 10000000; i++);
     //new Thread(p, (ThreadEntry)0, 0);
+    
+  /*  while (true) {
+        for (uint i = 0; i < 100000; i++);
+        *kvt << "lol";
+    }*/
+    
     
     for (;;);
 }

@@ -15,7 +15,6 @@ void Thread::run() {
                   : "=r"((ulong)t), "=r"((ulong)data), "=r"((ulong)entryPoint)
     );
     
-    
     t->process->getPageDir()->switchTo();
     if (t->isKernel) {
         IO::sti();
@@ -26,8 +25,6 @@ void Thread::run() {
         *stack = (ulong)data;
         stack--;
         *stack = 0;
-        
-        //for (;;);
                 
         asm volatile ("mov $0x23, %%ax \n"
                       "mov %%ax, %%ds \n"
@@ -162,6 +159,7 @@ void Thread::handleException(IDT::regs* r) {
         
         vt << str;
         vt << "\nThread finishing.\n";
+        //Task::currentThreadExits(E_PAGEFAULT);
         return;
     }
     
@@ -176,7 +174,7 @@ void Thread::setState(ulong rsp, ulong rbp, ulong rip) {
 }
 
 void Thread::setKernelStack() {
-    GDT::tssEntry.rsp0 = (ulong)kernelStack.address + kernelStack.size;
+    GDT::setTSSRSP((ulong)kernelStack.address + kernelStack.size);
 }
 
 
