@@ -60,8 +60,13 @@
  * debug - 67
  */
 
+void prog1() {
+    for (;;) asm ("int $64");
+}
 
-extern "C" void _program_test();
+void prog2() {
+    for (;;) asm ("int $65");
+}
 
 SimpleVT* kvt;
 
@@ -117,26 +122,8 @@ extern "C" void Loader() {
     kvt->map(0, 0);
     IO::sti();
     
-    Process* p = new Process("test", 1);
-    p->getPageDir()->allocFrame(0x1000, true, true);
-    Memory::copy((char *)_program_test, (char *)0x1000, 512);
-    
-    //PhysMem::kernelPageDirectory->allocFrame(0x1000, false, true);
-    //new Thread((ThreadEntry)0x1000, 0, true);
-    
-    new Thread(p, (ThreadEntry)0x1000, 0);
-    p->start();
-    
-    //new Thread(p, (ThreadEntry)0x12345, 0);
-    
-    //for (uint i = 0; i < 10000000; i++);
-    //new Thread(p, (ThreadEntry)0, 0);
-    
-  /*  while (true) {
-        for (uint i = 0; i < 100000; i++);
-        *kvt << "lol";
-    }*/
-    
+    new Thread((ThreadEntry)prog1, 0, true);
+    new Thread((ThreadEntry)prog2, 0, true);
     
     for (;;);
 }

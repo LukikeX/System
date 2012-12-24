@@ -160,7 +160,7 @@ void IDT::setGate(uint num, ulong base, ushort sel, uint flags) {
 
 void IDT::handler(regs* r) {
     bool doSwitch = r->intNo == 32 || r->intNo >= 66;    
-    
+
     if (r->intNo < 32) {
         if ((ulong)Task::currentThread() == 0xFFFFFFFFFFFFFFFF || !Task::currentThread())
             panic("Exception cannot be handled!");
@@ -176,9 +176,8 @@ void IDT::handler(regs* r) {
         
         doSwitch = doSwitch || Task::IRQwakeup(r->intNo - 32);
     } else if (r->intNo == 64) {
-        *kvt << "syscall: " << r->rax << " | " << r->rbx << " | " << r->rcx << "\n";
-        //for (;;);
-     //   IO::sti();
+        //*kvt << "syscall: " << r->rax << " | " << r->rbx << " | " << r->rcx << "\n";
+        IO::sti();
         
     //    uint res = r->rax >> 32;
         //uint wat = r->rax & 0xFFFFFFFF;
@@ -188,15 +187,19 @@ void IDT::handler(regs* r) {
       //  } else {
             //res call...
      //   }
-        
-      //  Task::currentProcess()->getPageDir()->switchTo();
-     //   IO::cli();
+     
+        //kvt->put('x');
+        //Task::currentProcess()->getPageDir()->switchTo();
+        IO::cli();
+       // for (uint i = 0; i < 1000000; i++);
+    } else if (r->intNo == 65) {
+        *kvt << "lol";
+        for (uint i = 0; i < 100000; i++);
     } else if (r->intNo == 66) {
         kvt->put('E');
         Task::currentThreadExits(r->rax);
     }
     
-    kvt->put('-');
     if (doSwitch)
         Task::doSwitch();
 }

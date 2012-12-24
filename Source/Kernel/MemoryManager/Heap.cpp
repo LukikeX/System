@@ -69,8 +69,11 @@ void Heap::free(void* ptr) {
         return;
     
     headerT* header = (headerT *)((ulong)ptr - sizeof(headerT));
+    if (header->magic != HEAP_MAGIC)
+        return;
+            
     footerT* footer = (footerT *)((ulong)header + header->size - sizeof(footerT));
-    if (header->magic != HEAP_MAGIC || footer->magic != HEAP_MAGIC)
+    if (footer->magic != HEAP_MAGIC)
         return;
     
     mutex.waitLock();

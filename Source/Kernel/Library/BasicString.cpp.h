@@ -1,6 +1,6 @@
-#define BS_FREE if (string) delete[] string;
-#define BS_ALLOC string = new T[length];
-#define BS_VRFY if (!length) { string = 0; return; }
+#define BS_FREE if (this->string) delete[] this->string;
+#define BS_ALLOC this->string = new T[this->length];
+#define BS_VRFY if (!this->length) { this->string = 0; return; }
 
 template<typename T>
 BasicString<T>::BasicString() {
@@ -28,7 +28,7 @@ BasicString<T>::BasicString(const T value, unsigned int count) {
 
 template<typename T>
 BasicString<T>::~BasicString() {
-    //BS_FREE;
+    BS_FREE;
 }
 
 template<typename T>

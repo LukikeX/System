@@ -38,7 +38,8 @@ void* Memory::alloc(ulong size, bool align) {
 }
 
 void Memory::free(void* p) {
-    kernelHeap.free(p);
+    if (kernelHeap.usable() && (ulong)p > placementAddress)
+        kernelHeap.free(p);
 }
 
 void* Memory::mkXchgSpace(ulong size) {

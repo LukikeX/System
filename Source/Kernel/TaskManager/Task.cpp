@@ -107,6 +107,7 @@ void Task::doSwitch() {
     
     IO::cli();
     t->setKernelStack();
+    t->getProcess()->getPageDir()->switchTo();
     
     asm volatile ("mov %0, %%rbp \n"
                   "mov %1, %%rsp \n"

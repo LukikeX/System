@@ -97,11 +97,7 @@ void PageDirectory::map(PTE* page, ulong physAddress, bool user, bool rw) {
 }
 
 void PageDirectory::switchTo() {
-    asm volatile ("mov %0, %%cr3" : : "r"(getPhysAddress()));
-    ulong cr0;
-    asm volatile ("mov %%cr0, %0" : "=r"(cr0));
-    cr0 |= 0x80000000;
-    asm volatile ("mov %0, %%cr0" : : "r"(cr0));    
+    asm volatile ("mov %0, %%cr3" : : "r"(getPhysAddress()));  
 }
 
 PageDirectory::PTE* PageDirectory::getPage(ulong virtualAddress, bool make) {
@@ -116,10 +112,11 @@ PageDirectory::PTE* PageDirectory::getPage(ulong virtualAddress, bool make) {
     else if (make) {
         pdpt = (PDPT *)Memory::alloc(sizeof(PDPT), true);
         Memory::clear(pdpt);
-        pages->entries[startPML4E].present = 1;
+        pages->entries[startPML4E].present   = 1;
         pages->entries[startPML4E].readWrite = 1;
-        pages->entries[startPML4E].address = getPhysAddress((ulong)pdpt) >> 12;
-        pages->tables[startPML4E] = pdpt;
+        pages->entries[startPML4E].user      = 1;
+        pages->entries[startPML4E].address   = getPhysAddress((ulong)pdpt) >> 12;
+        pages->tables[startPML4E]            = pdpt;
     } else
         return 0;
     
@@ -129,10 +126,11 @@ PageDirectory::PTE* PageDirectory::getPage(ulong virtualAddress, bool make) {
     else if (make) {
         pd = (PD *)Memory::alloc(sizeof(PD), true);
         Memory::clear(pd);
-        pdpt->entries[startPDPTE].present = 1;
-        pdpt->entries[startPDPTE].readWrite = 1;
-        pdpt->entries[startPDPTE].address = getPhysAddress((ulong)pd) >> 12;
-        pdpt->tables[startPDPTE] = pd;
+        pdpt->entries[startPDPTE].present    = 1;
+        pdpt->entries[startPDPTE].readWrite  = 1;
+        pdpt->entries[startPDPTE].user       = 1;
+        pdpt->entries[startPDPTE].address    = getPhysAddress((ulong)pd) >> 12;
+        pdpt->tables[startPDPTE]             = pd;
     } else
         return 0;
     
@@ -142,10 +140,11 @@ PageDirectory::PTE* PageDirectory::getPage(ulong virtualAddress, bool make) {
     else if (make) {
         pt = (PT *)Memory::alloc(sizeof(PT), true);
         Memory::clear(pt);
-        pd->entries[startPDE].present = 1;
-        pd->entries[startPDE].readWrite = 1;
-        pd->entries[startPDE].address = getPhysAddress((ulong)pt) >> 12;
-        pd->tables[startPDE] = pt;
+        pd->entries[startPDE].present        = 1;
+        pd->entries[startPDE].readWrite      = 1;
+        pd->entries[startPDE].user           = 1;
+        pd->entries[startPDE].address        = getPhysAddress((ulong)pt) >> 12;
+        pd->tables[startPDE]                 = pt;
     } else
         return 0;
     

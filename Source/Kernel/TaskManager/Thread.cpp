@@ -5,6 +5,7 @@
 #include <MemoryManager/GDT.h>
 
 void Thread::run() {
+    IO::cli();
     Thread* t;
     void* data;
     ThreadEntry entryPoint;
@@ -15,7 +16,6 @@ void Thread::run() {
                   : "=r"((ulong)t), "=r"((ulong)data), "=r"((ulong)entryPoint)
     );
     
-    t->process->getPageDir()->switchTo();
     if (t->isKernel) {
         IO::sti();
         asm volatile ("int $66" : : "a"(entryPoint(data)));
@@ -143,27 +143,27 @@ void Thread::handleException(IDT::regs* r) {
     }
     
     if (isKernel)
-        panic("Exception in kernel thread!");
+        panic(exceptions[r->intNo], r);
     
     if (r->intNo == 14) {
         ulong fAddress;
         asm volatile ("mov %%cr2, %0" : "=r" (fAddress));
     
-        String str;
-        str = (r->errorCode & 0x1 ? "" : "Present");
-        str += (r->errorCode & 0x2 ? " Read only" : "");
-        str += (r->errorCode & 0x4 ? " User mode" : "");
-        str += (r->errorCode & 0x8 ? " Reserved" : "");
+        String str = " |";
+        str += (r->errorCode & 0x1 ? "" : " present");
+        str += (r->errorCode & 0x2 ? " read only" : "");
+        str += (r->errorCode & 0x4 ? " user mode" : "");
+        str += (r->errorCode & 0x8 ? " reserved" : "");
         str += " @ ";
         str += String::hex(fAddress);
         
         vt << str;
         vt << "\nThread finishing.\n";
-        //Task::currentThreadExits(E_PAGEFAULT);
+        Task::currentThreadExits(E_PAGEFAULT);
         return;
     }
     
-    vt << "Thread finishing.\n";
+    vt << "\nThread finishing.\n";
     Task::currentThreadExits(E_UNHLD_EXCP);
 }
 

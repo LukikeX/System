@@ -9,13 +9,8 @@ String::String(const char* string, uchar encoding) {
 void String::affect(const char* string, uchar encoding) {
     length = WChar::utfLen(string, encoding);
 
-    if (this->string)
-        delete[] this->string;
-    
-    if(!length) {
-        this->string = 0;
-        return;
-    }
+    BS_FREE;
+    BS_VRFY;
     
     this->string = new WChar[length + 1];
     uint i = 0, c = 0;
