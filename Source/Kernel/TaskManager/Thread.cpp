@@ -113,7 +113,7 @@ void Thread::finish(uint errorCode) {
     if (errorCode == E_PAGEFAULT && isKernel)
         panic("Page fault in kernel thread!");
     
-    if (E_UNHLD_EXCP && isKernel)
+    if (errorCode == E_UNHLD_EXCP && isKernel)
         panic("Unhandled exception in kernel thread!");
     
     process->threadFinishes(this, errorCode);

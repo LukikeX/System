@@ -1,10 +1,17 @@
 #ifndef V86THREAD_H
 #define V86THREAD_H
 
+#define V86_STACKSIZE 1024
+
+#define EFLAGS_IF 0x200
+#define EFLAGS_VM 0x20000
+#define VALID_FLAGS 0xDFF
+
 #include <Core/typedef.h>
 #include <SyscallManager/IDT.h>
+#include <TaskManager/Thread.h>
 
-class V86Thread {
+class V86Thread : public Thread {
 public:
     struct functionT {
         ushort size;

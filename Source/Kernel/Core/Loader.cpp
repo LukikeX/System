@@ -4,6 +4,7 @@
 #include "Panic.h"
 #include "SB.h"
 #include "IO.h"
+#include "TaskManager/V86/V86.h"
 
 #include <C++/Runtime.h>
 
@@ -34,7 +35,6 @@
 //mutex
 //String number
 //Opravit bitset, nejako vynechava bity
-//Dorobit PageAlloc - alokovanie novych blokov trochu blbne
 
 //Task:
 // Dorobit allocKernelPage
@@ -60,8 +60,17 @@
  * debug - 67
  */
 
+ulong syscall(ulong n, ulong a, ulong b, ulong c, ulong d, ulong e) {
+    ulong r;
+    asm volatile ("int $64" : "=a"(r) : "a"(n), "b"(a), "c"(b), "d"(c), "D"(d), "S"(e));
+    return r;
+}
+
+
 void prog1() {
-    for (;;) asm ("int $64");
+    syscall(0xFFFFFFFE00000000, 0, 0, 0, 0, 0);
+    
+    for (;;);// asm ("int $64");
 }
 
 void prog2() {
@@ -123,7 +132,13 @@ extern "C" void Loader() {
     IO::sti();
     
     new Thread((ThreadEntry)prog1, 0, true);
-    new Thread((ThreadEntry)prog2, 0, true);
+//    new Thread((ThreadEntry)prog2, 0, true);
+    
+    //V86Thread::regsT r;
+    //Memory::clear(&r);
+    //r.ax = 0x0F << 4;
+    //V86::biosInt(0x12, r);
+    //*kvt << "int: " << (uint)r.ax;
     
     for (;;);
 }
