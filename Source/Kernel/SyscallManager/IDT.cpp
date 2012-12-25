@@ -181,7 +181,7 @@ void IDT::handler(regs* r) {
         IO::sti();
         uint res = r->rax >> 32;
         uint wat = r->rax & 0xFFFFFFFF;
-        Res::call(res, wat, r->rbx, r->rcx, r->rdx, r->rdi, r->rsi);
+        r->rax = Res::call(res, wat, r->rbx, r->rcx, r->rdx, r->rdi, r->rsi);
         
         Task::currentProcess()->getPageDir()->switchTo();
         IO::cli();

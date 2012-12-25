@@ -24,7 +24,7 @@ ulong Ressource::doCall(uint id, ulong a, ulong b, ulong c, ulong d, ulong e) {
         callT* ct = iter->v();
         
         ulong i = 0;
-        while (ct[i].id) {
+        while (ct[i].id) { 
             callT& ce = ct[i];
             if (ce.id == id) {
                 if (ce.params == 0) return (this->*(ce.c0))();

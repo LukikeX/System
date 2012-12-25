@@ -28,16 +28,10 @@
 //basicstring uvolnit pamet v destructore
 //dorobit display dm, chyba tam select mode....
 //VGATextoutput dokoncit a nahodit V86
-//Virtual terminal keyboard - chyba task ...
-//Definovat EOF
-//Simple VT - handle escape
-//ScrollableVT - redraw()....
+//ScrollableVT - redraw().... opravit
 //mutex
 //String number
 //Opravit bitset, nejako vynechava bity
-
-//Task:
-// Dorobit allocKernelPage
 
 //Process:
 //DirectoryNode* cwd
@@ -48,12 +42,7 @@
 //exit() - file desc
 //run()
 
-//Thread:
-//syscall
-//
-
-
-/* Syscall
+/* Syscalls port
  * request task switch - 64
  * signal that thread ended - 65
  * main - 66
@@ -68,7 +57,11 @@ ulong syscall(ulong n, ulong a, ulong b, ulong c, ulong d, ulong e) {
 
 
 void prog1() {
-    syscall(0xFFFFFFFE00000000, 0, 0, 0, 0, 0);
+    ulong ret = syscall(0xFFFFFFFE00000000 | VTIF_SGETPROUTVT, VTIF_OBJTYPE, 0, 0, 0, 0);
+    
+    String *s = new String;
+    *s = "toto je iba test";
+    ret = syscall(ret << 32 | VTIF_WRITE, (ulong)s, 0, 0, 0, 0);
     
     for (;;);// asm ("int $64");
 }

@@ -1,11 +1,12 @@
 #include "Res.h"
 #include "MemoryManager/Memory.h"
+#include <VTManager/VirtualTerminal.proto.h>
 
 Ressource** Res::ressources = 0;
 uint Res::size = 0;
 
 Res::staticCallT Res::staticCalls[] = {
-    {0, (staticcall)0},
+    {VTIF_OBJTYPE, VirtualTerminal::scall},
     {0, 0}
 };
 

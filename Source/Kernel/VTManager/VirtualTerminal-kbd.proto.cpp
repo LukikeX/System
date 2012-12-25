@@ -1,4 +1,5 @@
 #include "VirtualTerminal.proto.h"
+#include <TaskManager/Task.h>
 
 void VirtualTerminal::keyPress(keyStatus ks) {
     if (kbdBufferEnd == kbdBufferStart - 1 || (kbdBufferEnd == 32 - 1 && !kbdBufferStart))
@@ -29,8 +30,8 @@ keyStatus VirtualTerminal::getkeyPress(bool show, bool block) {
         return keyStatus();
     }
     
-    //while (kbdBufferStart == kbdBufferEnd)
-        //Task::currentThread()->sleep(10);
+    while (kbdBufferStart == kbdBufferEnd)
+        Task::currentThread()->sleep(10);
     
     keyStatus ret = kbdBuffer[kbdBufferStart++];
     

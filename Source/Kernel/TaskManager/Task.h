@@ -36,8 +36,6 @@ public:
     static inline void triggerSwitch() { asm ("int $65"); }
     static inline uint nextPid() { return nextpid++; }
     static bool IRQwakeup(uchar irq);
-    
-    static void allocKernelPageTable(uint id, PageDirectory::PTE* table, uint tablePhys);
     static void currentThreadExits(uint errorCode);
     
     static void registerThread(Thread* t);

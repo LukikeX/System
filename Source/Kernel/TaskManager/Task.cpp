@@ -148,7 +148,3 @@ void Task::currentThreadExitsProceed(uint errorCode) {
     currThread = (List<Thread *> *)INVALID_TASK_MAGIC;
     doSwitch();
 }
-
-//void Task::allocKernelPageTable(uint id, PageDirectory::PTE* table, uint tablePhys) {
-    
-//}

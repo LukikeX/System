@@ -98,7 +98,37 @@ void SimpleVT::updateCursor() {
 
 void SimpleVT::handleEscape(mvtEscCmdT cmd) {
     switch (cmd.cmd) {
-        //case MVT
+        case MVTCMD_CLEAR:
+            clear();
+            break;
+        case MVTCMD_SCROLL:
+            scroll();
+            break;
+        case MVTCMD_SETFGCOLOR:
+            color = (color & 0xF0) | (cmd.a & 0x0F);
+            break;
+        case MVTCMD_SETBGCOLOR:
+            color = ((cmd.b & 0x0F) << 4) | (cmd.a & 0x0F);
+            break;
+        case MVTCMD_MOVECSR:
+            csrlin = cmd.a;
+            csrcol = cmd.b;
+            updateCursor();
+            break;
+        case MVTCMD_SETCSRLIN:
+            csrlin = cmd.a;
+            updateCursor();
+            break;
+        case MVTCMD_SETCSRCOL:
+            csrcol = cmd.a;
+            updateCursor();
+            break;
+        case MVTCMD_HIDECSR:
+            hideCursor = true;
+            break;
+        case MVTCMD_SHOWCSR:
+            hideCursor = false;
+            break;
     }
 }
 

@@ -1,7 +1,6 @@
 #include "VirtualTerminal.proto.h"
-#include "VirtualTerminal.def.h"
 
-VirtualTerminal::VirtualTerminal() {
+VirtualTerminal::VirtualTerminal() : Ressource(VTIF_OBJTYPE, VirtualTerminal::callTable), keyboardMutex(MUTEX_FALSE) {
     kbdBufferStart = 0;
     kbdBufferEnd = 0;
 }

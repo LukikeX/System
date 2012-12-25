@@ -5,12 +5,13 @@
 #include <Library/WChar.h>
 #include <Devices/Keyboard/Keyboard.defs.h>
 #include <Library/String.h>
+#include <SyscallManager/Ressource.h>
+#include <../Framework/VirtualTerminal/Defs.h>
+#include <../Framework/Interfaces.h>
 
-#include "VirtualTerminal.def.h"
+#define EOF "\3"
 
-#define EOF 0x12
-
-class VirtualTerminal {
+class VirtualTerminal : public Ressource {
 protected:
     Mutex keyboardMutex;
     keyStatus kbdBuffer[32];
@@ -54,6 +55,12 @@ public:
         uchar color;
         WChar c;
     };
+    
+    //Syscalls:
+    static callT callTable[];
+    static ulong scall(uint wat, ulong, ulong, ulong, ulong);
+    bool accessible() { return true; }
+    ulong writeSC(ulong wat);
 };
 
 #endif
