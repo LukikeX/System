@@ -234,3 +234,24 @@ String String::hex(ulong n) {
     }
     return ret;
 }
+
+ulong String::serialize() const {
+    uint* x = (uint *)Memory::mkXchgSpace((length + 1) * sizeof(uint));
+    x[0] = length;
+    for (uint i = 0; i < length; i++)
+        x[i + 1] = string[i];
+    return (ulong)x;
+}
+
+String String::unserialize(ulong w) {
+    if (w == (ulong)-1)
+        return String();
+    
+    uint* x = (uint *)w;
+    String ret;
+    ret.length = x[0];
+    ret.string = (WChar *)new WChar[x[0]];
+    for (uint i = 0; i < x[0]; i++)
+        ret[i] = x[i + 1];
+    return ret;
+}

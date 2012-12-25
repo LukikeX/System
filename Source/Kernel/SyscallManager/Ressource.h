@@ -4,6 +4,7 @@
 #include <Core/typedef.h>
 #include <Core/Mutex.h>
 #include <Library/List.h>
+#include <../Framework/Interfaces.h>
 
 class Ressource;
 

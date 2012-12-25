@@ -9,6 +9,12 @@
         <in>LongMode.asm</in>
         <in>MemoryMap.asm</in>
       </df>
+      <df name="Framework">
+        <df name="VirtualTerminal">
+          <in>Defs.h</in>
+        </df>
+        <in>Interfaces.h</in>
+      </df>
       <df name="Kernel">
         <df name="C++">
           <in>Runtime.cpp</in>
@@ -90,6 +96,10 @@
           <in>IDT.asm</in>
           <in>IDT.cpp</in>
           <in>IDT.h</in>
+          <in>Res.cpp</in>
+          <in>Res.h</in>
+          <in>Ressource.cpp</in>
+          <in>Ressource.h</in>
         </df>
         <df name="TaskManager">
           <df name="V86">
@@ -99,6 +109,7 @@
             <in>V86Thread.cpp</in>
             <in>V86Thread.h</in>
           </df>
+          <in>Process-sc.cpp</in>
           <in>Process.cpp</in>
           <in>Process.h</in>
           <in>Task.asm</in>
@@ -115,7 +126,7 @@
           <in>VT.cpp</in>
           <in>VT.h</in>
           <in>VirtualTerminal-kbd.proto.cpp</in>
-          <in>VirtualTerminal.def.h</in>
+          <in>VirtualTerminal-sc.proto.cpp</in>
           <in>VirtualTerminal.proto.cpp</in>
           <in>VirtualTerminal.proto.h</in>
         </df>

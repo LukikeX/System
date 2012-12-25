@@ -2,6 +2,8 @@
 #include "Thread.h"
 #include "Task.h"
 
+Process::Process() : Ressource(PRIF_OBJTYPE, callTable) { }
+
 Process* Process::createKernel(String cmdline, VirtualTerminal* vt) {
     Process* p = new Process();
     p->pid = 0;
@@ -52,7 +54,7 @@ Process* Process::run(String filename, uint uid) {
     }
 }
 
-Process::Process(String binfile, uint uid) {
+Process::Process(String binfile, uint uid) : Ressource(PRIF_OBJTYPE, callTable) {
     pid = Task::nextPid();
     ppid = Task::currentProcess()->getPid();
     args.push(binfile);
@@ -97,7 +99,7 @@ void Process::registerThread(Thread* t) {
         threads.push(t);
 }
 
-void Process::threadFinishes(Thread* t, uint retval) {
+void Process::threadFinishes(Thread* t, ulong retval) {
     if (t == threads[0] || retval == E_PAGEFAULT || retval == E_EXIT) {
         this->retval = retval;
         if (autoDelete)

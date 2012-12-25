@@ -39,6 +39,8 @@ public:
     
     Vector<String> split(WChar c) const;
     String substr(int start, int size = -1);
+    ulong serialize() const;
+    static String unserialize(ulong w);
     
     static uint strlen(const char* str);
     static String hex(uint n);

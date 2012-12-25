@@ -5,6 +5,7 @@
 #include <MemoryManager/PageDirectory.h>
 #include <VTManager/VirtualTerminal.proto.h>
 #include <MemoryManager/Heap.h>
+#include <SyscallManager/Ressource.h>
 
 #define E_PAGEFAULT  0x0FFFFF00
 #define E_EXIT       0x0FFFFF01
@@ -17,12 +18,12 @@
 
 class Thread;
 
-class Process {
+class Process : public Ressource {
     friend class Thread;
 private:
     uint pid, ppid, uid;
     Vector<String> args;
-    int retval;
+    long retval;
     uchar state;
     PageDirectory* pageDir;
     Heap* userHeap;
@@ -33,7 +34,7 @@ private:
     Vector<Thread *>threads;
     //list file * file descriptors
     
-    Process() {}
+    Process();
     
 public:
     enum {
@@ -55,7 +56,7 @@ public:
     void pushArg(const String& str);
     
     void registerThread(Thread* t);
-    void threadFinishes(Thread* t, uint retval);
+    void threadFinishes(Thread* t, ulong retval);
     
     //register & unregister file desc
     
@@ -71,6 +72,23 @@ public:
     void setInVT(VirtualTerminal* vt) { inVT = vt; }
     void setOutVT(VirtualTerminal* vt) { outVT = vt; }
     uint getState() { return state; }
+    
+    //Syscalls:
+    static ulong scall(uint wat, ulong a, ulong, ulong, ulong);
+    
+private:
+    static callT callTable[];
+    bool accessible();
+    ulong exitSC();
+    ulong argcSC();
+    ulong argvSC(ulong idx);
+    ulong startSC();
+    ulong allocPagesSC(ulong pos, ulong end);
+    ulong freePagesSC(ulong pos, ulong end);
+    ulong autoDeleteSC(ulong d);
+    ulong pushArgSC(ulong arg);
+    ulong setOutVTSC(ulong vtid);
+    ulong setInVTSC(ulong vtid);
 };
 
 #endif

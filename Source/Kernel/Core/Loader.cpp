@@ -36,11 +36,12 @@
 //Process:
 //DirectoryNode* cwd
 //List<File *> fileDescriptors
-//syscalls
 //register/unregister file descriptor - metody
 //set/get cwd - metody
 //exit() - file desc
 //run()
+//scall - uid
+//Dorobit par detailov v syscall
 
 /* Syscalls port
  * request task switch - 64

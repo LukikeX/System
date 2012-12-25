@@ -7,7 +7,6 @@
 #include <Library/String.h>
 #include <SyscallManager/Ressource.h>
 #include <../Framework/VirtualTerminal/Defs.h>
-#include <../Framework/Interfaces.h>
 
 #define EOF "\3"
 
@@ -57,10 +56,18 @@ public:
     };
     
     //Syscalls:
-    static callT callTable[];
     static ulong scall(uint wat, ulong, ulong, ulong, ulong);
+    
+private:
+    static callT callTable[];
     bool accessible() { return true; }
     ulong writeSC(ulong wat);
+    ulong putSC(ulong code);
+    ulong readLineSC(ulong show);
+    ulong getKeyPressSC(ulong flags);
+    ulong isBoxedSC();
+    ulong getHeightSC();
+    ulong getWidthSC();
 };
 
 #endif
