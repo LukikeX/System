@@ -4,7 +4,6 @@
 #include "Panic.h"
 #include "SB.h"
 #include "IO.h"
-#include "TaskManager/V86/V86.h"
 
 #include <C++/Runtime.h>
 
@@ -26,12 +25,13 @@
 #include <TaskManager/Task.h>
 
 //basicstring uvolnit pamet v destructore
-//dorobit display dm, chyba tam select mode....
-//VGATextoutput dokoncit a nahodit V86
 //ScrollableVT - redraw().... opravit
 //mutex
 //String number
 //Opravit bitset, nejako vynechava bity
+//Dorobit v thread accessible
+//Doborbit v keymape altgr a shiftaltgr
+//v atacontrollery registrovat part device
 
 //Process:
 //DirectoryNode* cwd

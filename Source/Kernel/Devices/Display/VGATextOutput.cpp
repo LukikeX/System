@@ -1,4 +1,6 @@
 #include "VGATextOutput.h"
+#include "TaskManager/V86/V86Thread.h"
+#include "TaskManager/V86/V86.h"
 #include <Core/IO.h>
 
 void VGATextoutput::getModes(Vector<Display::modeT>& to) {
@@ -19,7 +21,13 @@ void VGATextoutput::getModes(Vector<Display::modeT>& to) {
 
 bool VGATextoutput::setMode(Display::modeT& mode) {
     if (mode.device == this && (mode.identifier == 3 || mode.identifier == 1)) {
+        V86Thread::regsT r;
+        r.ax = mode.identifier;
+        cols = mode.textCols;
         
+        V86::biosInt(0x10, r);
+        clear();
+        return true;
     }
     return false;
 }

@@ -44,4 +44,15 @@
 //#define PRIF_AUTHPW 0x40
 //#define PRIF_AUTHNOPW 0x41
 
+
+//==============================================================================
+#define THIF_OBJTYPE 0x300
+
+#define THIF_SGETCTH 0x01
+#define THIF_SLEEP   0x02
+#define THIF_FINISH  0x03
+
+
+//==============================================================================
+
 #endif

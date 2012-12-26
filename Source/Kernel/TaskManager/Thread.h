@@ -2,12 +2,13 @@
 #define THREAD_H
 
 #include <SyscallManager/IDT.h>
+#include <SyscallManager/Ressource.h>
 
 class Process;
 
 typedef ulong(*ThreadEntry)(void *);
 
-class Thread {
+class Thread : public Ressource {
     friend class Process;
 protected:
     ulong rsp, rbp, rip;
@@ -65,6 +66,16 @@ public:
         }
         return false;
     }
+    
+    //Syscalls:
+    static ulong scall(uint wat, ulong, ulong, ulong, ulong);
+    
+private:
+    static callT callTable[];
+    bool accessible();
+    ulong sleepSC(ulong ms);
+    ulong finishSC(ulong errCode);
+    
 };
 
 #endif

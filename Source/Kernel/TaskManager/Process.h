@@ -21,7 +21,7 @@ class Thread;
 class Process : public Ressource {
     friend class Thread;
 private:
-    uint pid, ppid, uid;
+    ulong pid, ppid, uid;
     Vector<String> args;
     long retval;
     uchar state;
@@ -45,8 +45,8 @@ public:
     };
     
     static Process* createKernel(String cmdline, VirtualTerminal* vt);
-    static Process* run(String filename, uint uid);
-    Process(String binfile, uint uid);
+    static Process* run(String filename, ulong uid);
+    Process(String binfile, ulong uid);
     ~Process();
     
     Heap& heap() { return *userHeap; }
@@ -61,9 +61,9 @@ public:
     //register & unregister file desc
     
     PageDirectory* getPageDir() { return pageDir; }
-    uint getUid() { return uid; }
-    uint getPid() { return pid; }
-    uint getPpid() { return ppid; }
+    ulong getUid() { return uid; }
+    ulong getPid() { return pid; }
+    ulong getPpid() { return ppid; }
     
     //set cwd...
     

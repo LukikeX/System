@@ -58,7 +58,7 @@ void Keyboard::keyPress(uchar code) {
         
         if ((status & STATUS_SHIFT) ^ (status & STATUS_CAPS)) {
             if (status & STATUS_ALTGR)
-                ks.character = keymapNormal[code]; //keymapShiftAltgr
+                ks.character = keymapShiftAltGr[code];
             else {
                 if (status & STATUS_CAPS)
                     ks.character = keymapCaps[code];
@@ -67,7 +67,7 @@ void Keyboard::keyPress(uchar code) {
             }
         } else {
             if (status & STATUS_ALTGR)
-                ks.character = keymapNormal[code]; //keymapAltGr
+                ks.character = keymapAltGr[code];
             else 
                 ks.character = keymapNormal[code];
         }
@@ -131,7 +131,7 @@ void Keyboard::keyRelease(uchar code) {
         
         if ((status & STATUS_SHIFT) ^ (status & STATUS_CAPS)) {
             if (status & STATUS_ALTGR)
-                ks.character = keymapNormal[code]; //keymapShiftAltgr
+                ks.character = keymapShiftAltGr[code];
             else {
                 if (status & STATUS_CAPS)
                     ks.character = keymapCaps[code];
@@ -140,7 +140,7 @@ void Keyboard::keyRelease(uchar code) {
             }
         } else {
             if (status & STATUS_ALTGR)
-                ks.character = keymapNormal[code]; //keymapAltGr
+                ks.character = keymapAltGr[code];
             else 
                 ks.character = keymapNormal[code];
         }

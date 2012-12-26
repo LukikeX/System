@@ -37,7 +37,7 @@ Process::~Process() {
     Task::unregisterProcess(this);
 }
 
-Process* Process::run(String filename, uint uid) {
+Process* Process::run(String filename, ulong uid) {
     //file...
     //bin load...
     Process* p = new Process(filename, uid);
@@ -54,7 +54,7 @@ Process* Process::run(String filename, uint uid) {
     }
 }
 
-Process::Process(String binfile, uint uid) : Ressource(PRIF_OBJTYPE, callTable) {
+Process::Process(String binfile, ulong uid) : Ressource(PRIF_OBJTYPE, callTable) {
     pid = Task::nextPid();
     ppid = Task::currentProcess()->getPid();
     args.push(binfile);

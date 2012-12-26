@@ -4,6 +4,19 @@
 #include <DeviceManager/Time.h>
 #include <MemoryManager/GDT.h>
 
+Thread::callT Thread::callTable[] = {
+    CALL1(THIF_SLEEP,  &Thread::sleepSC),
+    CALL1(THIF_FINISH, &Thread::finishSC),
+    CALL0(0, 0)
+};
+
+ulong Thread::scall(uint wat, ulong, ulong, ulong, ulong) {
+    if (wat == THIF_SGETCTH)
+        return Task::currentThread()->resId();
+    
+    return (ulong)-1;
+}
+
 void Thread::run() {
     IO::cli();
     Thread* t;
@@ -48,18 +61,18 @@ void Thread::run() {
     }
 }
 
-Thread::Thread() {
+Thread::Thread() : Ressource(THIF_OBJTYPE, callTable) {
     xchSpace = 0;
 }
 
-Thread::Thread(ThreadEntry entryPoint, void* data, bool isKernel) {
+Thread::Thread(ThreadEntry entryPoint, void* data, bool isKernel) : Ressource(THIF_OBJTYPE, callTable) {
     if (isKernel)
         setup(Task::getKernelProcess(), entryPoint, data, true);
     else
         setup(Task::currentProcess(), entryPoint, data, false);
 }
 
-Thread::Thread(Process* process, ThreadEntry entryPoint, void* data) {
+Thread::Thread(Process* process, ThreadEntry entryPoint, void* data) : Ressource(THIF_OBJTYPE, callTable) {
     setup(process, entryPoint, data, false);
 }
 
@@ -212,4 +225,22 @@ bool Thread::runnable() {
         return true;
     }
     return false;
+}
+
+ulong Thread::sleepSC(ulong ms) {
+    if (this != Task::currentThread())
+        return 1;
+    sleep(ms);
+    return 0;
+}
+
+ulong Thread::finishSC(ulong errCode) {
+    if (this != Task::currentThread())
+        return 1;
+    Task::currentThreadExits(errCode);
+    return 0;
+}
+
+bool Thread::accessible() {
+    return true; //(Usr::uid() == m_process->m_uid);
 }

@@ -29,7 +29,6 @@ public:
     
     static void getModes();
     static bool setMode(modeT& cMode);
-    static void selectMode();
     
     static void setText(VGATextoutput* out);
 };

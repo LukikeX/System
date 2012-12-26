@@ -1,5 +1,6 @@
 #include "Display.h"
 #include "Device.h"
+#include "VTManager/VT.h"
 #include <Devices/Display/Display.proto.h>
 #include <Devices/Display/VGATextOutput.h>
 
@@ -35,7 +36,7 @@ bool Display::setMode(modeT& cMode) {
     
     if (cMode.device->setMode(cMode)) {
         mode = cMode;
-        //VT::redraw...
+        VT::redrawScreen();
         return true;
     }
     return false;
