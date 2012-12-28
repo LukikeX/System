@@ -177,7 +177,7 @@ void IDT::handler(regs* r) {
         
         doSwitch = doSwitch || Task::IRQwakeup(r->intNo - 32);
     } else if (r->intNo == 64) {
-        *kvt << "syscall: " << r->rax << " | " << r->rbx << " | " << r->rcx << "\n";
+       // *kvt << "syscall: " << r->rax << " | " << r->rbx << " | " << r->rcx << "\n";
         IO::sti();
         uint res = r->rax >> 32;
         uint wat = r->rax & 0xFFFFFFFF;
@@ -185,9 +185,6 @@ void IDT::handler(regs* r) {
         
         Task::currentProcess()->getPageDir()->switchTo();
         IO::cli();
-    } else if (r->intNo == 65) {
-        *kvt << "lol";
-        for (uint i = 0; i < 100000; i++);
     } else if (r->intNo == 66) {
         kvt->put('E');
         Task::currentThreadExits(r->rax);

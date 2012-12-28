@@ -1,6 +1,9 @@
 #include "Part.h"
 #include <Core/IO.h>
 
+Vector<BlockDeviceProto *> Part::devs;
+Vector<Partition *> Part::partitions;
+
 void Part::registerDevice(BlockDeviceProto* dev) {
     unregisterDevice(dev);
     IO::cli();
@@ -46,9 +49,9 @@ void Part::unregisterDevice(BlockDeviceProto* dev) {
 }
 
 void Part::readPartitionTable(BlockDeviceProto* dev) {
-    partitions.push(new Partititon(dev, 0, 0, dev->blocks()));
+    partitions.push(new Partition(dev, 0, 0, dev->blocks()));
     
-    uchar* mbr = new char[dev->blockSize()];
+    char* mbr = new char[dev->blockSize()];
     if (!dev->readBlocks(0, 1, mbr))
         return;
     
@@ -59,13 +62,13 @@ void Part::readPartitionTable(BlockDeviceProto* dev) {
         if ((entry[i].bootable == 0 || entry[i].bootable == 0x80) && entry[i].ID
              && entry[i].startLBA && entry[i].size && entry[i].startLBA < dev->blocks()
              && entry[i].size < dev->blocks())
-            partitions.push(new Partititon(dev, i + 1, entry[i].startLBA, entry[i].size));
+            partitions.push(new Partition(dev, i + 1, entry[i].startLBA, entry[i].size));
     }
     
     delete mbr;
 }
 
-BlockDeviceProto* Part::findDevice(String cls, uint idx) const {
+BlockDeviceProto* Part::findDevice(String cls, uint idx) {
     if (cls.empty())
         return false;
     
@@ -82,9 +85,10 @@ BlockDeviceProto* Part::findDevice(String cls, uint idx) const {
     return 0;
 }
 
-Partititon* Part::findPartition(BlockDeviceProto* dev, uint idx) const {
+Partition* Part::findPartition(BlockDeviceProto* dev, uint idx) {
     for (uint i = 0; i < partitions.size(); i++) {
         if (partitions[i]->getDevice() == dev && partitions[i]->getPartNumber() == idx)
             return partitions[i];
     }
+    return 0;
 }

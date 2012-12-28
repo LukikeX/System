@@ -31,13 +31,13 @@ FSNode* DirectoryNode::getParent() const {
     return parent;
 }
 
-bool DirectoryNode::removable() const {
+bool DirectoryNode::removable() {
     if (!contentLoaded && !loadContent())
         return false;
     return children.empty() && !mounts;
 }
 
-bool DirectoryNode::unmountable() const {
+bool DirectoryNode::unmountable() {
     if (!contentLoaded)
         return true;
     
@@ -55,7 +55,7 @@ bool DirectoryNode::unmountable() const {
     return true;
 }
 
-bool DirectoryNode::mountpointable() const {
+bool DirectoryNode::mountpointable() {
     if (!contentLoaded && !loadContent())
         return false;
     

@@ -11,7 +11,7 @@ protected:
     DirectoryNode* mounts;
     
 public:
-    DirectoryNode(String name, FileSystem* sf, FSNode* parent, uint perms = 0777,
+    DirectoryNode(String name, FileSystem* fs, FSNode* parent, uint perms = 0777,
                   uint uid = 0, uint gid = 0) : FSNode(name, fs, parent, 0, perms, uid, gid),
         children(), contentLoaded(false), mounts(0) { }
     virtual ~DirectoryNode();
@@ -21,9 +21,9 @@ public:
     String getName() const;
     ulong getLength();
     FSNode* getParent() const;
-    bool removable() const;
-    bool unmountable() const;
-    bool mountpointable() const;
+    bool removable();
+    bool unmountable();
+    bool mountpointable();
     void mount(DirectoryNode* childRoot) { mounts = childRoot; }
     void unmount() { mounts = 0; }
     

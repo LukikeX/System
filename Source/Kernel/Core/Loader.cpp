@@ -32,6 +32,7 @@
 //Dorobit v thread accessible
 //Doborbit v keymape altgr a shiftaltgr
 //v atacontrollery registrovat part device
+//dorobit v file seek
 
 //Process:
 //DirectoryNode* cwd
@@ -44,10 +45,9 @@
 //Dorobit par detailov v syscall
 
 /* Syscalls port
- * request task switch - 64
- * signal that thread ended - 65
- * main - 66
- * debug - 67
+ * syscall - 64
+ * request task switch - 65
+ * signal that thread ended - 66
  */
 
 ulong syscall(ulong n, ulong a, ulong b, ulong c, ulong d, ulong e) {
@@ -61,14 +61,18 @@ void prog1() {
     ulong ret = syscall(0xFFFFFFFE00000000 | VTIF_SGETPROUTVT, VTIF_OBJTYPE, 0, 0, 0, 0);
     
     String *s = new String;
-    *s = "toto je iba test";
-    ret = syscall(ret << 32 | VTIF_WRITE, (ulong)s, 0, 0, 0, 0);
+    *s = "X";
     
-    for (;;);// asm ("int $64");
+    for (;;) syscall(ret << 32 | VTIF_WRITE, (ulong)s, 0, 0, 0, 0);
 }
 
 void prog2() {
-    for (;;) asm ("int $65");
+    ulong ret = syscall(0xFFFFFFFE00000000 | VTIF_SGETPROUTVT, VTIF_OBJTYPE, 0, 0, 0, 0);
+    
+    String *s = new String;
+    *s = "Y";
+    
+    for (;;) syscall(ret << 32 | VTIF_WRITE, (ulong)s, 0, 0, 0, 0);
 }
 
 SimpleVT* kvt;
@@ -125,8 +129,8 @@ extern "C" void Loader() {
     kvt->map(0, 0);
     IO::sti();
     
-    //new Thread((ThreadEntry)prog1, 0, true);
-//    new Thread((ThreadEntry)prog2, 0, true);
+    new Thread((ThreadEntry)prog1, 0, true);
+    new Thread((ThreadEntry)prog2, 0, true);
     
     //V86Thread::regsT r;
     //Memory::clear(&r);

@@ -8,7 +8,7 @@ File::File(String fileName, uchar mode, FSNode* start) :
     open(fileName, mode, start);
 }
 
-bool File::open(String fileName, uchar mode, FSNode* start) {
+bool File::open(String fileName, uchar mode, FSNode* start, bool vrfyperm) {
     if (valid)
         return false;
     
@@ -29,6 +29,15 @@ bool File::open(String fileName, uchar mode, FSNode* start) {
     
     file = (FileNode *)node;
     writable = mode != FM_READ;
+    
+    if (vrfyperm && writable && !file->writable())
+        return false;
+    
+    if (vrfyperm && !file->readable())
+        return false;
+    
+    if (!file->fsWritable() && writable)
+        return false;
     
     if (mode == FM_READ || mode == FM_REPLACE)
         position = 0;

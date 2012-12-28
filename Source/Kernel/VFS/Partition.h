@@ -4,7 +4,7 @@
 #include <Devices/BlockDevice.proto.h>
 #include "BlockCache.h"
 
-class Partititon {
+class Partition {
 private:
     BlockDeviceProto* dev;
     BlockCache<BlockDeviceProto> cache;

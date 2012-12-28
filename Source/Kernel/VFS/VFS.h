@@ -6,7 +6,7 @@
 
 class VFS {
 private:
-    typedef FileSystem* (*mountCallback)(Partititon* partition, DirectoryNode* mountpoint, bool rw);
+    typedef FileSystem* (*mountCallback)(Partition* partition, DirectoryNode* mountpoint, bool rw);
     
     struct localFST {
         const char* name;
@@ -16,9 +16,10 @@ private:
     
     static Vector<FileSystem *> fileSystems;
     static DirectoryNode* rootNode;
+    VFS();
     
 public:
-    VFS(): rootNode(0) { }
+    bool unmount(FileSystem* fs);
     
     static DirectoryNode* getRootNode() { return rootNode; }
     static void registerFileSystem(FileSystem* fs);

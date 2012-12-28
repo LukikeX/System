@@ -21,17 +21,17 @@ private:
     } __attribute__((packed));
     
     static Vector<BlockDeviceProto *> devs;
-    static Vector<Partititon *> partitions;
+    static Vector<Partition *> partitions;
     
     static void readPartitionTable(BlockDeviceProto* dev);
+    Part();
     
 public:
-    Part() { }
     static void registerDevice(BlockDeviceProto* dev);
     static void unregisterDevice(BlockDeviceProto* dev);
     
-    static BlockDeviceProto* findDevice(String cls, uint idx) const;
-    Partititon* findPartition(BlockDeviceProto* dev, uint idx) const;
+    static BlockDeviceProto* findDevice(String cls, uint idx);
+    static Partition* findPartition(BlockDeviceProto* dev, uint idx);
 };
 
 #endif

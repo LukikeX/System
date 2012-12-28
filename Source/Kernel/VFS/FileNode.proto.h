@@ -17,6 +17,7 @@ public:
     uchar type() const { return FS_FILE; }
     bool removable() const { return true; }
     bool used() const { return readers || writers; }
+    bool fsWritable() { return fs->isWritable(); }
     
     uint read(ulong start, ulong length, char* data) {
         return fs->read(this, start, length, data);

@@ -31,6 +31,6 @@ public:
     bool writeBlocks(ulong start, uint count, char* data);
 };
 
-#include "BlockDevice.cpp.h"
+#include "BlockCache.cpp.h"
 
 #endif

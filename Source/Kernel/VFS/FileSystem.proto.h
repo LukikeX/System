@@ -3,23 +3,24 @@
 
 #include "Partition.h"
 
+class VFS;
 class FSNode;
 class FileNode;
 class DirectoryNode;
 
 class FileSystem {
-    //friend class VFS;
+    friend class VFS;
 private:
     String identifier;
     
 protected:
     virtual ~FileSystem();
-    bool isWritable;
+    bool m_isWritable;
     DirectoryNode* rootNode;
     virtual bool unmount() = 0;
     
 public:
-    bool isWritable() { return isWritable; }
+    bool isWritable() { return m_isWritable; }
     DirectoryNode* getRootNode() { return rootNode; }
     
     virtual bool setName(FSNode* node, String name) = 0;
@@ -37,7 +38,7 @@ public:
     virtual DirectoryNode* createDirectory(DirectoryNode* parent, String name) = 0;
     virtual bool remove(DirectoryNode* parent, FSNode* node) = 0;
     
-    virtual Partititon* getPart() = 0;
+    virtual Partition* getPart() = 0;
     void setIdentifier(String idn) { identifier = idn; }
     String getIdentifier() const { return identifier; }
 };

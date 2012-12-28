@@ -16,12 +16,12 @@ public:
     enum {
         FS_FILE        = 1,
         FS_DIRECTORY   = 2,
-        FS_CHARDEVICE  = 3,
-        FS_BLOCKDEVICE = 4,
-        FS_PIPE        = 5,
-        FS_SYMLINK     = 6,
-        FS_APPLICATION = 7,
-        FS_MOUNTPOINT  = 8
+        FS_CHARDEVICE  = 4,
+        FS_BLOCKDEVICE = 8,
+        FS_PIPE        = 16,
+        FS_SYMLINK     = 32,
+        FS_APPLICATION = 64,
+        FS_MOUNTPOINT  = 128
     };
     
     FSNode(String name, FileSystem* fs, FSNode* parent, ulong length = 0, 
@@ -40,6 +40,10 @@ public:
     uint getgid() const { return gid; }
     FileSystem* getFS() const { return fs; }
     virtual FSNode* getParent() const { return parent; }
+    
+    bool readable() { };
+    bool writable() { };
+    bool runnable() { };
     
     bool setPermissions(uint perm) {
         bool v = fs->setPermissions(this, perm);

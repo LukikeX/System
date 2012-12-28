@@ -59,11 +59,12 @@
 #define FLIF_SOPEN       0x01
 #define FLIF_CLOSE       0x05
 #define FLIF_VALID       0x06
-#define FLIF_READ        0x0A
-#define FLIF_WRITE       0x0B
-#define FLIF_POSITION    0x11
-#define FLIF_LENGTH      0x12
-#define FLIF_EOF         0x13
-//#define FLIF_SEEK 0x10
+#define FLIF_READ        0x07
+#define FLIF_WRITE       0x08
+#define FLIF_POSITION    0x09
+#define FLIF_LENGTH      0x0A
+#define FLIF_EOF         0x0B
+#define FLIF_SEEK        0x0C
+#define FLIF_RESET       0x0D
 
 #endif

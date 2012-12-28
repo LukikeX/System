@@ -70,7 +70,7 @@ bool BlockCache<T>::setCache(ulong block, char* data, bool dirty) {
     cacheInfo[best].id = block;
     cacheInfo[best].lastUse = Time::time();
     cacheInfo[best].dirty = dirty;
-    Memory::copy(data, cache + (best * dev->blockSize()), dev->blockSize);
+    Memory::copy(data, cache + (best * dev->blockSize()), dev->blockSize());
     return true;
 }
 
@@ -93,7 +93,7 @@ template <typename T>
 bool BlockCache<T>::writeBlocks(ulong start, uint count, char* data) {
     if (count == 1) {
         if (!setCache(start, data, true))
-            return dev->writeblocks(start, count, data);
+            return dev->writeBlocks(start, count, data);
         return true;
     } else
         return dev->writeBlocks(start, count, data);

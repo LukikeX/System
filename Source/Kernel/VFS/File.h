@@ -23,7 +23,7 @@ public:
     File(String fileName, uchar mode = FM_READ, FSNode* start = 0);
     virtual ~File() { close(); }
     
-    bool open(String fileName, uchar mode = FM_READ, FSNode* start = 0);
+    bool open(String fileName, uchar mode = FM_READ, FSNode* start = 0, bool vrfyperm = false);
     void close();
     bool isValid() const { return valid; }
     
@@ -31,16 +31,24 @@ public:
     bool write(uint length, char* data);
     bool eof() const;
     void reset() { position = 0; }
-    uint getLength() const { return file->getLength(); }
+    ulong getLength() const { return file->getLength(); }
     
     
     //Syscalls:
-    static ulong scall(uint wat, ulong, ulong, ulong, ulong);
+    static ulong scall(uint wat, ulong a, ulong b, ulong, ulong);
     
 private:
     static callT callTable[];
     bool accessible();
-    
+    ulong closeSC();
+    ulong validSC();
+    ulong readSC(ulong length, ulong ptr);
+    ulong writeSC(ulong length, ulong ptr);
+    ulong seekSC(ulong countA, ulong countB, ulong mode);
+    ulong positionSC();
+    ulong lengthSC();
+    ulong eofSC();
+    ulong resetSC();
 };
 
 #endif
