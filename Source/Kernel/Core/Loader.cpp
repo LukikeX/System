@@ -125,7 +125,7 @@ extern "C" void Loader() {
     kvt->map(0, 0);
     IO::sti();
     
-    new Thread((ThreadEntry)prog1, 0, true);
+    //new Thread((ThreadEntry)prog1, 0, true);
 //    new Thread((ThreadEntry)prog2, 0, true);
     
     //V86Thread::regsT r;

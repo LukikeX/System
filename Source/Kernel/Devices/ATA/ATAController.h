@@ -2,6 +2,7 @@
 #define ATACONTROLLER_H
 
 #include <Devices/Device.proto.h>
+#include <Core/IO.h>
 
 #define ATA_BUS1_BASE 0x1F0
 #define ATA_BUS2_BASE 0x170

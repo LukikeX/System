@@ -36,7 +36,7 @@ void ATAController::identify(bool slave) {
     if (drives[(slave ? 1 : 0)])
         return;
     
-    writeByte(ATA_PORT_DRIVE_SELECT, (slave ? 0xB0, 0xA0));
+    writeByte(ATA_PORT_DRIVE_SELECT, (slave ? 0xB0 : 0xA0));
     writeByte(ATA_PORT_COMMAND, ATA_CMD_IDENTIFY);
     ushort ret = readByte(ATA_PORT_COMMAND);
     if (!ret)

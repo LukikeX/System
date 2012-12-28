@@ -41,10 +41,18 @@
           <in>Display.h</in>
           <in>Keyboard.cpp</in>
           <in>Keyboard.h</in>
+          <in>Mouse.cpp</in>
+          <in>Mouse.h</in>
           <in>Time.cpp</in>
           <in>Time.h</in>
         </df>
         <df name="Devices">
+          <df name="ATA">
+            <in>ATAController.cpp</in>
+            <in>ATAController.h</in>
+            <in>ATADrive.cpp</in>
+            <in>ATADrive.h</in>
+          </df>
           <df name="Display">
             <in>Display.proto.h</in>
             <in>VGATextOutput.cpp</in>
@@ -56,6 +64,7 @@
             <in>PS2Keyboard.cpp</in>
             <in>PS2Keyboard.h</in>
           </df>
+          <in>BlockDevice.proto.h</in>
           <in>Device.proto.h</in>
           <in>Timer.cpp</in>
           <in>Timer.h</in>
@@ -117,6 +126,21 @@
           <in>Task.h</in>
           <in>Thread.cpp</in>
           <in>Thread.h</in>
+        </df>
+        <df name="VFS">
+          <in>BlockCache.cpp.h</in>
+          <in>BlockCache.h</in>
+          <in>DirectoryNode.cpp</in>
+          <in>DirectoryNode.h</in>
+          <in>FSNode.proto.h</in>
+          <in>File.cpp</in>
+          <in>File.h</in>
+          <in>FileNode.proto.h</in>
+          <in>FileSystem.proto.h</in>
+          <in>Part.cpp</in>
+          <in>Part.h</in>
+          <in>Partition.cpp</in>
+          <in>Partition.h</in>
         </df>
         <df name="VTManager">
           <in>ScrollableVT.cpp</in>

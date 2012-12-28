@@ -46,13 +46,24 @@
 
 
 //==============================================================================
-#define THIF_OBJTYPE 0x300
+#define THIF_OBJTYPE     0x300
 
-#define THIF_SGETCTH 0x01
-#define THIF_SLEEP   0x02
-#define THIF_FINISH  0x03
+#define THIF_SGETCTH     0x01
+#define THIF_SLEEP       0x02
+#define THIF_FINISH      0x03
 
 
 //==============================================================================
+#define FLIF_OBJTYPE     0x400
+
+#define FLIF_SOPEN       0x01
+#define FLIF_CLOSE       0x05
+#define FLIF_VALID       0x06
+#define FLIF_READ        0x0A
+#define FLIF_WRITE       0x0B
+#define FLIF_POSITION    0x11
+#define FLIF_LENGTH      0x12
+#define FLIF_EOF         0x13
+//#define FLIF_SEEK 0x10
 
 #endif
