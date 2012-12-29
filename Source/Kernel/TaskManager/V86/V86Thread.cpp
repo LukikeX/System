@@ -63,7 +63,7 @@ void V86Thread::setup() {
     rip = (ulong)_v86_run;
 }
 
-bool V86Thread::handleV86GPF(IDT::regs* r) {
+bool V86Thread::handleV86GPF(IDT::regs*) {
     return false;
 }
 #include <Core/Loader.h>

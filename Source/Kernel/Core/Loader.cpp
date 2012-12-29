@@ -26,20 +26,15 @@
 
 //basicstring uvolnit pamet v destructore
 //ScrollableVT - redraw().... opravit
-//mutex
 //String number
 //Opravit bitset, nejako vynechava bity
 //Dorobit v thread accessible
 //Doborbit v keymape altgr a shiftaltgr
-//v atacontrollery registrovat part device
 //dorobit v file seek
+//vo FSNode readable, writable atd.
+//odkomentovat v process a atacontroller kod ked pojde VFS
 
 //Process:
-//DirectoryNode* cwd
-//List<File *> fileDescriptors
-//register/unregister file descriptor - metody
-//set/get cwd - metody
-//exit() - file desc
 //run()
 //scall - uid
 //Dorobit par detailov v syscall
@@ -49,6 +44,13 @@
  * request task switch - 65
  * signal that thread ended - 66
  */
+
+class Excp {
+public:
+    Excp() {
+        *kvt << "test Excp!\n";
+    }
+};
 
 ulong syscall(ulong n, ulong a, ulong b, ulong c, ulong d, ulong e) {
     ulong r;
@@ -74,6 +76,8 @@ void prog2() {
     
     for (;;) syscall(ret << 32 | VTIF_WRITE, (ulong)s, 0, 0, 0, 0);
 }
+
+
 
 SimpleVT* kvt;
 
@@ -129,14 +133,25 @@ extern "C" void Loader() {
     kvt->map(0, 0);
     IO::sti();
     
-    new Thread((ThreadEntry)prog1, 0, true);
-    new Thread((ThreadEntry)prog2, 0, true);
+    //new Thread((ThreadEntry)prog1, 0, true);
+  //  new Thread((ThreadEntry)prog2, 0, true);
     
     //V86Thread::regsT r;
     //Memory::clear(&r);
     //r.ax = 0x0F << 4;
     //V86::biosInt(0x12, r);
     //*kvt << "int: " << (uint)r.ax;
+
+    *kvt << "1\n";
+    try {
+        *kvt << "2\n";
+        throw new Excp();
+        *kvt << "3\n";
+    } catch (Excp a) {
+        *kvt << "4\n";
+    }
+    *kvt << "5\n";
+    
     
     for (;;);
 }

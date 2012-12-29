@@ -21,18 +21,14 @@
 #define PRIF_SGETCPR     0x01
 #define PRIF_SRUN        0x02
 #define PRIF_SWAIT       0x03
-
 #define PRIF_EXIT        0x04
 #define PRIF_ALLOCPAGES  0x05
 #define PRIF_FREEPAGES   0x06
-
 #define PRIF_GETPID      0x07
 #define PRIF_GETPPID     0x08
 #define PRIF_GETUID      0x09
-
 #define PRIF_ARGC        0x0A
 #define PRIF_ARGV        0x0B
-
 #define PRIF_START       0x0C
 #define PRIF_AUTODELETE  0x0D
 #define PRIF_PUSHARG     0x0E
@@ -66,5 +62,26 @@
 #define FLIF_EOF         0x0B
 #define FLIF_SEEK        0x0C
 #define FLIF_RESET       0x0D
+
+
+//==============================================================================
+#define FNIF_OBJTYPE     0x500
+
+#define FNIF_SGETRFN     0x01
+#define FNIF_SGETCWD     0x02
+#define FNIF_SFIND       0x03
+#define FNIF_SMKDIR      0x04
+#define FNIF_GETNAME     0x05
+#define FNIF_TYPE        0x06
+#define FNIF_GETPARENT   0x07
+#define FNIF_GETLENGTH   0x08
+#define FNIF_GETUID      0x09
+#define FNIF_GETGID      0x0A
+#define FNIF_GETPERM     0x0B
+#define FNIF_GETPATH     0x0C
+#define FNIF_SETCWD      0x0D
+#define FNIF_REMOVE      0x0E
+#define FNIF_GETIDXCHILD 0x0F
+#define FNIF_GETNCHILD   0x10
 
 #endif

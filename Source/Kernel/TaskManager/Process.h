@@ -6,6 +6,8 @@
 #include <VTManager/VirtualTerminal.proto.h>
 #include <MemoryManager/Heap.h>
 #include <SyscallManager/Ressource.h>
+#include <VFS/DirectoryNode.h>
+#include <VFS/File.h>
 
 #define E_PAGEFAULT  0x0FFFFF00
 #define E_EXIT       0x0FFFFF01
@@ -28,11 +30,11 @@ private:
     PageDirectory* pageDir;
     Heap* userHeap;
     VirtualTerminal* inVT, *outVT;
-    //Directory node... *cwd
+    DirectoryNode* cwd;
     
     bool autoDelete;
     Vector<Thread *>threads;
-    //list file * file descriptors
+    List<File *> *descriptors;
     
     Process();
     
@@ -58,14 +60,16 @@ public:
     void registerThread(Thread* t);
     void threadFinishes(Thread* t, ulong retval);
     
-    //register & unregister file desc
+    void registerFileDescriptor(File* fd);
+    void unregisterFileDescriptor(File* fd);
     
     PageDirectory* getPageDir() { return pageDir; }
     ulong getUid() { return uid; }
     ulong getPid() { return pid; }
     ulong getPpid() { return ppid; }
     
-    //set cwd...
+    void setCwd(DirectoryNode* c) { cwd = c; }
+    DirectoryNode* getCwd() { return cwd; }
     
     VirtualTerminal* getInVT() { return inVT; }
     VirtualTerminal* getOutVT() { return outVT; }

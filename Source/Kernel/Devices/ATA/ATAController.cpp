@@ -1,6 +1,8 @@
 #include "ATAController.h"
-#include "DeviceManager/Device.h"
 #include "ATADrive.h"
+#include <DeviceManager/Device.h>
+#include <VFS/Part.h>
+
 
 ATAController::ATAController(uint base, uchar number) {
     this->base = base;
@@ -26,7 +28,7 @@ void ATAController::detect() {
             
             if (d) {
                 Device::registerDevice(d);
-                //part
+               // Part::registerDevice(d);
             }
         }
     }

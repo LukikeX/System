@@ -1,6 +1,7 @@
 #include "Process.h"
 #include "Thread.h"
 #include "Task.h"
+#include "VFS/File.h"
 
 Process::Process() : Ressource(PRIF_OBJTYPE, callTable) { }
 
@@ -38,7 +39,10 @@ Process::~Process() {
 }
 
 Process* Process::run(String filename, ulong uid) {
-    //file...
+  //  File file(filename, File::FM_READ, (FSNode *)Task::currentProcess()->getCwd());
+  //  if (!file.isValid())
+ //       return 0;
+    
     //bin load...
     Process* p = new Process(filename, uid);
     //threadEntry b->toprocess....
@@ -62,10 +66,10 @@ Process::Process(String binfile, ulong uid) : Ressource(PRIF_OBJTYPE, callTable)
     state = STARTING;
     this->uid = uid;
     autoDelete = false;
-    //set cwd
+    cwd = Task::currentProcess()->getCwd();
     inVT = Task::currentProcess()->getInVT();
     outVT = Task::currentProcess()->getOutVT();
-    //set file desc
+    descriptors = 0;
     
     pageDir = new PageDirectory(PhysMem::kernelPageDirectory);
     pageDir->switchTo();
@@ -90,7 +94,11 @@ void Process::exit() {
         delete threads[i];
     
     threads.clear();
-    //add file descriptors
+    while (descriptors) {
+        //descriptors->v()->close();
+        delete descriptors->v();
+        descriptors = descriptors->deleteThis();
+    }
     state = FINISHED;
 }
 
@@ -116,4 +124,12 @@ void Process::threadFinishes(Thread* t, ulong retval) {
             delete t;
         }
     }
+}
+
+void Process::registerFileDescriptor(File* fd) {
+    descriptors = descriptors->cons(fd);
+}
+
+void Process::unregisterFileDescriptor(File* fd) {
+    descriptors = descriptors->removeOnce(fd);
 }

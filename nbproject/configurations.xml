@@ -17,6 +17,11 @@
       </df>
       <df name="Kernel">
         <df name="C++">
+          <df name="exceptions">
+            <in>Unwind.h</in>
+          </df>
+          <df name="Exceptions">
+          </df>
           <in>Runtime.cpp</in>
           <in>Runtime.h</in>
         </df>
@@ -132,7 +137,9 @@
           <in>BlockCache.h</in>
           <in>DirectoryNode.cpp</in>
           <in>DirectoryNode.h</in>
+          <in>FSNode-sc.cpp</in>
           <in>FSNode.proto.h</in>
+          <in>File-sc.cpp</in>
           <in>File.cpp</in>
           <in>File.h</in>
           <in>FileNode.proto.h</in>
@@ -141,6 +148,8 @@
           <in>Part.h</in>
           <in>Partition.cpp</in>
           <in>Partition.h</in>
+          <in>VFS.cpp</in>
+          <in>VFS.h</in>
         </df>
         <df name="VTManager">
           <in>ScrollableVT.cpp</in>

@@ -5,7 +5,6 @@ CFLAGS = -c \
 -fno-builtin \
 -nostartfiles \
 -nodefaultlibs \
--fno-exceptions \
 -fno-rtti \
 -fno-stack-protector \
 -std=c++0x \
@@ -17,7 +16,8 @@ CFLAGS = -c \
 -mno-3dnow \
 -mno-red-zone \
 -I . \
--mcmodel=kernel \
+-mcmodel=kernel
+#-fno-exceptions
 
 SRC += $(wildcard Core/*.asm Core/*.cpp)
 SRC += $(wildcard C++/*.cpp)
@@ -35,7 +35,7 @@ SRC += $(wildcard Devices/Display/*.cpp)
 SRC += $(wildcard Devices/Keyboard/*.cpp)
 
 SRC += $(wildcard VTManager/*.cpp)
-SRC += $(wildcard VFS/*.cpp)
+#SRC += $(wildcard VFS/*.cpp)
 
 
 #SRC += $(wildcard Devices/Mouse/*.cpp)

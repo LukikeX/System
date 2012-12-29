@@ -2,8 +2,9 @@
 #define	FSNODE_PROTO_H
 
 #include "FileSystem.proto.h"
+#include <SyscallManager/Ressource.h>
 
-class FSNode {
+class FSNode : public Ressource {
 protected:
     String name;
     FileSystem* fs;
@@ -25,8 +26,9 @@ public:
     };
     
     FSNode(String name, FileSystem* fs, FSNode* parent, ulong length = 0, 
-           uint perms = 0777, uint uid = 0, uint gid = 0) : name(name), fs(fs), 
-        parent(parent), length(length), permissions(perms), uid(uid), gid(gid) { }
+           uint perms = 0777, uint uid = 0, uint gid = 0) : 
+        Ressource(FNIF_OBJTYPE, callTable), name(name), fs(fs), parent(parent), 
+        length(length), permissions(perms), uid(uid), gid(gid) { }
     virtual ~FSNode() { }
     
     virtual uchar type() const = 0;
@@ -41,9 +43,9 @@ public:
     FileSystem* getFS() const { return fs; }
     virtual FSNode* getParent() const { return parent; }
     
-    bool readable() { };
-    bool writable() { };
-    bool runnable() { };
+    bool readable() { return false; }
+    bool writable() { return false; }
+    bool runnable() { return false; }
     
     bool setPermissions(uint perm) {
         bool v = fs->setPermissions(this, perm);
@@ -72,6 +74,20 @@ public:
             this->parent = parent;
         return v;
     }
+    
+    //Syscalls:
+    static ulong scall(uint wat, ulong a, ulong b, ulong, ulong);
+    
+private:
+    static callT callTable[];
+    bool accessible();
+    ulong getNameSC();
+    ulong getLengthC();
+    ulong typeSC();
+    ulong getParentSC();
+    ulong getPathSC();
+    ulong setCwdSC();
+    ulong removeSC();
 };
 
 #endif
