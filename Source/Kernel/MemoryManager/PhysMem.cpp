@@ -1,5 +1,6 @@
 #include "PhysMem.h"
 #include "Memory.h"
+#include <Exceptions/MemoryException.h>
 
 uint PhysMem::nFrames;
 Bitset* PhysMem::frames;
@@ -19,13 +20,12 @@ PhysMem::PhysMem() {
 
 void PhysMem::allocFrame(PageDirectory::PTE* page, bool isUser, bool isWritable) {
     if (page->present)
-        return;
+        throw new MemoryException("Page is already mapped!");
     else {
         uint idx = frames->firstFreeBit();
         
         if (idx == (uint)-1)
-            return;
-            //throw MemoryException("No more free frames!");
+            throw MemoryException("No more free frames!");
         
         frames->setBit(idx);
         page->present = 1;
@@ -37,7 +37,7 @@ void PhysMem::allocFrame(PageDirectory::PTE* page, bool isUser, bool isWritable)
 
 void PhysMem::freeFrame(PageDirectory::PTE* page) {
     if (!page->present)
-        return;
+        throw new MemoryException("Page is not mapped!");
     else {
         if (page->address >= 0x100)
             frames->clearBit(page->address);

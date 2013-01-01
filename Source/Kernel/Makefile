@@ -17,10 +17,10 @@ CFLAGS = -c \
 -mno-red-zone \
 -I . \
 -mcmodel=kernel
-#-fno-exceptions
 
 SRC += $(wildcard Core/*.asm Core/*.cpp)
 SRC += $(wildcard C++/*.cpp)
+SRC += $(wildcard C++/Exceptions/*.cpp)
 SRC += $(wildcard Library/*.cpp)
 
 SRC += $(wildcard DeviceManager/*.cpp)

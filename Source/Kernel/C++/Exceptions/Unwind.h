@@ -1,6 +1,8 @@
 #ifndef UNWIND_H
 #define UNWIND_H
 
+#include <Core/typedef.h>
+
 extern "C" {
     typedef enum {
         _URC_NO_REASON = 0,

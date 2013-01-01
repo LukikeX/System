@@ -19,6 +19,10 @@
         <df name="C++">
           <df name="exceptions">
             <in>Unwind.h</in>
+            <in>cxxabi.h</in>
+            <in>exception.cpp</in>
+            <in>typeinfo.cpp</in>
+            <in>typeinfo.h</in>
           </df>
           <df name="Exceptions">
           </df>
@@ -73,6 +77,11 @@
           <in>Device.proto.h</in>
           <in>Timer.cpp</in>
           <in>Timer.h</in>
+        </df>
+        <df name="Exceptions">
+          <in>Exception.cpp</in>
+          <in>Exception.h</in>
+          <in>MemoryException.h</in>
         </df>
         <df name="Library">
           <in>BasicString.cpp.h</in>

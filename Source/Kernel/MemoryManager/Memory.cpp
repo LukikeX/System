@@ -1,6 +1,7 @@
 #include "Memory.h"
 #include "PageAlloc.h"
 #include <TaskManager/Task.h>
+#include <Exceptions/MemoryException.h>
 
 Heap Memory::kernelHeap;
 ulong Memory::placementAddress;
@@ -15,7 +16,7 @@ Memory::Memory() {
 
 void* Memory::allocInternal(ulong size, bool align) {
     if (kernelHeap.usable())
-        return 0;
+        throw new MemoryException("Cannot allocate internal memory while using heap!");
     
     if (align) {
         placementAddress &= 0xFFFFFFFFFFFFF000;

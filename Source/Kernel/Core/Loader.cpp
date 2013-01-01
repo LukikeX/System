@@ -143,13 +143,13 @@ extern "C" void Loader() {
     //*kvt << "int: " << (uint)r.ax;
 
     *kvt << "1\n";
-    try {
+   // try {
         *kvt << "2\n";
         throw new Excp();
         *kvt << "3\n";
-    } catch (Excp a) {
+   // } catch (Excp a) {
         *kvt << "4\n";
-    }
+   // }
     *kvt << "5\n";
     
     
