@@ -4,6 +4,7 @@
 #include "Panic.h"
 #include "SB.h"
 #include "IO.h"
+#include "Exceptions/MemoryException.h"
 
 #include <C++/Runtime.h>
 
@@ -142,16 +143,7 @@ extern "C" void Loader() {
     //V86::biosInt(0x12, r);
     //*kvt << "int: " << (uint)r.ax;
 
-    *kvt << "1\n";
-   // try {
-        *kvt << "2\n";
-        throw new Excp();
-        *kvt << "3\n";
-   // } catch (Excp a) {
-        *kvt << "4\n";
-   // }
-    *kvt << "5\n";
-    
+    *kvt << "pol";
     
     for (;;);
 }

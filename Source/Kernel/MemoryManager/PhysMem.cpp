@@ -25,7 +25,7 @@ void PhysMem::allocFrame(PageDirectory::PTE* page, bool isUser, bool isWritable)
         uint idx = frames->firstFreeBit();
         
         if (idx == (uint)-1)
-            throw MemoryException("No more free frames!");
+            throw new MemoryException("No more free frames!");
         
         frames->setBit(idx);
         page->present = 1;

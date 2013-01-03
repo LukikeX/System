@@ -27,4 +27,18 @@ namespace std {
     };
 }
 
+namespace __cxxabiv1 {
+    class __class_type_info : public std::type_info {
+        virtual ~__class_type_info();
+    };
+    
+    class __pointer_type_info : public std::type_info {
+        virtual ~__pointer_type_info();
+    };
+    
+    class __si_class_type_info : public std::type_info {
+        virtual ~__si_class_type_info();
+    };
+}
+
 #endif

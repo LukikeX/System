@@ -1,15 +1,27 @@
 #include "cxxabi.h"
 #include <Core/Loader.h>
 
-extern "C" void __cxa_free_exception(void* thrown_exception);
+
+#include <pthread.h>
+
+#pragma weak pthread_key_create
+#pragma weak pthread_setspecific
+#pragma weak pthread_getspecific
+#pragma weak pthread_once
 
 void abort() {
+    *kvt << "abort";
     for (;;);
 }
 
 namespace std {
     void terminate() {
+        *kvt << "terminate";
         abort();
+    }
+    
+    void unexpected() {
+        *kvt << "err";
     }
 }
 
@@ -26,12 +38,17 @@ namespace std {
 
 using namespace __cxxabiv1;
 
-extern "C" void _Unwind_Resume(_Unwind_Exception *) {
-
-}
-extern _Unwind_Reason_Code _Unwind_RaiseException(_Unwind_Exception*);
-
 static const ulong exception_class = EXCEPTION_CLASS('G', 'N', 'U', 'C', 'C', '+', '+', '\0');
+static bool fakeTLS;
+static pthread_key_t eh_key;
+static __cxa_thread_info singleThreadInfo;
+static pthread_once_t once_control = PTHREAD_ONCE_INIT;
+
+
+extern "C" void __cxa_free_exception(void* thrown_exception);
+extern _Unwind_Reason_Code _Unwind_RaiseException(_Unwind_Exception *);
+
+extern "C" void _Unwind_Resume(_Unwind_Exception *) { }
 
 static void exception_cleanup(_Unwind_Reason_Code, _Unwind_Exception* ex) {
     __cxa_free_exception((void*)ex);
@@ -41,16 +58,56 @@ static bool isCXXException(ulong cls) {
     return (cls == exception_class);
 }
 
+static void free_exception_list(__cxa_exception* ex) {
+    if (ex->nextException)
+        free_exception_list(ex->nextException);
+    
+    __cxa_free_exception(ex + 1);
+}
+
+static void thread_cleanup(void* thread_info) {
+    __cxa_thread_info* info = (__cxa_thread_info *)thread_info;
+    if (info->globals.caughtExceptions)
+        free_exception_list(info->globals.caughtExceptions);
+    delete (int *)thread_info;
+}
+
+static void init_key() {
+    if (!pthread_key_create || ! pthread_setspecific || pthread_getspecific) {
+        fakeTLS = true;
+        return;
+    }
+    
+    pthread_key_create(&eh_key, thread_cleanup);
+    pthread_setspecific(eh_key, (void *)0x42);
+    fakeTLS = pthread_getspecific(eh_key) != (void *)0x42;
+    pthread_setspecific(eh_key, 0);
+}
+
+
 static __cxa_thread_info* thread_info() {
-    return (__cxa_thread_info *)0; //opravit...
+    if (!pthread_once || pthread_once(&once_control, init_key))
+        fakeTLS = true;
+    
+    if (fakeTLS)
+        return &singleThreadInfo;
+    
+    __cxa_thread_info* info = (__cxa_thread_info *)pthread_getspecific(eh_key);
+    if (!info) {
+        info = new __cxa_thread_info;
+        pthread_setspecific(eh_key, info);
+    }
+    return info;
 }
 
 static __cxa_thread_info* thread_info_fast() {
-    return (__cxa_thread_info *)0; //opravit...
+    if (fakeTLS)
+        return &singleThreadInfo;
+    return (__cxa_thread_info *)pthread_getspecific(eh_key);
 }
 
-static __cxa_exception* exceptionFromPointer(void* ) {//ex
-    return (__cxa_exception *)0; //opravit
+static __cxa_exception* exceptionFromPointer(void* ex) {
+    return (__cxa_exception *)&((__cxa_exception *)ex)->unwindHandler;
 }
 
 static void releaseException(__cxa_exception* exception) {
@@ -71,13 +128,13 @@ static void throw_exception(__cxa_exception* ex) {
     ex->unexpectedHandler = info->unexpectedHandler;
     if (!ex->unexpectedHandler)
         ex->unexpectedHandler = std::terminate;
-    *kvt << "lol";
-    for (;;);
+    
     ex->terminateHandler = info->terminateHandler;
     if (!ex->terminateHandler)
         ex->terminateHandler = abort;
     
     info->globals.uncaughtExceptions++;
+    
     //_Unwind_Reason_Code err = _Unwind_RaiseException(&ex->unwindHandler);
     //report_failure(err, ex);
 }
@@ -157,4 +214,18 @@ extern "C" void __cxa_end_catch() {
         if (deleteException)
             releaseException(ex);
     }
+}
+
+extern "C" void __cxa_call_unexpected(void* exception) {
+    _Unwind_Exception* exObj = (_Unwind_Exception *)exception;
+    if (exObj->exceptionClass == exception_class) {
+        __cxa_exception* ex = exceptionFromPointer(exObj);
+        if (ex->unexpectedHandler) {
+            ex->unexpectedHandler();
+            abort();
+        }
+    }
+    
+    std::unexpected();
+    abort();
 }

@@ -42,23 +42,6 @@ namespace __cxxabiv1 {
             __cxa_eh_globals globals;
         };
     }
-    
-    class __pointer_type_info {
-        virtual ~__pointer_type_info();
-    //    int a;
-    };
-    
-    class __class_type_info {
-        virtual ~__class_type_info();
-    };
-    
-    __pointer_type_info::~__pointer_type_info() {
-        
-    }
-    
-    __class_type_info::~__class_type_info() {
-        
-    }
 }
 
 #endif

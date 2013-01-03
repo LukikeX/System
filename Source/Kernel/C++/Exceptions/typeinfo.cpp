@@ -27,3 +27,9 @@ namespace std {
         return *new type_info(rhs);
     }
 }
+
+namespace __cxxabiv1 {
+    __class_type_info::~__class_type_info() {}
+    __pointer_type_info::~__pointer_type_info() { }
+    __si_class_type_info::~__si_class_type_info() { }
+}

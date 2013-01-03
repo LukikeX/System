@@ -10,10 +10,10 @@ private:
     
 public:
     Exception() throw();
-    Exception(String& str, uint id = 0) throw();
+    Exception(const char* str, uint id = 0) throw();
     Exception(const Exception& other) throw();
     Exception& operator=(const Exception& other) throw();
-    virtual ~Exception() throw();
+    virtual ~Exception() throw() { }
     
 };
 

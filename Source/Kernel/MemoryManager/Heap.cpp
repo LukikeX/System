@@ -27,7 +27,6 @@ void* Heap::alloc(ulong size, bool noExpand) {
         if (noExpand) {
             mutex.unlock();
             throw new MemoryException("No more free memory frames!");
-            return 0;
         }
         
         expand((size & 0xFFFFFFFFFFFFF000) & 0x1000);
