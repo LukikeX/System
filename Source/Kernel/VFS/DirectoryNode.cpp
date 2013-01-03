@@ -1,5 +1,31 @@
 #include "DirectoryNode.h"
 
+DirectoryNode::callT DirectoryNode::callTable[] = {
+    CALL1(FNIF_GETIDXCHILD, &DirectoryNode::getIdxChildSC),
+    CALL1(FNIF_GETNAME, &DirectoryNode::getNameChildSC),
+    CALL0(0, 0)
+};
+
+ulong DirectoryNode::getIdxChildSC(ulong idx) {
+    if (!runnable())
+        return (ulong)-1;
+    
+    FSNode* n = getChild(idx);
+    if (n)
+        return n->resId();
+    return (ulong)-1;
+}
+
+ulong DirectoryNode::getNameChildSC(ulong name) {
+    if (!runnable())
+        return (ulong)-1;
+    
+    FSNode* n = getChild((String *)name);
+    if (n)
+        return n->resId();
+    return (ulong)-1;
+}
+
 DirectoryNode::~DirectoryNode() {
     if (contentLoaded) {
         for (uint i = 0; i < children.size(); i++)

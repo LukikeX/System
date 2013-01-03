@@ -13,7 +13,7 @@ protected:
 public:
     DirectoryNode(String name, FileSystem* fs, FSNode* parent, uint perms = 0777,
                   uint uid = 0, uint gid = 0) : FSNode(name, fs, parent, 0, perms, uid, gid),
-        children(), contentLoaded(false), mounts(0) { }
+        children(), contentLoaded(false), mounts(0) { addCallTable(callTable); }
     virtual ~DirectoryNode();
     
     Vector<FSNode *>& getChildren();
@@ -35,6 +35,13 @@ public:
     bool remove(FSNode* child);
     
     Vector<FSNode *>& FSGetChildren() { return children; }
+    
+    //Syscalls:
+private:
+    static callT callTable[];
+    bool accessible();
+    ulong getIdxChildSC(ulong idx);
+    ulong getNameChildSC(ulong name);
 };
 
 #endif

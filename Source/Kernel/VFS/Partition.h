@@ -22,7 +22,6 @@ public:
     inline ulong getBlockCount() const { return count; }
     inline uchar getPartNumber() const { return number; }
     inline uint blockSize() const { return dev->blockSize(); }
-    //inline void syncCache() { cache.sync(); }
 };
 
 

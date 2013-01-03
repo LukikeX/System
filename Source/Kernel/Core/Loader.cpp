@@ -34,6 +34,7 @@
 //dorobit v file seek
 //vo FSNode readable, writable atd.
 //odkomentovat v process a atacontroller kod ked pojde VFS
+//dorobit mount vo VFS
 
 //Process:
 //run()
@@ -46,19 +47,11 @@
  * signal that thread ended - 66
  */
 
-class Excp {
-public:
-    Excp() {
-        *kvt << "test Excp!\n";
-    }
-};
-
 ulong syscall(ulong n, ulong a, ulong b, ulong c, ulong d, ulong e) {
     ulong r;
     asm volatile ("int $64" : "=a"(r) : "a"(n), "b"(a), "c"(b), "d"(c), "D"(d), "S"(e));
     return r;
 }
-
 
 void prog1() {
     ulong ret = syscall(0xFFFFFFFE00000000 | VTIF_SGETPROUTVT, VTIF_OBJTYPE, 0, 0, 0, 0);

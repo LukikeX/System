@@ -17,14 +17,12 @@
       </df>
       <df name="Kernel">
         <df name="C++">
-          <df name="exceptions">
+          <df name="Exceptions">
             <in>Unwind.h</in>
             <in>cxxabi.h</in>
             <in>exception.cpp</in>
             <in>typeinfo.cpp</in>
             <in>typeinfo.h</in>
-          </df>
-          <df name="Exceptions">
           </df>
           <in>Runtime.cpp</in>
           <in>Runtime.h</in>
@@ -72,6 +70,7 @@
             <in>Keyboard.proto.h</in>
             <in>PS2Keyboard.cpp</in>
             <in>PS2Keyboard.h</in>
+            <in>PS2keyboard.cpp</in>
           </df>
           <in>BlockDevice.proto.h</in>
           <in>Device.proto.h</in>
@@ -81,7 +80,14 @@
         <df name="Exceptions">
           <in>Exception.cpp</in>
           <in>Exception.h</in>
+          <in>FileException.h</in>
           <in>MemoryException.h</in>
+        </df>
+        <df name="FileSystems">
+          <df name="Ext2">
+            <in>Ext2.cpp</in>
+            <in>Ext2.h</in>
+          </df>
         </df>
         <df name="Library">
           <in>BasicString.cpp.h</in>
@@ -190,7 +196,7 @@
     <conf name="Default" type="0">
       <toolsSet>
         <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
-        <compilerSet>default</compilerSet>
+        <compilerSet>MinGW|MinGW</compilerSet>
       </toolsSet>
       <makefileType>
         <makeTool>
@@ -198,6 +204,11 @@
           <buildCommand>${MAKE} -f Makefile Debug</buildCommand>
           <cleanCommand>${MAKE} -f Makefile Clean</cleanCommand>
           <executablePath></executablePath>
+          <cTool>
+            <incDir>
+              <pElem>Source/Kernel</pElem>
+            </incDir>
+          </cTool>
           <ccTool>
             <incDir>
               <pElem>Source/Kernel</pElem>
@@ -205,25 +216,6 @@
           </ccTool>
         </makeTool>
       </makefileType>
-      <item path="Source/BootLoader/A20.asm" ex="true" tool="4" flavor="0">
-      </item>
-      <item path="Source/BootLoader/BootLoader.asm" ex="true" tool="4" flavor="0">
-      </item>
-      <item path="Source/BootLoader/GDT.asm" ex="true" tool="4" flavor="0">
-      </item>
-      <item path="Source/BootLoader/LongMode.asm" ex="true" tool="4" flavor="0">
-      </item>
-      <item path="Source/BootLoader/MemoryMap.asm" ex="true" tool="4" flavor="0">
-      </item>
-      <item path="Source/Kernel/Core/A.asm" ex="true" tool="4" flavor="0">
-      </item>
-      <item path="Source/Kernel/SyscallManager/IDT.asm" ex="true" tool="4" flavor="0">
-      </item>
-      <item path="Source/Kernel/TaskManager/V86/V86.asm"
-            ex="true"
-            tool="4"
-            flavor="0">
-      </item>
     </conf>
   </confs>
 </configurationDescriptor>

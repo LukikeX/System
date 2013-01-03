@@ -1,5 +1,7 @@
 #include "VFS.h"
 #include "DirectoryNode.h"
+#include "Part.h"
+#include <Exceptions/FileException.h>
 
 FileSystem::~FileSystem() {
     delete rootNode;
@@ -149,3 +151,44 @@ String VFS::path(FSNode* node) {
     return path;
 }
 
+bool VFS::mount(DirectoryNode* path, ulong size) {
+    FSNode* n = find(path);
+    if (!n)
+        throw new FileException("Mountpoint does not exist!");
+    
+    if (n->type() != FSNode::FS_DIRECTORY)
+        throw new FileException("Mountpoint is not a directory!");
+    
+    FileSystem* rfs;
+    if (rfs) {
+        rfs->setIdentifier(path);
+        return true;
+    }
+    return false;
+}
+
+bool VFS::mount(DirectoryNode* path, String devClass, ulong devId, ulong partId, bool rw) {
+        FSNode* n = find(path);
+    if (!n)
+        throw new FileException("Mountpoint does not exist!");
+    
+    if (n->type() != FSNode::FS_DIRECTORY)
+        throw new FileException("Mountpoint is not a directory!");
+        
+    BlockDeviceProto* dev = Part::findDevice(devClass, devId);
+    if (!dev)
+        throw new FileException("device does not exist!");
+    
+    Partition* part = Part::findPartition(dev, partId);
+    if (!part)
+        throw new FileException("Partition does not exist!");
+    
+    for (uint i = 0; i < fileSystems.size(); i++) {
+        if (fileSystems[i]->getPart() == part)
+            throw new FileException("Partition already mounted!");
+    }
+    
+    for (uint i = 0; localFS[i].cb; i++) {
+      //  if (dev)
+    }
+}

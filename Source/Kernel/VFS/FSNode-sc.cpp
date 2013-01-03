@@ -21,8 +21,8 @@ ulong FSNode::scall(uint wat, ulong a, ulong b, ulong, ulong) {
     switch (wat) {
         case FNIF_SGETRFN:
             return VFS::getRootNode()->resId();
-        //case FNIF_SGETCWD:
-            //return Task::currentProcess()->getc
+        case FNIF_SGETCWD:
+            return Task::currentProcess()->getCwd()->resId();
         case FNIF_SFIND:
             String* path = (String *)a;
             FSNode* n;
@@ -36,8 +36,45 @@ ulong FSNode::scall(uint wat, ulong a, ulong b, ulong, ulong) {
         case FNIF_SMKDIR:
             String* path = (String *)a;
             FSNode* n;
-            if (!b) {
-                //n = VFS::createDirectory(
-            }
+            if (!b)
+                n = VFS::createDirectory(*path, 0, true);
+            else
+                n = VFS::createDirectory(*path, Res::get<DirectoryNode>(b, FNIF_OBJTYPE), true);
+            
+            if (n)
+                return n->resId();
+            break;
     }
+    return (ulong)-1;
+}
+
+ulong FSNode::getNameSC() {
+    return getName().serialize();
+}
+
+ulong FSNode::typeSC() {
+    return type();
+}
+
+ulong FSNode::getLengthC() {
+    ulong* a = (ulong *)Memory::mkXchgSpace(sizeof(ulong));
+    *a = getLength();
+    return (ulong)a;
+}
+
+ulong FSNode::getPathSC() {
+    return VFS::path(this).serialize();
+}
+
+ulong FSNode::setCwdSC() {
+    if (type() == FS_DIRECTORY)
+        Task::currentProcess()->setCwd((DirectoryNode *)this);
+    
+    return 0;
+}
+
+ulong FSNode::removeSC() {
+    if (!writable())
+        return 0;
+    return (VFS::remove(this) ? 1 : 0);
 }

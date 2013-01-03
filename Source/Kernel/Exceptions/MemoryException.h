@@ -1,5 +1,5 @@
-#ifndef MEMORYOEXCEPTION_H
-#define MEMORYOEXCEPTION_H
+#ifndef MEMORYEXCEPTION_H
+#define MEMORYEXCEPTION_H
 
 #include "Exception.h"
 
