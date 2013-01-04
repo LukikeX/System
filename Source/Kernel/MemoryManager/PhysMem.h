@@ -5,7 +5,7 @@
 #include "PageDirectory.h"
 
 class PhysMem {
-private:
+public:
     static uint nFrames;
     static Bitset* frames;
     
@@ -19,6 +19,7 @@ public:
     
     static uint free() { return nFrames - frames->usedBits(); }
     static uint total() { return nFrames; }
+    static void getMemoryMap();
 };
 
 #endif

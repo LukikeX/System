@@ -9,17 +9,6 @@ void VirtualTerminal::keyPress(keyStatus ks) {
     
     if (kbdBufferEnd == 32)
         kbdBufferEnd = 0;
-    
-    if (!keyboardMutex.locked()) {
-        if (ks.hasChar && !ks.hasCmd)
-            put(ks.character);
-        else if (ks.hasCmd && !ks.hasChar && ks.command == KBDC_ENTER)
-            put("\n");
-        else if (ks.hasCmd && !ks.hasChar && ks.command == KBDC_TAB)
-            put ("\t");
-        else if (ks.hasCmd && !ks.hasChar && ks.command == KBDC_BACKSPACE)
-            put("\b");
-    }
 }
 
 keyStatus VirtualTerminal::getkeyPress(bool show, bool block) {

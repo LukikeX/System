@@ -77,8 +77,6 @@ void SB::progress(const String& str) {
     for (uint i = a; i < b; i++)
         if (i != length - 1) 
             prog->putChar(1, (!i ? 1 : i), " ");
-    
-    //for (uint i = 0; i < 10000000; i++); //slow
 }
 
 void SB::ok() {

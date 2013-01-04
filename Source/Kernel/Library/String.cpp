@@ -129,7 +129,7 @@ ulong String::toInt16() const {
 
 Vector<String> String::split(WChar c) const {
     Vector<String> ret;
-    ret.push(String(""));
+    ret.push(String());
     
     for (uint i = 0; i < length; i++) {
         if (string[i] == c)

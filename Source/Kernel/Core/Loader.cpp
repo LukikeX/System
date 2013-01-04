@@ -4,7 +4,6 @@
 #include "Panic.h"
 #include "SB.h"
 #include "IO.h"
-#include "Exceptions/MemoryException.h"
 
 #include <C++/Runtime.h>
 
@@ -47,32 +46,6 @@
  * signal that thread ended - 66
  */
 
-ulong syscall(ulong n, ulong a, ulong b, ulong c, ulong d, ulong e) {
-    ulong r;
-    asm volatile ("int $64" : "=a"(r) : "a"(n), "b"(a), "c"(b), "d"(c), "D"(d), "S"(e));
-    return r;
-}
-
-void prog1() {
-    ulong ret = syscall(0xFFFFFFFE00000000 | VTIF_SGETPROUTVT, VTIF_OBJTYPE, 0, 0, 0, 0);
-    
-    String *s = new String;
-    *s = "X";
-    
-    for (;;) syscall(ret << 32 | VTIF_WRITE, (ulong)s, 0, 0, 0, 0);
-}
-
-void prog2() {
-    ulong ret = syscall(0xFFFFFFFE00000000 | VTIF_SGETPROUTVT, VTIF_OBJTYPE, 0, 0, 0, 0);
-    
-    String *s = new String;
-    *s = "Y";
-    
-    for (;;) syscall(ret << 32 | VTIF_WRITE, (ulong)s, 0, 0, 0, 0);
-}
-
-
-
 SimpleVT* kvt;
 
 extern "C" void Loader() {
@@ -82,7 +55,7 @@ extern "C" void Loader() {
     VGATextoutput* vgaout = new VGATextoutput();
     Display::setText(vgaout);
     
-    SB* sb = new SB(10);    
+    SB* sb = new SB(11);    
     SB::progress("Initializing paging...");
     PhysMem();
     SB::ok();
@@ -120,29 +93,84 @@ extern "C" void Loader() {
     Task("none", kvt);
     SB::ok(); 
     
+    IO::sti();
+    
+    //============================ Device setup ================================
+    SB::progress("Initializing keyboard...");
+    Keyboard();
+    Device::registerDevice(new PS2Keyboard());
+    Keyboard::setFocus(kvt);
+    SB::ok();
+    
+    //============================ Finish ======================================
     SB::progress("Finished!");
     SB::ok();
     
     delete sb;
     kvt->map(0, 0);
-    IO::sti();
     
-    //new Thread((ThreadEntry)prog1, 0, true);
-  //  new Thread((ThreadEntry)prog2, 0, true);
+    //============================ Testing =====================================
     
+    Bitset* a = new Bitset(0x1000);
+    uint last = 0;
+    for (uint i = 0; i < 0x5000; i++) {
+        uint x = a->firstFreeBit();
+        
+        if (last != x) {
+            *kvt << x << " |";
+            last = x;
+        }
+        a->setBit(x);
+    }
+    
+    
+    while (true) {
+        Vector<String> v = kvt->readLine(true).split(' ');
+        //for (uint i = 0; i < v.size(); i++) {
+          //  *kvt << v[i] << "\n";
+       // }
+        
+        PhysMem::getMemoryMap();
+    }
+    
+
+    for (;;);
+}
+
+
+//Test V86
     //V86Thread::regsT r;
     //Memory::clear(&r);
     //r.ax = 0x0F << 4;
     //V86::biosInt(0x12, r);
     //*kvt << "int: " << (uint)r.ax;
 
-    *kvt << "pol";
-    
-    for (;;);
+
+//Test multitaskingu
+/*
+ ulong syscall(ulong n, ulong a, ulong b, ulong c, ulong d, ulong e) {
+    ulong r;
+    asm volatile ("int $64" : "=a"(r) : "a"(n), "b"(a), "c"(b), "d"(c), "D"(d), "S"(e));
+    return r;
 }
 
+void prog1() {
+    ulong ret = syscall(0xFFFFFFFE00000000 | VTIF_SGETPROUTVT, VTIF_OBJTYPE, 0, 0, 0, 0);
+    
+    String *s = new String;
+    *s = "X";
+    
+    for (;;) syscall(ret << 32 | VTIF_WRITE, (ulong)s, 0, 0, 0, 0);
+}
 
-//Keyboard();
-//Device::registerDevice(new PS2Keyboard());
-//Keyboard::setFocus(kvt);
-   
+void prog2() {
+    ulong ret = syscall(0xFFFFFFFE00000000 | VTIF_SGETPROUTVT, VTIF_OBJTYPE, 0, 0, 0, 0);
+    
+    String *s = new String;
+    *s = "Y";
+    
+    for (;;) syscall(ret << 32 | VTIF_WRITE, (ulong)s, 0, 0, 0, 0);
+}
+ */    
+    //new Thread((ThreadEntry)prog1, 0, true);
+    //new Thread((ThreadEntry)prog2, 0, true);

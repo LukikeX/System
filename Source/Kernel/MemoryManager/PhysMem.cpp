@@ -1,6 +1,7 @@
 #include "PhysMem.h"
 #include "Memory.h"
 #include <Exceptions/MemoryException.h>
+#include <Core/Loader.h>
 
 uint PhysMem::nFrames;
 Bitset* PhysMem::frames;
@@ -45,4 +46,25 @@ void PhysMem::freeFrame(PageDirectory::PTE* page) {
         page->present = 0;
         page->address = 0;
     }
+}
+
+void PhysMem::getMemoryMap() {
+    for (uint i = 0; i < 1700; i++) {
+        bool n = false;
+        for (uint j = 0; j < PhysMem::nFrames / 1700; j++) {
+            if (PhysMem::frames->testBit(PhysMem::nFrames / 1700 * i + j)) {
+                n = true;
+                break;
+            }
+        }
+        
+        if (n) {
+            kvt->setColor(2 << 4);
+            *kvt << " ";
+        } else {
+            kvt->setColor(7 << 4);
+            *kvt << " ";
+        }
+    }
+    kvt->setColor(7);
 }
