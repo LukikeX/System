@@ -19,8 +19,11 @@ public:
     static Vector<modeT> modes;
     static modeT mode;
     
-    inline static ushort textCols() { return mode.textCols; }
-    inline static ushort textRows() { return mode.textRows; }
+    inline static ushort textCols()    { return mode.textCols; }
+    inline static ushort textRows()    { return mode.textRows; }
+    inline static ushort graphWidth()  { return mode.graphWidth; }
+    inline static ushort graphHeight() { return mode.graphHeight; }
+    inline static ushort graphDepth()  { return mode.graphDepth; }
     static void clear();
     
     static void putChar(ushort line, ushort col, WChar c, uchar color);

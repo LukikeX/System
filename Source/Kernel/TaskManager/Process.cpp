@@ -39,9 +39,9 @@ Process::~Process() {
 }
 
 Process* Process::run(String filename, ulong uid) {
-  //  File file(filename, File::FM_READ, (FSNode *)Task::currentProcess()->getCwd());
-  //  if (!file.isValid())
- //       return 0;
+    File file(filename, File::FM_READ, (FSNode *)Task::currentProcess()->getCwd());
+    if (!file.isValid())
+        return 0;
     
     //bin load...
     Process* p = new Process(filename, uid);
@@ -95,7 +95,7 @@ void Process::exit() {
     
     threads.clear();
     while (descriptors) {
-        //descriptors->v()->close();
+        descriptors->v()->close();
         delete descriptors->v();
         descriptors = descriptors->deleteThis();
     }

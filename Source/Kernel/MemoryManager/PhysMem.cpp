@@ -8,7 +8,7 @@ Bitset* PhysMem::frames;
 PageDirectory* PhysMem::kernelPageDirectory;
 
 PhysMem::PhysMem() {
-    nFrames = 0x20000;
+    nFrames = 0x600000;
     frames = new Bitset(nFrames);
     
     kernelPageDirectory = new PageDirectory();
@@ -21,7 +21,7 @@ PhysMem::PhysMem() {
 
 void PhysMem::allocFrame(PageDirectory::PTE* page, bool isUser, bool isWritable) {
     if (page->present)
-        throw new MemoryException("Page is already mapped!");
+        return;//throw new MemoryException("Page is already mapped!");
     else {
         uint idx = frames->firstFreeBit();
         

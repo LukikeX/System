@@ -28,7 +28,7 @@ void ATAController::detect() {
             
             if (d) {
                 Device::registerDevice(d);
-               // Part::registerDevice(d);
+                Part::registerDevice(d);
             }
         }
     }

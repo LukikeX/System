@@ -84,6 +84,11 @@
           <in>MemoryException.h</in>
         </df>
         <df name="FileSystems">
+          <df name="Adv">
+            <in>Adv.cpp</in>
+            <in>Adv.h</in>
+            <in>adv.h</in>
+          </df>
           <df name="Ext2">
             <in>Ext2.cpp</in>
             <in>Ext2.h</in>

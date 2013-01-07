@@ -5,7 +5,7 @@
 #include "PageDirectory.h"
 
 class PhysMem {
-public:
+private:
     static uint nFrames;
     static Bitset* frames;
     

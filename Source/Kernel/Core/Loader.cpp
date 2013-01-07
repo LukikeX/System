@@ -23,6 +23,7 @@
 #include <VTManager/ScrollableVT.h>
 
 #include <TaskManager/Task.h>
+#include <stdlib.h>
 
 //basicstring uvolnit pamet v destructore
 //ScrollableVT - redraw().... opravit
@@ -32,8 +33,8 @@
 //Doborbit v keymape altgr a shiftaltgr
 //dorobit v file seek
 //vo FSNode readable, writable atd.
-//odkomentovat v process a atacontroller kod ked pojde VFS
 //dorobit mount vo VFS
+//dorobit DMA na pracu s grafikou
 
 //Process:
 //run()
@@ -48,7 +49,9 @@
 
 SimpleVT* kvt;
 
-extern "C" void Loader() {
+void Print(header_T* h);
+
+extern "C" void Loader(header_T* header) {
     Memory::placementAddress = (ulong)&_end;
     construct();
     
@@ -110,19 +113,7 @@ extern "C" void Loader() {
     kvt->map(0, 0);
     
     //============================ Testing =====================================
-    
-    Bitset* a = new Bitset(0x1000);
-    uint last = 0;
-    for (uint i = 0; i < 0x5000; i++) {
-        uint x = a->firstFreeBit();
-        
-        if (last != x) {
-            *kvt << x << " |";
-            last = x;
-        }
-        a->setBit(x);
-    }
-    
+    *kvt << "[Video] Resolution: " << (int)Display::textCols() << ":" << (int)Display::textRows() << "\n";
     
     while (true) {
         Vector<String> v = kvt->readLine(true).split(' ');
@@ -130,11 +121,71 @@ extern "C" void Loader() {
           //  *kvt << v[i] << "\n";
        // }
         
+        //*kvt << "f: " << PhysMem::frames->firstFreeBit() << "\n";
+        //*kvt << "f: " << Memory::placementAddress << "\n";
+        
+        //Print(header);
         PhysMem::getMemoryMap();
     }
     
 
     for (;;);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void Print(header_T* h) {
+    *kvt << "|--------------------|------------|-----------------------------|\n";
+    *kvt << "| Base address       | Length     | Type                        |\n";
+    *kvt << "|--------------------|------------|-----------------------------|\n";
+    
+    for (uint i = 0; i < h->mapLen; i++) {
+        *kvt << "| " << (ulong)h->memMap[i].base << " | " << (uint)h->memMap[i].length << " | ";
+        
+        switch (h->memMap[i].type) {
+            case 1:
+                *kvt << "Free memory                ";
+                break;
+            case 2:
+                *kvt << "Reserved memory            ";
+                break;
+            case 3:
+                *kvt << "ACPI reclaimable memory    ";
+                break;
+            case 4:
+                *kvt << "ACPI NVS memory            ";
+                break;
+            case 5:
+                *kvt << "Bad memory                 ";
+                break;
+            case 6:
+                *kvt << "ISA DMA memory             ";
+                break;
+            case 7:
+                *kvt << "Kernel memory              ";
+                break;
+            case 8:
+                *kvt << "Initrd memory              ";
+                break;
+            case 9:
+                *kvt << "Video backbuffer           ";
+                break;
+        }
+        *kvt << " | \n";
+    }
+    
+    *kvt << "|--------------------|------------|-----------------------------|\n";
 }
 
 
