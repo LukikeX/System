@@ -39,6 +39,8 @@
           <in>Panic.h</in>
           <in>SB.cpp</in>
           <in>SB.h</in>
+          <in>System.cpp</in>
+          <in>System.h</in>
           <in>typedef.h</in>
         </df>
         <df name="DeviceManager">
@@ -70,7 +72,6 @@
             <in>Keyboard.proto.h</in>
             <in>PS2Keyboard.cpp</in>
             <in>PS2Keyboard.h</in>
-            <in>PS2keyboard.cpp</in>
           </df>
           <in>BlockDevice.proto.h</in>
           <in>Device.proto.h</in>
@@ -87,7 +88,6 @@
           <df name="Adv">
             <in>Adv.cpp</in>
             <in>Adv.h</in>
-            <in>adv.h</in>
           </df>
           <df name="Ext2">
             <in>Ext2.cpp</in>
@@ -201,7 +201,7 @@
     <conf name="Default" type="0">
       <toolsSet>
         <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
-        <compilerSet>MinGW|MinGW</compilerSet>
+        <compilerSet>GNU|GNU</compilerSet>
       </toolsSet>
       <makefileType>
         <makeTool>

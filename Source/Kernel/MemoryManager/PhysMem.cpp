@@ -49,15 +49,16 @@ void PhysMem::freeFrame(PageDirectory::PTE* page) {
 }
 
 void PhysMem::getMemoryMap() {
-    for (uint i = 0; i < 1700; i++) {
+    uint block = PhysMem::nFrames / 1700;
+    for (uint i = 0; i < PhysMem::nFrames; i += block) {
         bool n = false;
-        for (uint j = 0; j < PhysMem::nFrames / 1700; j++) {
-            if (PhysMem::frames->testBit(PhysMem::nFrames / 1700 * i + j)) {
+        for (uint j = 0; j < block; j++) {
+            if (PhysMem::frames->testBit(i + j)) {
                 n = true;
                 break;
             }
         }
-        
+
         if (n) {
             kvt->setColor(2 << 4);
             *kvt << " ";

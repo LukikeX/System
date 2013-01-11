@@ -121,8 +121,8 @@ void Process::threadFinishes(Thread* t, ulong retval) {
                 threads.pop();
                 break;
             }
-            delete t;
         }
+        delete t;
     }
 }
 

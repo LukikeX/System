@@ -163,6 +163,10 @@ void IDT::handler(regs* r) {
     bool doSwitch = r->intNo == 32 || r->intNo >= 66;    
 
     if (r->intNo < 32) {
+        //test
+        *kvt << "ERR: " << r->intNo << "\n";
+        for (;;);
+        
         if ((ulong)Task::currentThread() == 0xFFFFFFFFFFFFFFFF || !Task::currentThread())
             panic("Exception cannot be handled!");
         Task::currentThread()->handleException(r);
@@ -185,10 +189,8 @@ void IDT::handler(regs* r) {
         
         Task::currentProcess()->getPageDir()->switchTo();
         IO::cli();
-    } else if (r->intNo == 66) {
-        kvt->put('E');
+    } else if (r->intNo == 66)
         Task::currentThreadExits(r->rax);
-    }
     
     if (doSwitch)
         Task::doSwitch();

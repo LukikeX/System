@@ -1,5 +1,9 @@
 #include "Res.h"
 #include "MemoryManager/Memory.h"
+#include "TaskManager/Process.h"
+#include "TaskManager/Thread.h"
+#include "Devices/ATA/ATAController.h"
+#include "Core/System.h"
 #include <VTManager/VirtualTerminal.proto.h>
 
 Ressource** Res::ressources = 0;
@@ -7,6 +11,11 @@ uint Res::size = 0;
 
 Res::staticCallT Res::staticCalls[] = {
     {VTIF_OBJTYPE, VirtualTerminal::scall},
+    {PRIF_OBJTYPE, Process::scall},
+    {THIF_OBJTYPE, Thread::scall},
+    {FLIF_OBJTYPE, File::scall},
+    {FNIF_OBJTYPE, FSNode::scall},
+    {STIF_OBJTYPE, System::scall},
     {0, 0}
 };
 

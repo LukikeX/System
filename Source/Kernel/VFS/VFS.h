@@ -27,8 +27,8 @@ public:
     static void registerFileSystem(FileSystem* fs);
     static void unregisterFileSystem(FileSystem* fs);
     static FSNode* find(const String& path, FSNode* start = 0);
-    static FSNode* createFile(const String& path, FSNode* start = 0);
-    static FSNode* createDirectory(const String& path, FSNode* start = 0);
+    static FSNode* createFile(const String& path, FSNode* start = 0, bool vrfyperm = false);
+    static FSNode* createDirectory(const String& path, FSNode* start = 0, bool vrfyperm = false);
     
     static bool remove(FSNode* node);
     static bool remove(const String& path, FSNode* start = 0);

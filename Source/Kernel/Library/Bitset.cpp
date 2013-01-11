@@ -38,7 +38,7 @@ uint Bitset::firstFreeBit() {
         if (data[i] != 0xFFFFFFFF) {
             for (int j = 0; j < 32; j++) {
                 if (!(data[i] & (1 << j)))
-                    return (i * 4 * 8) + j;
+                    return i * 32 + j;
             }
         }
     }

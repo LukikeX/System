@@ -6,7 +6,7 @@
 typedef ulong (*staticcall)(uint, ulong, ulong, ulong, ulong);
 
 class Res {
-private:
+public: //opravit
     static Ressource** ressources;
     static uint size;
     

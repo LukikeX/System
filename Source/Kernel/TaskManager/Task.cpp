@@ -93,7 +93,7 @@ void Task::doSwitch() {
     
     if (rip == 0x12345)
         return;
-    
+   
     if ((ulong)currThread != INVALID_TASK_MAGIC)
        currThread->v()->setState(rsp, rbp, rip);
     

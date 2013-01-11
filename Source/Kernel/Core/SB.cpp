@@ -9,7 +9,7 @@ SB::SB(uint count) {
     inProg = 0;
     length = Display::textCols() / 2 + 1;
     
-    prog = new SimpleVT(3, 80);
+    prog = new SimpleVT(3, 80); 
     progMsg = new SimpleVT(1, Display::textCols());
     debug = new SimpleVT(Display::textRows(), Display::textCols());
     

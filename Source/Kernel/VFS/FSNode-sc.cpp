@@ -18,23 +18,23 @@ FSNode::callT FSNode::callTable[] = {
 };
 
 ulong FSNode::scall(uint wat, ulong a, ulong b, ulong, ulong) {
+    String* path = (String *)a;
+    
     switch (wat) {
         case FNIF_SGETRFN:
             return VFS::getRootNode()->resId();
         case FNIF_SGETCWD:
             return Task::currentProcess()->getCwd()->resId();
-        case FNIF_SFIND:
-            String* path = (String *)a;
-            FSNode* n;
+        case FNIF_SFIND:        
+            FSNode* nd;
             if (!b)
-                n = VFS::find(*path);
+                nd = VFS::find(*path);
             else
-                n = VFS::find(*path, Res::get<DirectoryNode>(b, FNIF_OBJTYPE));
-            if (n)
-                return n->resId();
+                nd = VFS::find(*path, Res::get<DirectoryNode>(b, FNIF_OBJTYPE));
+            if (nd)
+                return nd->resId();
             break;
         case FNIF_SMKDIR:
-            String* path = (String *)a;
             FSNode* n;
             if (!b)
                 n = VFS::createDirectory(*path, 0, true);
@@ -77,4 +77,14 @@ ulong FSNode::removeSC() {
     if (!writable())
         return 0;
     return (VFS::remove(this) ? 1 : 0);
+}
+
+ulong FSNode::getParentSC() {
+    if (parent)
+        return parent->resId();
+    return (ulong)-1;
+}
+
+bool FSNode::accessible() {
+    return readable();
 }

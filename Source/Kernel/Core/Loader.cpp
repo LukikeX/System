@@ -4,6 +4,7 @@
 #include "Panic.h"
 #include "SB.h"
 #include "IO.h"
+#include "SyscallManager/Res.h"
 
 #include <C++/Runtime.h>
 
@@ -27,6 +28,7 @@
 
 //basicstring uvolnit pamet v destructore
 //ScrollableVT - redraw().... opravit
+
 //String number
 //Opravit bitset, nejako vynechava bity
 //Dorobit v thread accessible
@@ -49,16 +51,33 @@
 
 SimpleVT* kvt;
 
+ ulong syscall(ulong n, ulong a, ulong b, ulong c, ulong d, ulong e) {
+    ulong r;
+    asm volatile ("int $64" : "=a"(r) : "a"(n), "b"(a), "c"(b), "d"(c), "D"(d), "S"(e));
+    return r;
+}
+
+void prog1() {
+    ulong ret = syscall(0xFFFFFFFE00000000 | VTIF_SGETPROUTVT, VTIF_OBJTYPE, 0, 0, 0, 0);
+    
+    String *s = new String;
+    *s = "test";
+    
+    syscall(ret << 32 | VTIF_WRITE, (ulong)s, 0, 0, 0, 0);
+}
+
+
 void Print(header_T* h);
 
 extern "C" void Loader(header_T* header) {
     Memory::placementAddress = (ulong)&_end;
     construct();
+    Res::size = 0;
     
     VGATextoutput* vgaout = new VGATextoutput();
     Display::setText(vgaout);
     
-    SB* sb = new SB(11);    
+    SB* sb = new SB(11);
     SB::progress("Initializing paging...");
     PhysMem();
     SB::ok();
@@ -121,19 +140,17 @@ extern "C" void Loader(header_T* header) {
           //  *kvt << v[i] << "\n";
        // }
         
-        //*kvt << "f: " << PhysMem::frames->firstFreeBit() << "\n";
-        //*kvt << "f: " << Memory::placementAddress << "\n";
+        Print(header);
+        //PhysMem::getMemoryMap();
+        //Bitset* bs = new Bitset(0x600000);
+        ulong* a = new ulong[0x10000];
         
-        //Print(header);
-        PhysMem::getMemoryMap();
+        *kvt << "E: " << (ulong)a << " | ";
+        //Thread* t = new Thread((ThreadEntry)prog1, 0, true);
     }
-    
 
     for (;;);
 }
-
-
-
 
 
 

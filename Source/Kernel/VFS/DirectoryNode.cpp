@@ -20,7 +20,8 @@ ulong DirectoryNode::getNameChildSC(ulong name) {
     if (!runnable())
         return (ulong)-1;
     
-    FSNode* n = getChild((String *)name);
+    String* s = (String *)name;
+    FSNode* n = getChild(*s);
     if (n)
         return n->resId();
     return (ulong)-1;

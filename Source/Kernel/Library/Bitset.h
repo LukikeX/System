@@ -3,8 +3,8 @@
 
 #include <Core/typedef.h>
 
-#define INDEX_FROM_BIT(a)  (a / (8 * 4))
-#define OFFSET_FROM_BIT(a) (a % (8 * 4))
+#define INDEX_FROM_BIT(a)  (a / 32)
+#define OFFSET_FROM_BIT(a) (a % 32)
 
 class Bitset {
 private:

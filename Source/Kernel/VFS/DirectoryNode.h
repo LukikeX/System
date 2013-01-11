@@ -39,7 +39,6 @@ public:
     //Syscalls:
 private:
     static callT callTable[];
-    bool accessible();
     ulong getIdxChildSC(ulong idx);
     ulong getNameChildSC(ulong name);
 };

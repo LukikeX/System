@@ -68,7 +68,7 @@ FSNode* VFS::find(const String& path, FSNode* start) {
     return node;
 }
 
-FSNode* VFS::createFile(const String& path, FSNode* start) {
+FSNode* VFS::createFile(const String& path, FSNode* start, bool vrfyperm) {
     if (!start)
         start = rootNode;
     
@@ -88,11 +88,12 @@ FSNode* VFS::createFile(const String& path, FSNode* start) {
         return 0;
     
     if (node->type() & (FSNode::FS_DIRECTORY | FSNode::FS_MOUNTPOINT))
-        return (FSNode* )((DirectoryNode *)node)->createFile(name);
+        if ((vrfyperm && node->writable()) || !vrfyperm)
+            return (FSNode* )((DirectoryNode *)node)->createFile(name);
     return 0;
 }
 
-FSNode* VFS::createDirectory(const String& path, FSNode* start) {
+FSNode* VFS::createDirectory(const String& path, FSNode* start, bool vrfyperm) {
     if (!start)
         start = rootNode;
     
@@ -112,7 +113,8 @@ FSNode* VFS::createDirectory(const String& path, FSNode* start) {
         return 0;
     
     if (node->type() & (FSNode::FS_DIRECTORY | FSNode::FS_MOUNTPOINT))
-        return ((DirectoryNode *)node)->createDirectory(name);
+        if ((vrfyperm && node->writable()) || !vrfyperm)
+            return ((DirectoryNode *)node)->createDirectory(name);
     return 0;
 }
 
@@ -151,24 +153,24 @@ String VFS::path(FSNode* node) {
     return path;
 }
 
-bool VFS::mount(DirectoryNode* path, ulong size) {
-    FSNode* n = find(path);
+bool VFS::mount(DirectoryNode* p, ulong size) {
+    FSNode* n = find(path(p));
     if (!n)
         throw new FileException("Mountpoint does not exist!");
     
     if (n->type() != FSNode::FS_DIRECTORY)
         throw new FileException("Mountpoint is not a directory!");
     
-    FileSystem* rfs;
-    if (rfs) {
-        rfs->setIdentifier(path);
-        return true;
-    }
+//    FileSystem* rfs;
+ //   if (rfs) {
+        //rfs->setIdentifier(path);
+   //     return true;
+   // }
     return false;
 }
 
-bool VFS::mount(DirectoryNode* path, String devClass, ulong devId, ulong partId, bool rw) {
-        FSNode* n = find(path);
+bool VFS::mount(DirectoryNode* p, String devClass, ulong devId, ulong partId, bool rw) {
+    FSNode* n = find(path(p));
     if (!n)
         throw new FileException("Mountpoint does not exist!");
     
@@ -191,4 +193,6 @@ bool VFS::mount(DirectoryNode* path, String devClass, ulong devId, ulong partId,
     for (uint i = 0; localFS[i].cb; i++) {
       //  if (dev)
     }
+    
+    return false;
 }

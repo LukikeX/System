@@ -1,5 +1,6 @@
 #include "Heap.h"
 #include <Exceptions/MemoryException.h>
+#include <Core/Loader.h>
 
 Heap::Heap(): mutex(MUTEX_FALSE) {
     m_usable = false;
@@ -26,7 +27,8 @@ void* Heap::alloc(ulong size, bool noExpand) {
     if (iter == index.size) {
         if (noExpand) {
             mutex.unlock();
-            throw new MemoryException("No more free memory frames!");
+            *kvt << "eeeee";
+            return 0;//throw new MemoryException("No more free memory frames!");
         }
         
         expand((size & 0xFFFFFFFFFFFFF000) & 0x1000);
@@ -66,15 +68,15 @@ void* Heap::alloc(ulong size, bool noExpand) {
 
 void Heap::free(void* ptr) {
     if (!ptr)
-        throw new MemoryException("Cannot free null frame!");
+        return;//throw new MemoryException("Cannot free null frame!");
     
     headerT* header = (headerT *)((ulong)ptr - sizeof(headerT));
     if (header->magic != HEAP_MAGIC)
-        throw new MemoryException("Heap header magic is not valid!");
+        return; //throw new MemoryException("Heap header magic is not valid!");
             
     footerT* footer = (footerT *)((ulong)header + header->size - sizeof(footerT));
     if (footer->magic != HEAP_MAGIC)
-        throw new MemoryException("Heap footer magic is not valid!");
+        return; //throw new MemoryException("Heap footer magic is not valid!");
     
     mutex.waitLock();
     m_free += header->size;
@@ -108,7 +110,7 @@ void Heap::free(void* ptr) {
 
 void Heap::create(ulong start, ulong size, ulong idxSize, PageDirectory* pageDir, bool user, bool rw) {
     if (m_usable)
-        throw new MemoryException("Cannot create heap!");
+        return;//throw new MemoryException("Cannot create heap!");
 
     if (start & 0x0FFF)
         start = (start & 0xFFFFFFFFFFFFF000) + 0x1000;
@@ -145,7 +147,7 @@ void Heap::create(ulong start, ulong size, ulong idxSize, PageDirectory* pageDir
 }
 
 void Heap::expand(ulong quantity) {
-    if (quantity & 0x0FF)
+    if (quantity & 0x0FFF)
         quantity = (quantity & 0xFFFFFFFFFFFFF000) + 0x1000;
     
     ulong newEnd = end + quantity;
@@ -186,14 +188,14 @@ void Heap::contract() {
     footerT* lastFooter = (footerT *)(end - sizeof(footerT));
     headerT* lastHeader = lastFooter->header;
     if (!lastHeader->isHole)
-        throw new MemoryException("Cannot contract heap!");
+        return;//throw new MemoryException("Cannot contract heap!");
     
     ulong quantity = 0;
     while ((end - start) - quantity > HEAP_MIN_SIZE && (lastHeader->size - quantity) > 0x1000)
         quantity += 0x1000;
     
     if (!quantity)
-        throw new MemoryException("No free memory to contract!");
+        return;//throw new MemoryException("No free memory to contract!");
     
     ulong newEnd = end - quantity;
     m_free -= quantity;

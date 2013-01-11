@@ -36,7 +36,7 @@ SRC += $(wildcard Devices/Display/*.cpp)
 SRC += $(wildcard Devices/Keyboard/*.cpp)
 
 SRC += $(wildcard VTManager/*.cpp)
-#SRC += $(wildcard VFS/*.cpp)
+SRC += $(wildcard VFS/*.cpp)
 
 
 #SRC += $(wildcard Devices/Mouse/*.cpp)

@@ -10,7 +10,7 @@ Clean:
 	@rm -rf Mount/Linker.map
 	
 Debug: Build
-	@qemu-system-x86_64 -hda Mount/Boot.bin -boot c -m 64 -monitor stdio -no-kvm -vga std
+	@qemu-system-x86_64 -hda Mount/Boot.bin -boot c -m 512 -monitor stdio -no-kvm -vga std
 	
 	
 BootLoader:

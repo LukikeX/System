@@ -5,7 +5,7 @@
 #include "PageDirectory.h"
 
 #define HEAP_MAGIC    0xDEADC0DE
-#define HEAP_MIN_SIZE 0x00200000
+#define HEAP_MIN_SIZE 0x20000000
 
 class Heap {
 private:
@@ -23,11 +23,10 @@ private:
     struct indexT {
         headerT** data;
         ulong size;
-    };
+    } index;
     
     ulong m_free, start, end;
     bool m_usable;
-    indexT index;
     bool user, rw;
     
     PageDirectory* pageDir;

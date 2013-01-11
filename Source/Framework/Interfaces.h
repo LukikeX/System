@@ -84,4 +84,10 @@
 #define FNIF_GETIDXCHILD 0x0F
 #define FNIF_GETNCHILD   0x10
 
+
+//==============================================================================
+#define STIF_OBJTYPE     0x600
+#define STIF_SREBOOT     0x01
+
+
 #endif
