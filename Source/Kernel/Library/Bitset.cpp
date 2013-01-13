@@ -44,3 +44,13 @@ uint Bitset::firstFreeBit() {
     }
     return (uint)-1;
 }
+
+void Bitset::resize(uint size) {
+    uint* newData = (uint *)Memory::alloc(INDEX_FROM_BIT(size));
+    Memory::clear(newData, INDEX_FROM_BIT(size));
+    Memory::copy(data, newData, INDEX_FROM_BIT(this->size));
+    
+    delete[] data;
+    data = newData;
+    this->size = size;
+}

@@ -24,11 +24,9 @@
 #include <VTManager/ScrollableVT.h>
 
 #include <TaskManager/Task.h>
-#include <stdlib.h>
 
 //basicstring uvolnit pamet v destructore
 //ScrollableVT - redraw().... opravit
-
 //String number
 //Opravit bitset, nejako vynechava bity
 //Dorobit v thread accessible
@@ -79,7 +77,12 @@ extern "C" void Loader(header_T* header) {
     
     SB* sb = new SB(11);
     SB::progress("Initializing paging...");
-    PhysMem();
+    ulong size = 0x100000;
+    for (uint i = 0; i < header->mapLen; i++)
+        if (header->memMap->base == size)
+            size += header->memMap->length;
+    
+    PhysMem(5);
     SB::ok();
     
     SB::progress("Initializing free pages...");
@@ -141,11 +144,10 @@ extern "C" void Loader(header_T* header) {
        // }
         
         Print(header);
-        //PhysMem::getMemoryMap();
-        //Bitset* bs = new Bitset(0x600000);
-        ulong* a = new ulong[0x10000];
+        PhysMem::getMemoryMap();
         
-        *kvt << "E: " << (ulong)a << " | ";
+        //ulong* a = new ulong[0x10000];
+        //*kvt << "E: " << (ulong)a << " | ";
         //Thread* t = new Thread((ThreadEntry)prog1, 0, true);
     }
 

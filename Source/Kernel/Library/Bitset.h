@@ -19,6 +19,7 @@ public:
     ~Bitset() { if (data) delete[] data; }
     
     void init(uint size, uint* ptr);
+    void resize(uint size);
     
     void setBit(uint number);
     void clearBit(uint number);

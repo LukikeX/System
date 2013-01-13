@@ -5,7 +5,7 @@
 #include "PageDirectory.h"
 
 #define HEAP_MAGIC    0xDEADC0DE
-#define HEAP_MIN_SIZE 0x20000000
+#define HEAP_MIN_SIZE 0x200000
 
 class Heap {
 private:

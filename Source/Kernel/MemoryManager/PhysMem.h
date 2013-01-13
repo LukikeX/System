@@ -12,7 +12,7 @@ private:
 public:
     static PageDirectory* kernelPageDirectory;
     
-    PhysMem();
+    PhysMem(ulong size);
     
     static void allocFrame(PageDirectory::PTE* page, bool isUser, bool isWritable);
     static void freeFrame(PageDirectory::PTE* page);

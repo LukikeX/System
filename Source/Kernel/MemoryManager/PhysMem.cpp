@@ -7,7 +7,7 @@ uint PhysMem::nFrames;
 Bitset* PhysMem::frames;
 PageDirectory* PhysMem::kernelPageDirectory;
 
-PhysMem::PhysMem() {
+PhysMem::PhysMem(ulong size) {
     nFrames = 0x600000;
     frames = new Bitset(nFrames);
     
@@ -17,6 +17,10 @@ PhysMem::PhysMem() {
         kernelPageDirectory->allocFrame(i, false, true);
 
     kernelPageDirectory->switchTo();
+    
+    //nFrames = 0x1FFE0000;
+    nFrames = size;
+    frames->resize(nFrames);
 }
 
 void PhysMem::allocFrame(PageDirectory::PTE* page, bool isUser, bool isWritable) {
@@ -26,7 +30,7 @@ void PhysMem::allocFrame(PageDirectory::PTE* page, bool isUser, bool isWritable)
         uint idx = frames->firstFreeBit();
         
         if (idx == (uint)-1)
-            throw new MemoryException("No more free frames!");
+            return; //throw new MemoryException("No more free frames!");
         
         frames->setBit(idx);
         page->present = 1;
@@ -38,7 +42,7 @@ void PhysMem::allocFrame(PageDirectory::PTE* page, bool isUser, bool isWritable)
 
 void PhysMem::freeFrame(PageDirectory::PTE* page) {
     if (!page->present)
-        throw new MemoryException("Page is not mapped!");
+        return; //throw new MemoryException("Page is not mapped!");
     else {
         if (page->address >= 0x100)
             frames->clearBit(page->address);

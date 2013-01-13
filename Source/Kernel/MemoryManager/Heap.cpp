@@ -27,11 +27,11 @@ void* Heap::alloc(ulong size, bool noExpand) {
     if (iter == index.size) {
         if (noExpand) {
             mutex.unlock();
-            *kvt << "eeeee";
+           // *kvt << "eeeee";
             return 0;//throw new MemoryException("No more free memory frames!");
         }
         
-        expand((size & 0xFFFFFFFFFFFFF000) & 0x1000);
+        expand(size);
         mutex.unlock();
         return alloc(size, true);
     }
@@ -39,7 +39,7 @@ void* Heap::alloc(ulong size, bool noExpand) {
     headerT* header = index.data[iter];
     footerT* footer = (footerT *)((ulong)header + header->size - sizeof(footerT));
     header->isHole = false;
-    
+
     removeFromIndex(header);
     
     if (header->size > (newSize + sizeof(headerT) + sizeof(footerT))) {
@@ -112,12 +112,6 @@ void Heap::create(ulong start, ulong size, ulong idxSize, PageDirectory* pageDir
     if (m_usable)
         return;//throw new MemoryException("Cannot create heap!");
 
-    if (start & 0x0FFF)
-        start = (start & 0xFFFFFFFFFFFFF000) + 0x1000;
-    
-    if (size & 0x0FFF)
-        size = (size & 0xFFFFFFFFFFFFF000) + 0x1000;
-    
     this->start = start + idxSize;
     this->end = start + size;
     this->pageDir = pageDir;
@@ -131,8 +125,8 @@ void Heap::create(ulong start, ulong size, ulong idxSize, PageDirectory* pageDir
     index.data = (headerT **)start;
     index.size = 0;
     
-    headerT* hole = (headerT *)start;
-    hole->size = (end - start);
+    headerT* hole = (headerT *)this->start;
+    hole->size = (end - this->start);
     hole->magic = HEAP_MAGIC;
     hole->isHole = true;
     
@@ -142,8 +136,7 @@ void Heap::create(ulong start, ulong size, ulong idxSize, PageDirectory* pageDir
     
     insertIntoIndex(hole);
     m_usable = true;
-    m_free = (end - start);
-    mutex.unlock();
+    m_free = (end - this->start);
 }
 
 void Heap::expand(ulong quantity) {
@@ -151,7 +144,6 @@ void Heap::expand(ulong quantity) {
         quantity = (quantity & 0xFFFFFFFFFFFFF000) + 0x1000;
     
     ulong newEnd = end + quantity;
-    
     for (ulong i = end; i < newEnd; i += 0x1000)
         pageDir->allocFrame(i, user, rw);
     
@@ -215,9 +207,9 @@ void Heap::contract() {
 
 void Heap::removeFromIndex(uint idx) {
     index.size--;
-    idx++;
+    
     while (idx < index.size) {
-        index.data[idx - 1] = index.data[idx];
+        index.data[idx] = index.data[idx + 1];
         idx++;
     }
 }
@@ -237,14 +229,15 @@ uint Heap::findIndexEntry(headerT* e) {
 }
 
 void Heap::insertIntoIndex(headerT* e) {
-    if ((index.size * sizeof(headerT *)) + (ulong)index.data >= start)
+    if ((index.size * sizeof(headerT *) + (ulong)index.data) >= start)
         return;
     
     uint iter = 0;
-    while (iter < index.size && (ulong)index.data[iter] >= start)
+    while (iter < index.size && index.data[iter]->size < e->size) {
         if (index.data[iter++] == e)
             return;
-        
+    }
+            
     if (iter == index.size)
         index.data[index.size++] = e;
     else {

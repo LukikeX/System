@@ -7,7 +7,7 @@ Heap Memory::kernelHeap;
 ulong Memory::placementAddress;
 
 Memory::Memory() {
-    ulong indexSize = PhysMem::total() / 0x1000 * 64 + 0x10000;
+    ulong indexSize = PhysMem::total() / 0x1000 * 64 + 0x1000;
     ulong start = (placementAddress & 0xFFFFFFFFFFFFF000) + 0x1000;
     ulong size = HEAP_MIN_SIZE + indexSize;
     
@@ -16,7 +16,7 @@ Memory::Memory() {
 
 void* Memory::allocInternal(ulong size, bool align) {
     if (kernelHeap.usable())
-        throw new MemoryException("Cannot allocate internal memory while using heap!");
+        return 0; //throw new MemoryException("Cannot allocate internal memory while using heap!");
     
     if (align) {
         placementAddress &= 0xFFFFFFFFFFFFF000;
