@@ -93,7 +93,7 @@ void Task::doSwitch() {
     
     if (rip == 0x12345)
         return;
-   
+    
     if ((ulong)currThread != INVALID_TASK_MAGIC)
        currThread->v()->setState(rsp, rbp, rip);
     
@@ -127,8 +127,6 @@ bool Task::IRQwakeup(uchar irq) {
 void Task::currentThreadExits(uint errorCode) {
     IO::cli();
     ulong* stack = &tempStack[255];
-    *stack = errorCode;
-    stack--;
     *stack = 0;
     
     ulong rsp = (ulong)stack;
@@ -138,9 +136,9 @@ void Task::currentThreadExits(uint errorCode) {
     PhysMem::kernelPageDirectory->switchTo();
     asm volatile ("mov %0, %%rsp \n"
                   "mov %1, %%rbp \n"
-                  "mov %2, %%rcx \n"
+                  "sti \n"
                   "jmp *%%rcx"
-                  : : "r"(rsp), "r"(rbp), "r"(rip));
+                  : : "r"(rsp), "r"(rbp), "c"(rip), "Di"(errorCode));
 }
 
 void Task::currentThreadExitsProceed(uint errorCode) {

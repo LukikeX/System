@@ -19,9 +19,9 @@ private:
     VFS();
     
 public:
-    bool mount(DirectoryNode* path, ulong size);
-    bool mount(DirectoryNode* path, String devClass, ulong devId, ulong partId, bool rw = false);
-    bool unmount(FileSystem* fs);
+    static bool mount(DirectoryNode* path, ulong size);
+    static bool mount(DirectoryNode* path, String devClass, ulong devId, ulong partId, bool rw = false);
+    static bool unmount(FileSystem* fs);
     
     static DirectoryNode* getRootNode() { return rootNode; }
     static void registerFileSystem(FileSystem* fs);

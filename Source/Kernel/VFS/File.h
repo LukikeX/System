@@ -13,6 +13,13 @@ public:
         FM_REPLACE  = 3	  //Open for write, put cursor at beginning
     };
     
+    enum {
+        SM_FORWARD   = 0, //Seek from actual position
+        SM_BACKWARD  = 1, //Seek from actual position, backward
+        SM_BEGINNING = 2, //Seek from start of file
+        SM_END       = 3, //Seek from end of file
+    };
+    
 protected:
     FileNode* file;
     bool valid, writable;
@@ -32,7 +39,17 @@ public:
     bool eof() const;
     void reset() { position = 0; }
     ulong getLength() const { return file->getLength(); }
+    bool seek(ulong count, uchar mode);
     
+    template <typename T>
+    bool read(T* d) {
+        return (read(sizeof(T), (uchar *)d) == sizeof(T));
+    }
+    
+    template <typename T>
+    bool write(T* d) {
+        return write(sizeof(T), (uchar *)d);
+    }
     
     //Syscalls:
     static ulong scall(uint wat, ulong a, ulong b, ulong, ulong);
@@ -44,7 +61,7 @@ private:
     ulong validSC();
     ulong readSC(ulong length, ulong ptr);
     ulong writeSC(ulong length, ulong ptr);
-    ulong seekSC(ulong countA, ulong countB, ulong mode);
+    ulong seekSC(ulong count, ulong mode);
     ulong positionSC();
     ulong lengthSC();
     ulong eofSC();

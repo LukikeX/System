@@ -17,8 +17,7 @@ PhysMem::PhysMem(ulong size) {
         kernelPageDirectory->allocFrame(i, false, true);
 
     kernelPageDirectory->switchTo();
-    
-    //nFrames = 0x1FFE0000;
+
     nFrames = size;
     frames->resize(nFrames);
 }

@@ -7,7 +7,7 @@ File::callT File::callTable[] = {
     CALL0(FLIF_VALID,    &File::validSC),
     CALL2(FLIF_READ,     &File::readSC),
     CALL2(FLIF_WRITE,    &File::writeSC),
-    CALL3(FLIF_SEEK,     &File::seekSC),
+    CALL2(FLIF_SEEK,     &File::seekSC),
     CALL0(FLIF_POSITION, &File::positionSC),
     CALL0(FLIF_LENGTH,   &File::lengthSC),
     CALL0(FLIF_EOF,      &File::eofSC),
@@ -15,10 +15,10 @@ File::callT File::callTable[] = {
     CALL0(0, 0)
 };
 
-ulong File::scall(uint wat, ulong a, ulong b, ulong, ulong) {
+ulong File::scall(uint wat, ulong a, ulong b, ulong c, ulong) {
     if (wat == FLIF_SOPEN) {
         String* name = (String *)a;
-        FSNode* start = 0;// = Res::get<FSNode>(c, )
+        FSNode* start = Res::get<FSNode>(c, FNIF_OBJTYPE);
         File* f = new File();
         if (!f->open(*name, b, start, true))
             delete f;
@@ -51,8 +51,8 @@ ulong File::writeSC(ulong length, ulong ptr) {
     return write(length, (char *)ptr) ? 1 : 0;
 }
 
-ulong File::seekSC(ulong countA, ulong countB, ulong mode) {
-    return 1;
+ulong File::seekSC(ulong count, ulong mode) {
+    return (seek(count, mode) ? 1 : 0);
 }
 
 ulong File::positionSC() {

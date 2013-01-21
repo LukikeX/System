@@ -68,7 +68,7 @@ bool V86Thread::handleV86GPF(IDT::regs*) {
 }
 #include <Core/Loader.h>
 void V86Thread::handleException(IDT::regs* r) {
- //   *kvt << "hndl: " << r->intNo;
+    *kvt << "hndl: " << r->intNo;
   //  for (;;);
  //   if (r->intNo == 13) {
   //      if (!handleV86GPF(r)) {

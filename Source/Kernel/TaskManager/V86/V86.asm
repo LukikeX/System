@@ -12,4 +12,5 @@ _v86_run:
     push rbx
     mov rbx, [rsi + 16]
     push rbx
+
     iretq

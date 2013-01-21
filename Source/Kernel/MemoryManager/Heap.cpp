@@ -27,7 +27,6 @@ void* Heap::alloc(ulong size, bool noExpand) {
     if (iter == index.size) {
         if (noExpand) {
             mutex.unlock();
-           // *kvt << "eeeee";
             return 0;//throw new MemoryException("No more free memory frames!");
         }
         

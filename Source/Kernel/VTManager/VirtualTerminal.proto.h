@@ -19,6 +19,26 @@ protected:
     virtual void updateCursor() { }
     
 public:
+    /*typedef enum {
+        Black  = 0x000000,
+        White  = 0xFFFFFF,
+        Red    = 0xC00000,
+        Green  = 0x00C000,
+        Blue   = 0x0000C0,
+        Cyan   = 0x00C0C0,
+        Grey   = 0xC0C0C0,
+        Yellow = 0xC0C000
+    } Color;*/
+    typedef enum {
+        Black  = 0,
+        Red    = 4,
+        Green  = 2,
+        Blue   = 1,
+        Cyan   = 3,
+        Grey   = 7,
+        Yellow = 6
+    } Color;
+    
     VirtualTerminal();
     virtual ~VirtualTerminal();
     

@@ -15,7 +15,7 @@ public:
     virtual ~FileNode() { }
         
     uchar type() const { return FS_FILE; }
-    bool removable() const { return true; }
+    bool removable() { return true; }
     bool used() const { return readers || writers; }
     bool fsWritable() { return fs->isWritable(); }
     

@@ -63,7 +63,5 @@ String VirtualTerminal::readLine(bool show) {
         tmp = getkeyPress(show);
     }
     
-    if (show)
-        put("\n");
     return ret;
 }

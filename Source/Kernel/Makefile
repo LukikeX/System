@@ -29,20 +29,21 @@ SRC += $(wildcard MemoryManager/*.cpp)
 SRC += $(wildcard SyscallManager/*.asm SyscallManager/*.cpp)
 SRC += $(wildcard TaskManager/*.asm TaskManager/*.cpp)
 SRC += $(wildcard TaskManager/V86/*.asm TaskManager/V86/*.cpp)
+SRC += $(wildcard VTManager/*.cpp)
 
 SRC += $(wildcard Devices/*.cpp)
 SRC += $(wildcard Devices/ATA/*.cpp)
 SRC += $(wildcard Devices/Display/*.cpp)
 SRC += $(wildcard Devices/Keyboard/*.cpp)
 
-SRC += $(wildcard VTManager/*.cpp)
 SRC += $(wildcard VFS/*.cpp)
-
+SRC += $(wildcard Linker/*.cpp)
+SRC += $(wildcard Shell/*.cpp)
+SRC += $(wildcard FileSystems/RamFS/*.cpp)
 
 #SRC += $(wildcard Devices/Mouse/*.cpp)
 #SRC += $(wildcard Devices/Character/*.cpp)
 #SRC += $(wildcard Devices/PCI/*.cpp)
-#SRC += $(wildcard FileSystems/RamFS/*.cpp)
 
 OBJSx = $(SRC:.cpp=.o)
 OBJS = $(OBJSx:.asm=.a.o)

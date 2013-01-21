@@ -2,6 +2,7 @@
 #include "Thread.h"
 #include "Task.h"
 #include "VFS/File.h"
+#include "Linker/Binary.proto.h"
 
 Process::Process() : Ressource(PRIF_OBJTYPE, callTable) { }
 
@@ -43,11 +44,13 @@ Process* Process::run(String filename, ulong uid) {
     if (!file.isValid())
         return 0;
     
-    //bin load...
+    Binary* b = Binary::load(file);
+    if (!b)
+        return 0;
+    
     Process* p = new Process(filename, uid);
-    //threadEntry b->toprocess....
-    ThreadEntry e = (ThreadEntry)0;
-    //delete b;
+    ThreadEntry e = (ThreadEntry)b->toProcess(p);
+    delete b;
     
     if (e) {
         new Thread(p, e, 0);

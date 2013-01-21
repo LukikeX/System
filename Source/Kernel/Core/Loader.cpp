@@ -4,9 +4,10 @@
 #include "Panic.h"
 #include "SB.h"
 #include "IO.h"
-#include "SyscallManager/Res.h"
 
 #include <C++/Runtime.h>
+#include <VTManager/ScrollableVT.h>
+#include <VFS/VFS.h>
 
 #include <MemoryManager/PageAlloc.h>
 #include <MemoryManager/Memory.h>
@@ -20,32 +21,25 @@
 #include <Devices/Display/VGATextOutput.h>
 #include <Devices/Keyboard/PS2Keyboard.h>
 
-#include <VTManager/SimpleVT.h>
-#include <VTManager/ScrollableVT.h>
-
+#include <SyscallManager/Res.h>
 #include <TaskManager/Task.h>
+#include <TaskManager/V86/V86.h>
+#include <TaskManager/V86/V86Thread.h>
 
-//basicstring uvolnit pamet v destructore
 //ScrollableVT - redraw().... opravit
 //String number
-//Opravit bitset, nejako vynechava bity
 //Dorobit v thread accessible
 //Doborbit v keymape altgr a shiftaltgr
-//dorobit v file seek
 //vo FSNode readable, writable atd.
 //dorobit mount vo VFS
 //dorobit DMA na pracu s grafikou
+//Opravit V86
+//Dorobit Vlastny filesystem
+//Odskusat funkcnost a stabilitu VFS a RamFS
 
 //Process:
-//run()
 //scall - uid
 //Dorobit par detailov v syscall
-
-/* Syscalls port
- * syscall - 64
- * request task switch - 65
- * signal that thread ended - 66
- */
 
 SimpleVT* kvt;
 
@@ -56,12 +50,13 @@ SimpleVT* kvt;
 }
 
 void prog1() {
-    ulong ret = syscall(0xFFFFFFFE00000000 | VTIF_SGETPROUTVT, VTIF_OBJTYPE, 0, 0, 0, 0);
+   // ulong ret = syscall(0xFFFFFFFE00000000 | VTIF_SGETPROUTVT, VTIF_OBJTYPE, 0, 0, 0, 0);
     
-    String *s = new String;
-    *s = "test";
+    //String *s = new String;
+   // *s = "test";
     
-    syscall(ret << 32 | VTIF_WRITE, (ulong)s, 0, 0, 0, 0);
+    //syscall(ret << 32 | VTIF_WRITE, (ulong)s, 0, 0, 0, 0);
+    for (;;);
 }
 
 
@@ -80,9 +75,9 @@ extern "C" void Loader(header_T* header) {
     ulong size = 0x100000;
     for (uint i = 0; i < header->mapLen; i++)
         if (header->memMap->base == size)
-            size += header->memMap->length;
+            size += header->memMap->length - 0x1000;
     
-    PhysMem(5);
+    PhysMem((ulong)size);
     SB::ok();
     
     SB::progress("Initializing free pages...");
@@ -98,8 +93,7 @@ extern "C" void Loader(header_T* header) {
     SB::ok();
 
     SB::progress("Creating Kernel VT...");
-    //kvt = new ScrollableVT(Display::textRows(), Display::textCols(), 20);
-    kvt = new SimpleVT(Display::textRows(), Display::textCols());
+    kvt = new ScrollableVT(Display::textRows(), Display::textCols(), 20);
     SB::ok();
     
     SB::progress("Initializing IDT...");
@@ -137,18 +131,21 @@ extern "C" void Loader(header_T* header) {
     //============================ Testing =====================================
     *kvt << "[Video] Resolution: " << (int)Display::textCols() << ":" << (int)Display::textRows() << "\n";
     
+    VFS::mount((DirectoryNode* )0, 0x100000);
+    
     while (true) {
         Vector<String> v = kvt->readLine(true).split(' ');
         //for (uint i = 0; i < v.size(); i++) {
           //  *kvt << v[i] << "\n";
        // }
         
-        Print(header);
-        PhysMem::getMemoryMap();
+      //  Thread* t = new Thread((ThreadEntry)prog1, 0, true);
         
-        //ulong* a = new ulong[0x10000];
-        //*kvt << "E: " << (ulong)a << " | ";
-        //Thread* t = new Thread((ThreadEntry)prog1, 0, true);
+        //V86Thread::regsT r;
+        //Memory::clear(&r);
+        //r.ax = 0x0F << 4;
+        //V86::biosInt(0x12, r);
+        //*kvt << "int: " << (uint)r.ax;
     }
 
     for (;;);

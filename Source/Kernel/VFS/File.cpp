@@ -101,3 +101,36 @@ bool File::eof() const {
     
     return position == file->getLength();
 }
+
+bool File::seek(ulong count, uchar mode) {
+    if (!valid)
+        return false;
+    
+    switch (mode) {
+        case SM_FORWARD:
+            if (position + count <= file->getLength()) {
+                position += count; 
+                return true;
+            }
+            break;
+        case SM_BACKWARD:
+            if (count <= position) {
+                position -= count;
+                return true;
+            }
+            break;
+        case SM_BEGINNING:
+            if (count <= file->getLength()) {
+                position = count;
+                return true;
+            }
+            break;
+        case SM_END:
+            if (count <= file->getLength()) {
+                position = file->getLength() - count;
+                return true;
+            }
+            break;
+    }
+    return false;
+}

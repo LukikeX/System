@@ -1,6 +1,8 @@
 #include "VFS.h"
 #include "DirectoryNode.h"
 #include "Part.h"
+#include "FileSystems/RamFS/RamFileNode.h"
+#include "FileSystems/RamFS/RamFS.h"
 #include <Exceptions/FileException.h>
 
 FileSystem::~FileSystem() {
@@ -24,7 +26,7 @@ void VFS::registerFileSystem(FileSystem* fs) {
 void VFS::unregisterFileSystem(FileSystem* fs) {
     for (uint i = 0; i < fileSystems.size(); i++) {
         if (fileSystems[i] == fs) {
-            fileSystems[i] == fileSystems.back();
+            fileSystems[i] = fileSystems.back();
             fileSystems.pop();
             break;
         }
@@ -65,6 +67,7 @@ FSNode* VFS::find(const String& path, FSNode* start) {
                 return 0;
         }
     }
+    
     return node;
 }
 
@@ -154,18 +157,20 @@ String VFS::path(FSNode* node) {
 }
 
 bool VFS::mount(DirectoryNode* p, ulong size) {
-    FSNode* n = find(path(p));
-    if (!n)
-        throw new FileException("Mountpoint does not exist!");
+    if (rootNode && false) {
+        FSNode* n = find(path(p));
+        if (!n)
+            return false; //throw new FileException("Mountpoint does not exist!");
+
+        if (n->type() != FSNode::FS_DIRECTORY)
+            return false; //throw new FileException("Mountpoint is not a directory!");
+    }
     
-    if (n->type() != FSNode::FS_DIRECTORY)
-        throw new FileException("Mountpoint is not a directory!");
-    
-//    FileSystem* rfs;
- //   if (rfs) {
-        //rfs->setIdentifier(path);
-   //     return true;
-   // }
+    FileSystem* rfs = RamFS::mount(size, p);
+    if (rfs) {
+        rfs->setIdentifier(path(p));
+        return true;
+    }
     return false;
 }
 

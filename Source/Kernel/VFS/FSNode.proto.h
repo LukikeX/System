@@ -32,7 +32,7 @@ public:
     virtual ~FSNode() { }
     
     virtual uchar type() const = 0;
-    virtual bool removable() const = 0;
+    virtual bool removable() = 0;
     virtual bool used() const { return false; }
     
     virtual String getName() const { return name; }
