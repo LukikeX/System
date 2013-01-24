@@ -4,6 +4,7 @@
 #include "Panic.h"
 #include "SB.h"
 #include "IO.h"
+#include "Shell/Shell.h"
 
 #include <C++/Runtime.h>
 #include <VTManager/ScrollableVT.h>
@@ -36,36 +37,21 @@
 //Opravit V86
 //Dorobit Vlastny filesystem
 //Odskusat funkcnost a stabilitu VFS a RamFS
+//Opravit v basestringu to posrate uvolnovanie pamete....
 
 //Process:
 //scall - uid
 //Dorobit par detailov v syscall
+//cmd split
 
 SimpleVT* kvt;
-
- ulong syscall(ulong n, ulong a, ulong b, ulong c, ulong d, ulong e) {
-    ulong r;
-    asm volatile ("int $64" : "=a"(r) : "a"(n), "b"(a), "c"(b), "d"(c), "D"(d), "S"(e));
-    return r;
-}
-
-void prog1() {
-   // ulong ret = syscall(0xFFFFFFFE00000000 | VTIF_SGETPROUTVT, VTIF_OBJTYPE, 0, 0, 0, 0);
-    
-    //String *s = new String;
-   // *s = "test";
-    
-    //syscall(ret << 32 | VTIF_WRITE, (ulong)s, 0, 0, 0, 0);
-    for (;;);
-}
-
-
 void Print(header_T* h);
 
 extern "C" void Loader(header_T* header) {
     Memory::placementAddress = (ulong)&_end;
     construct();
     Res::size = 0;
+    VFS::rootNode = 0;
     
     VGATextoutput* vgaout = new VGATextoutput();
     Display::setText(vgaout);
@@ -132,20 +118,29 @@ extern "C" void Loader(header_T* header) {
     *kvt << "[Video] Resolution: " << (int)Display::textCols() << ":" << (int)Display::textRows() << "\n";
     
     VFS::mount((DirectoryNode* )0, 0x100000);
+    Shell();
     
     while (true) {
+        Shell::printMode();
         Vector<String> v = kvt->readLine(true).split(' ');
-        //for (uint i = 0; i < v.size(); i++) {
-          //  *kvt << v[i] << "\n";
-       // }
         
-      //  Thread* t = new Thread((ThreadEntry)prog1, 0, true);
+        if (v[0].empty())
+            continue;
         
-        //V86Thread::regsT r;
-        //Memory::clear(&r);
-        //r.ax = 0x0F << 4;
-        //V86::biosInt(0x12, r);
-        //*kvt << "int: " << (uint)r.ax;
+        bool e = false;
+        for (uint i = 0; Shell::commands[i].cwd; i++) {
+            if (v[0] == Shell::commands[i].name) {
+                Vector<String> args;
+                for (uint j = 1; j < v.size(); j++)
+                    args.push(v[j]);
+                Shell::commands[i].cwd(args);
+                e = true;
+                break;
+            }
+        }
+        
+        if (!e)
+            *kvt << "Prikaz neexistuje\n";
     }
 
     for (;;);
@@ -241,3 +236,14 @@ void prog2() {
  */    
     //new Thread((ThreadEntry)prog1, 0, true);
     //new Thread((ThreadEntry)prog2, 0, true);
+
+
+
+
+      //  Thread* t = new Thread((ThreadEntry)prog1, 0, true);
+        
+        //V86Thread::regsT r;
+        //Memory::clear(&r);
+        //r.ax = 0x0F << 4;
+        //V86::biosInt(0x12, r);
+        //*kvt << "int: " << (uint)r.ax;

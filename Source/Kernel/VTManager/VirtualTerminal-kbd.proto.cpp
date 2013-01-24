@@ -44,7 +44,7 @@ keyStatus VirtualTerminal::getkeyPress(bool show, bool block) {
 }
 
 String VirtualTerminal::readLine(bool show) {
-    String ret = "";
+    String ret("");
     keyStatus tmp = getkeyPress(show);
     
     while (!(tmp.hasCmd && !tmp.hasChar && tmp.command == KBDC_ENTER)) {

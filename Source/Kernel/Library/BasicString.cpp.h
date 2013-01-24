@@ -28,7 +28,7 @@ BasicString<T>::BasicString(const T value, unsigned int count) {
 
 template<typename T>
 BasicString<T>::~BasicString() {
-    BS_FREE;
+   // BS_FREE;
 }
 
 template<typename T>
@@ -37,7 +37,7 @@ void BasicString<T>::affect(const BasicString<T>& other) {
     length = other.length;
     BS_VRFY;
     BS_ALLOC;
-    Memory::copy((char *)string, (char *)this->string, length * sizeof(T));
+    Memory::copy((char *)other.string, (char *)string, length * sizeof(T));
 }
 
 template<typename T>

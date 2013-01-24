@@ -9,17 +9,19 @@ class Shell {
 private:
     struct cmd_T {
         const char* name;
-        void (Shell::*cwd)(Vector<String>& cmd);
+        void (*cwd)(Vector<String>& cmd);
     };
     
-    static cmd_T commands[];
-    DirectoryNode* path;
+    static DirectoryNode* path;
     
 public:
+    static cmd_T commands[];
+    
     Shell();
     static void printMode();
     static void setPath(DirectoryNode* path);
     
+    static void echo(Vector<String>& cmd);
     static void show(Vector<String>& cmd);
     static void reboot(Vector<String>& cmd);
     static void set(Vector<String>& cmd);

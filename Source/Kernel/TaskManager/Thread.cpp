@@ -155,8 +155,25 @@ void Thread::handleException(IDT::regs* r) {
         return;
     }
     
-    if (isKernel)
+    if (isKernel) {
+        if (r->intNo == 14) {
+            ulong fAddress;
+            asm volatile ("mov %%cr2, %0" : "=r" (fAddress));
+
+            String str = " |";
+            str += (r->errorCode & 0x1 ? "" : " present");
+            str += (r->errorCode & 0x2 ? " read only" : "");
+            str += (r->errorCode & 0x4 ? " user mode" : "");
+            str += (r->errorCode & 0x8 ? " reserved" : "");
+            str += " @ ";
+            str += String::hex(fAddress);
+
+            vt << str;
+            IO::cli();
+            for (;;);
+        }
         panic(exceptions[r->intNo], r);
+    }
     
     if (r->intNo == 14) {
         ulong fAddress;

@@ -2,7 +2,7 @@
 #include "VT.h"
 #include <DeviceManager/Display.h>
 
-#define BUFCHR(l, c) buff[((l) * cols) + (c)]
+#define BUFCHR(l, c) buff[((l) * this->cols) + (c)]
 
 SimpleVT::SimpleVT(uint rows, uint cols, uchar fgColor, uchar bgColor) {
     buff = new vtchr[rows * cols];
@@ -31,7 +31,7 @@ void SimpleVT::putChar(uint row, uint col, WChar c) {
     ch->c = c;
     ch->color = color;
     
-    if (mapped) 
+    if (mapped)
         Display::putChar(row + maprow, col + mapcol, BUFCHR(row, col).c, color);
 }
 

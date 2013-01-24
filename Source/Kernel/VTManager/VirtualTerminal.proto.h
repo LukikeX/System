@@ -59,6 +59,7 @@ public:
     void writeHex(ulong num, bool updateScr = true);
     
     inline VirtualTerminal& operator<< (const String& s) { write(s); return *this; }
+    inline VirtualTerminal& operator<< (const char c) { write(String(c)); return *this; }
     inline VirtualTerminal& operator<< (int i) { writeDec(i); return *this; }
     inline VirtualTerminal& operator<< (long i) { writeDec(i); return *this; }
     inline VirtualTerminal& operator<< (ushort i) { writeHex(i); return *this; }

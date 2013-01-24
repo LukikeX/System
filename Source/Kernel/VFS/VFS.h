@@ -15,6 +15,7 @@ private:
     static localFST localFS[];
     
     static Vector<FileSystem *> fileSystems;
+public: //todo Opravit
     static DirectoryNode* rootNode;
     VFS();
     

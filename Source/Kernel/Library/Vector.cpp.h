@@ -1,6 +1,7 @@
-#define DELDATA for (uint i = 0; i < m_size; i++) \
+#define DELDATA if (data && m_size) { \
+                for (uint i = 0; i < m_size; i++) \
                 data[i].~T(); \
-                delete[] data;
+                delete[] data; }
 
 template<typename T>
 Vector<T>::Vector() {
@@ -56,7 +57,8 @@ T& Vector<T>::operator [](unsigned int idx) const {
 template<typename T>
 void Vector<T>::push(const T& element) {
     T* newData = new T[m_size + 1];
-    Memory::copy(data, newData, m_size);
+    if (m_size && data)
+        Memory::copy(data, newData, m_size);
     new (&newData[m_size]) T(element);
     
     m_size++;

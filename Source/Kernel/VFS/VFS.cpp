@@ -157,7 +157,7 @@ String VFS::path(FSNode* node) {
 }
 
 bool VFS::mount(DirectoryNode* p, ulong size) {
-    if (rootNode && false) {
+    if (rootNode) {
         FSNode* n = find(path(p));
         if (!n)
             return false; //throw new FileException("Mountpoint does not exist!");

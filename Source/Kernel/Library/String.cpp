@@ -46,8 +46,7 @@ String& String::append(const char* other, uchar encoding) {
         c++;
     }
     
-    if (string)
-        delete[] string;
+    BS_FREE;
     string = newData;
     length += strlen(other);
     string[length] = 0;
@@ -133,7 +132,7 @@ Vector<String> String::split(WChar c) const {
     
     for (uint i = 0; i < length; i++) {
         if (string[i] == c)
-            ret.push(String(""));
+            ret.push(String());
         else
             ret.back() += string[i];
     }
