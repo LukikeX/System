@@ -40,6 +40,7 @@ SRC += $(wildcard VFS/*.cpp)
 SRC += $(wildcard Linker/*.cpp)
 SRC += $(wildcard Shell/*.cpp)
 SRC += $(wildcard FileSystems/RamFS/*.cpp)
+SRC += $(wildcard FileSystems/Adv/*.cpp)
 
 #SRC += $(wildcard Devices/Mouse/*.cpp)
 #SRC += $(wildcard Devices/Character/*.cpp)

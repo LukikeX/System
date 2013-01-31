@@ -159,7 +159,20 @@ void Shell::mkdir(Vector<String>& cmd) {
 }
 
 void Shell::rm(Vector<String>& cmd) {
+    if (cmd.size() < 1) {
+        *kvt << "Syntax: rm <file 1> <file 2> <...>\n";
+        return;
+    }
     
+    for (uint i = 0; i < cmd.size(); i++) {
+        FSNode *node = VFS::find(cmd[0], path);
+        if (node) {
+            if (VFS::remove(node))
+                return;
+        }
+    }
+    
+    *kvt << "Cannot remove " << cmd[0] << "\n";
 }
 
 void Shell::edit(Vector<String>& cmd) {
