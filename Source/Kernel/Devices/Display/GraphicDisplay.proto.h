@@ -4,11 +4,10 @@
 #include "Display.proto.h"
 
 class GraphicDisplay : public DisplayProto {
-private: 
+protected:
     static char consoleFont[256][16];
     static uint consoleColor[16];
     
-protected:
     struct {
         int line, col;
         uint buff[9][16]; // 8 + 1 padding

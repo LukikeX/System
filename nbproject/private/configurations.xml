@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="80">
+<configurationDescriptor version="88">
   <projectmakefile>Makefile</projectmakefile>
   <confs>
     <conf name="Default" type="0">
       <toolsSet>
         <developmentServer>localhost</developmentServer>
-        <platform>2</platform>
+        <platform>3</platform>
       </toolsSet>
       <dbx_gdbdebugger version="1">
         <gdb_pathmaps>

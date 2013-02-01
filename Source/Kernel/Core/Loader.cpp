@@ -21,6 +21,7 @@
 
 #include <Devices/Display/VGATextOutput.h>
 #include <Devices/Keyboard/PS2Keyboard.h>
+#include <Devices/Display/VESADisplay.h>
 
 #include <SyscallManager/Res.h>
 #include <TaskManager/Task.h>
@@ -116,6 +117,9 @@ extern "C" void Loader(header_T* header) {
     
     //============================ Testing =====================================
     *kvt << "[Video] Resolution: " << (int)Display::textCols() << ":" << (int)Display::textRows() << "\n";
+    
+    Device::registerDevice(new VESADisplay());
+    Display::getModes();
     
     VFS::mount((DirectoryNode* )0, 0x100000);
     Shell();

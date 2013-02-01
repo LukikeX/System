@@ -1,5 +1,7 @@
 #include "GraphicDisplay.proto.h"
 
+char GraphicDisplay::consoleFont[256][16];
+
 uint GraphicDisplay::consoleColor[] = {
     0x00000000,		// 0 == black
     0x000000AA,		// 1 == dark blue
@@ -63,7 +65,7 @@ void GraphicDisplay::getCsrBuff() {
     }
 }
 
-void GraphicDisplay::putChar(ushort line, ushort col, WChar c, uchar color) {
+void GraphicDisplay::putCrsBuff() {
     if (csrBuff.col < 0 || csrBuff.line < 0)
         return;
     

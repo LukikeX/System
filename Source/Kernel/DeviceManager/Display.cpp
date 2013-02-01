@@ -26,9 +26,9 @@ bool Display::textScroll(ushort line, ushort col, ushort height, ushort width, u
 void Display::getModes() {
    modes.clear();
     Vector<DeviceProto *> d = Device::findDevices("display");
-    
+
     for (uint i = 0; i < d.size(); i++)
-        ((DisplayProto *)(d[i]))->getModes(modes);
+        ((DisplayProto *)d[i])->getModes(modes);
 }
 
 bool Display::setMode(modeT& cMode) {
