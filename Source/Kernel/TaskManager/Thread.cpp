@@ -47,8 +47,8 @@ void Thread::run() {
                       
                       "pushq $0x23 \n"
                       "pushq %0 \n"
-                      "pushfq \n"
         
+                      "pushfq \n"
                       "pop %%rax \n"
                       "or $0x200, %%rax \n"
                       "pushq %%rax \n"
@@ -154,7 +154,7 @@ void Thread::handleException(IDT::regs* r) {
         vt << "\n";
         return;
     }
-    
+    for (;;);
     if (isKernel) {
         if (r->intNo == 14) {
             ulong fAddress;

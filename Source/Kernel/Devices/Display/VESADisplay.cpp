@@ -45,6 +45,7 @@ VESADisplay::controllerInfo_T VESADisplay::getCtrlrInfo() {
     regs.es = LIN_SEG(info);
     regs.di = LIN_OFF(info);
     V86::biosInt(0x10, regs);
+    
     if (regs.ax != 0x004F)
         panic("Error when detecting VESA modes!");
     
@@ -69,8 +70,8 @@ VESADisplay::modeInfo_T VESADisplay::getModeInfo(ushort mode) {
 }
 
 void VESADisplay::getModes(Vector<Display::modeT>& to) {
-    panic("test");
-    controllerInfo_T info = getCtrlrInfo();
+   // panic("test");
+    /*controllerInfo_T info = getCtrlrInfo();
     
     ushort* modes = (ushort *)((((info.videomodes & 0xFFFF0000) >> 12) | (info.videomodes & 0x0000FFFF)) & 0xFFFFFFFF00000000);
     for (uint i = 0; i < 64; i++) {
@@ -86,17 +87,19 @@ void VESADisplay::getModes(Vector<Display::modeT>& to) {
         
         if (mode.bpp != 24 && mode.bpp != 16 && mode.bpp != 15 && mode.bpp != 8)
             continue;
-        
+        */
+    
+       
         Display::modeT m;
         m.device = this;
-        m.textCols = mode.Xres / 9;
-        m.textRows = mode.Yres / 16;
-        m.identifier = modes[i];
-        m.graphWidth = mode.Xres;
-        m.graphHeight = mode.Yres;
-        m.graphDepth = mode.bpp;
+        m.textCols = currMode.Xres / 9;
+        m.textRows = currMode.Yres / 16;
+        //m.identifier = ];
+        m.graphWidth = currMode.Xres;
+        m.graphHeight = currMode.Yres;
+        m.graphDepth = currMode.bpp;
         to.push(m);
-    }
+    //}
 }
 
 bool VESADisplay::setMode(Display::modeT& mode) {
@@ -125,9 +128,9 @@ bool VESADisplay::setMode(Display::modeT& mode) {
         }
     }
 
-    fb = (uchar *)0xF0000000;
+    fb = (uchar *)0xFFFFFFFFF0000000;
     for (uint i = 0; i < (uint)(currMode.Yres * currMode.pitch); i += 0x1000)
-        PhysMem::kernelPageDirectory->map(PhysMem::kernelPageDirectory->getPage((ulong)(fb + i) & 0xFFFFFFFF00000000, true), (currMode.physbase + i) / 0x1000, false, false);
+        PhysMem::kernelPageDirectory->map(PhysMem::kernelPageDirectory->getPage((ulong)(fb + i), true), (currMode.physbase + i) / 0x1000, false, false);
 
     pixWidth = (currMode.bpp + 1) / 8;
     clear();
@@ -136,7 +139,7 @@ bool VESADisplay::setMode(Display::modeT& mode) {
 
 void VESADisplay::unsetMode() {
     for (uint i = 0; i < (uint)(currMode.Yres * currMode.pitch); i += 0x1000) {
-        PageDirectory::PTE* p = PhysMem::kernelPageDirectory->getPage((ulong)(fb + i) & 0xFFFFFFFF00000000, false);
+        PageDirectory::PTE* p = PhysMem::kernelPageDirectory->getPage((ulong)(fb + i), false);
         if (p)
             p->present = 0, p->address = 0;
     }
@@ -173,14 +176,17 @@ uchar VESADisplay::get8Bit(uint color) {
 }
 
 void VESADisplay::putPixel(ushort x, ushort y, uint color) {
-    if (x >= currMode.Xres || y >= currMode.Yres)
-        return;
+    //if (x >= currMode.Xres || y >= currMode.Yres)
+     //   return;
     
     union {
         uchar* c;
         ushort* w;
         uint* d;
     } p = {memPos(x, y)};
+    
+    *p.d = (*p.d & 0xFF000000) | color;
+    return;
     
     if (currMode.bpp == 24)
         *p.d = (*p.d & 0xFF000000) | color;
@@ -223,8 +229,8 @@ void VESADisplay::drawChar(ushort line, ushort col, WChar c, uchar color) {
     if (!ch)
         return;
     
-   // ushort sx = col * 9;
-    //ushort sy = line * 16;
+    ushort sx = col * 9;
+    ushort sy = line * 16;
     uint fgcolor = 1, bgcolor = 0;
     
     if (currMode.bpp == 24) {
@@ -242,11 +248,61 @@ void VESADisplay::drawChar(ushort line, ushort col, WChar c, uchar color) {
     }
     
     if (c == WChar(" ")) {
-       // uchar* p = memPos(sx, sy);
+        uchar* p = memPos(sx, sy);
         for (uint y = 0; y < 9; y++) {
-         //   if (pixWidth == 1)
-                
+            if (pixWidth == 1)
+                Memory::set((ushort *)p, (ushort)bgcolor, 0);
+            else if (pixWidth == 2)
+                Memory::set((ushort *)p, (ushort)bgcolor, 0);
+            else if (pixWidth == 3) {
+                for (uint i = 0; i < 9; i++) {
+                    p[0] = bgcolor;
+                    p[1] = bgcolor >> 8;
+                    p[2] = bgcolor >> 16;
+                    p += 3;
+                }
+                p -= 27;
+            }
+            p += currMode.pitch;
         }
+        return;
+    }
+    
+    int y = 0;
+    for (uchar* p = memPos(sx, sy); p < memPos(sx, sy + 16); p += currMode.pitch) {
+        union {
+            uchar* c;
+            ushort* w;
+            uint* d;
+        } pos = { p + (8 * pixWidth) };
+        uchar pixs = 0x12;//consoleFont[ch][y];
+        
+        if (pixWidth == 3) {
+            *pos.d = (*pos.d & 0xFF000000) | bgcolor;
+            for (int x = 0; x < 8; x++) {
+                pos.c -= pixWidth;
+                *pos.w = (pixs & 1 ? fgcolor : bgcolor);
+                pixs = pixs >> 1;
+            }
+        } else if (pixWidth == 2) {
+            *pos.w = bgcolor;
+            for (int x = 0; x < 8; x++) {
+                pos.c -= pixWidth;
+                *pos.w = (pixs & 1 ? fgcolor : bgcolor);
+                pixs = pixs >> 1;
+            }
+        } else if (pixWidth == 1) {
+            m_8bitPallete[*pos.c].pixels--;
+            *pos.c = bgcolor;
+            
+            for (int x = 0; x < 8; x++) {
+                pos.c--;
+                m_8bitPallete[*pos.c].pixels--;
+                *pos.c = (pixs & 1 ? fgcolor : bgcolor);
+                pixs = pixs >> 1;
+            }
+        }
+        y++;
     }
 }
 

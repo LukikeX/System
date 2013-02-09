@@ -1,6 +1,7 @@
 #include "V86Thread.h"
 #include "V86.h"
 #include "TaskManager/Task.h"
+#include "Core/IO.h"
 #include <MemoryManager/Memory.h>
 
 extern "C" void _v86_run();
@@ -26,7 +27,6 @@ V86Thread::V86Thread(uchar intNo, retvalT* ret) : Thread() {
     continueOnIret = false;
     
     ushort* ivt = 0;
-    
     this->ret->regs->cs = ivt[intNo * 2 + 1];
     this->ret->regs->ip = ivt[intNo * 2];
     
@@ -53,9 +53,7 @@ void V86Thread::setup() {
     ulong* stack = (ulong *)((ulong)kernelStack.address + kernelStack.size);
     rbp = (ulong)stack;
     stack--;
-    *stack = (ulong)ret->regs->cs;
-    stack--;
-    *stack = (ulong)ret->regs->ip;
+    *stack = (ulong)ret->regs;
     stack--;
     *stack = 0;
     
@@ -64,14 +62,15 @@ void V86Thread::setup() {
 }
 
 bool V86Thread::handleV86GPF(IDT::regs*) {
-    return false;
+    return true;
 }
 #include <Core/Loader.h>
 void V86Thread::handleException(IDT::regs* r) {
-    *kvt << "hndl: " << r->intNo;
-  //  for (;;);
- //   if (r->intNo == 13) {
-  //      if (!handleV86GPF(r)) {
+    //ret->finished = true;
+    *kvt << r->intNo << "\n";
+    return;
+    if (r->intNo == 13 && false) {
+        if (!handleV86GPF(r)) {
             ret->finished = true;
             ret->regs->ax = (ushort)r->rax;
             ret->regs->bx = (ushort)r->rbx;
@@ -80,7 +79,7 @@ void V86Thread::handleException(IDT::regs* r) {
             ret->regs->di = (ushort)r->rdi;
             ret->regs->si = (ushort)r->rsi;
             Task::currentThreadExits(0);
-     //   }
-    //} else
-  //      Thread::handleException(r);
+        }
+    }// else
+     //   Thread::handleException(r);
 }

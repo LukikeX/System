@@ -30,6 +30,12 @@ public:
             destination[i + offset] = source[i];
     }
     
+    template<typename T>
+    static void set(T* destination, T value, uint count) {
+        for (uint i = 0; i < count; i++)
+            destination[i] = value;
+    }
+    
     static Heap kernelHeap;
     static ulong placementAddress;
 };

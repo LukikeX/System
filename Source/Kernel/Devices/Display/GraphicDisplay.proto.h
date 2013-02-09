@@ -4,8 +4,9 @@
 #include "Display.proto.h"
 
 class GraphicDisplay : public DisplayProto {
+public:
+    static char** consoleFont;        
 protected:
-    static char consoleFont[256][16];
     static uint consoleColor[16];
     
     struct {

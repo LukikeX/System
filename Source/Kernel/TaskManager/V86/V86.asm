@@ -1,16 +1,39 @@
 [GLOBAL _v86_run]
 
 _v86_run:
-    mov rbx, 0x08
+    pop rax
+    pop rax
+
+    xor rbx, rbx
+    mov bx, [rax + 20]
     push rbx
-    pushfq
-    pop rbx
-    or rbx, 0x20200
+    mov bx, [rax + 18]
+    push rbx
+    mov bx, [rax + 14]
+    push rbx
+    mov bx, [rax + 16]
+    push rbx
+    mov bx, [rax + 22]
+    push rbx
+    mov bx, [rax + 26]
     push rbx
 
-    mov rbx, [rsi + 24]
+    pushfq
+    pop rbx
+   or rbx, 0x20200
     push rbx
-    mov rbx, [rsi + 16]
+
+    xor rbx, rbx
+    mov bx, [rax + 12] ; CS
     push rbx
+    mov bx, [rax + 24] ; IP
+    push rbx
+
+    mov bx, [rax + 2]
+    mov cx, [rax + 4]
+    mov dx, [rax + 6]
+    mov di, [rax + 8]
+    mov si, [rax + 10]
+    mov ax, [rax]
 
     iretq

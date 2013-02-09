@@ -1,6 +1,6 @@
 #include "GraphicDisplay.proto.h"
 
-char GraphicDisplay::consoleFont[256][16];
+char** GraphicDisplay::consoleFont;
 
 uint GraphicDisplay::consoleColor[] = {
     0x00000000,		// 0 == black

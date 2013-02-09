@@ -46,5 +46,6 @@ ushort V86::allocSeg(ushort size) {
 }
 
 void* V86::alloc(ushort size) {
-    return FP_TO_LINEAR(allocSeg(size), 0);
+    return (void *)allocSeg(size);
+    //return FP_TO_LINEAR(allocSeg(size), 0);
 }

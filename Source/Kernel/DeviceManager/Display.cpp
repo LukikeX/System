@@ -52,3 +52,15 @@ void Display::setText(VGATextoutput* out) {
 void Display::clear() {
     mode.device->clear();
 }
+
+void Display::putPixel(ushort x, ushort y, uint color) {
+    if (x >= mode.graphWidth || y >= mode.graphHeight)
+        return;
+    mode.device->putPixel(x, y, color);
+}
+
+uint Display::getPixel(ushort x, ushort y) {
+    if (x >= mode.graphWidth || y >= mode.graphHeight)
+        return 0;
+    return mode.device->getPixel(x, y);
+}

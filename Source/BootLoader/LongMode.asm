@@ -125,5 +125,10 @@ LongMode:
     push qword 0xFFFFFFFFC0007000
     push word [MemRegCount]
 
+    push qword vbe_controller_info
+    mov rax, video_mode_description
+    or rax, 0xFFFFFFFFC0000000
+    push rax
+
     mov rdi, rsp
     jmp 0xFFFFFFFFC0100000

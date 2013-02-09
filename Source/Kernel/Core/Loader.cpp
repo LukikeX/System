@@ -35,7 +35,7 @@
 //vo FSNode readable, writable atd.
 //dorobit mount vo VFS
 //dorobit DMA na pracu s grafikou
-//Opravit V86
+//Opravit V86 - nejde priamo v long mode
 //Dorobit Vlastny filesystem
 //Odskusat funkcnost a stabilitu VFS a RamFS
 //Opravit v basestringu to posrate uvolnovanie pamete....
@@ -53,6 +53,8 @@ extern "C" void Loader(header_T* header) {
     construct();
     Res::size = 0;
     VFS::rootNode = 0;
+    V86::seg = 0x1000;
+    GraphicDisplay::consoleFont = (char **)0xFFFFFFFFC000D000;
     
     VGATextoutput* vgaout = new VGATextoutput();
     Display::setText(vgaout);
@@ -74,6 +76,29 @@ extern "C" void Loader(header_T* header) {
     SB::progress("Initializing memory heap...");
     Memory();
     SB::ok();
+    
+    SB::progress("Initializing VESA mode...");
+    VESADisplay* vesaout = new VESADisplay();
+    vesaout->currMode = *header->vesaMode;
+    vesaout->getModes(Display::modes);
+    Display::mode = Display::modes[0];
+        
+    vesaout->fb = (uchar *)0xFFFFFFFFF0000000;
+    for (uint i = 0; i < (uint)(vesaout->currMode.Yres * vesaout->currMode.pitch); i += 0x1000)
+        PhysMem::kernelPageDirectory->map(PhysMem::kernelPageDirectory->getPage((ulong)(vesaout->fb + i), true), (vesaout->currMode.physbase + i), false, false);
+    
+    vesaout->pixWidth = (vesaout->currMode.bpp + 1) / 8;
+    SB::ok();
+
+    
+    vesaout->drawChar(5, 5, "A", 0xFF00FF);
+    
+    //for (uint i = 0; i < 800; i++) {
+    //    for (uint j = 0; j < 600; j++)
+    //        Display::mode.device->putPixel(i, j, i * j * 10);
+    //}
+    
+    for (;;);
     
     SB::progress("Initializing GDT...");
     GDT();
@@ -118,8 +143,8 @@ extern "C" void Loader(header_T* header) {
     //============================ Testing =====================================
     *kvt << "[Video] Resolution: " << (int)Display::textCols() << ":" << (int)Display::textRows() << "\n";
     
-    Device::registerDevice(new VESADisplay());
-    Display::getModes();
+    //Device::registerDevice(new VESADisplay());
+    //Display::getModes();
     
     VFS::mount((DirectoryNode* )0, 0x100000);
     Shell();

@@ -5,7 +5,7 @@
 #include <DeviceManager/Display.h>
 
 class VESADisplay : public GraphicDisplay {
-private:
+public:
     struct controllerInfo_T {
 	char signature[4];             // == "VESA"
 	short version;                 // == 0x0300 for VBE 3.0
@@ -40,7 +40,6 @@ private:
 	uint reserved1;
 	ushort reserved2;
     } __attribute__ ((packed));
-    
     
     controllerInfo_T getCtrlrInfo();
     modeInfo_T getModeInfo(ushort mode);

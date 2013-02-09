@@ -26,6 +26,8 @@ int 0x13
 mov di, 0x7000
 call _get_memory_map
 
+call setup_video_mode
+
 ; Load Kernel from drive to memory and move to 0x10000
 loadKernel:
     mov ax, [count]
@@ -111,6 +113,8 @@ MemRegCount: dw 0
 times (510-($-$$)) db 0
 DW 0xAA55
 ;=================================== PART 2 ====================================
+%include "VESA.asm"
+
 [bits 32]
 
 Stage3:
@@ -132,4 +136,5 @@ IDT:
     .Base   dd 0
 
 %include "LongMode.asm"
+
 times (2048-($-$$)) db 0

@@ -16,7 +16,7 @@ public:
     struct functionT {
         ushort size;
         uchar data[];
-    };
+    } __attribute__((packed));
     
     struct regsT {
         ushort ax, bx, cx, dx, di, si;

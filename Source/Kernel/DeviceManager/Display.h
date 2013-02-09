@@ -29,6 +29,8 @@ public:
     static void putChar(ushort line, ushort col, WChar c, uchar color);
     static void moveCursor(ushort line, ushort col);
     static bool textScroll(ushort line, ushort col, ushort height, ushort width, uchar color);
+    static void putPixel(ushort x, ushort y, uint color);
+    static uint getPixel(ushort x, ushort y);
     
     static void getModes();
     static bool setMode(modeT& cMode);
