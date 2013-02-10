@@ -22,11 +22,16 @@
 #include <Devices/Display/VGATextOutput.h>
 #include <Devices/Keyboard/PS2Keyboard.h>
 #include <Devices/Display/VESADisplay.h>
+#include <Devices/FPU.h>
 
 #include <SyscallManager/Res.h>
 #include <TaskManager/Task.h>
 #include <TaskManager/V86/V86.h>
 #include <TaskManager/V86/V86Thread.h>
+
+
+#include <Library/GL/Window.h>
+#include <Library/GL/Quad.h>
 
 //ScrollableVT - redraw().... opravit
 //String number
@@ -54,7 +59,6 @@ extern "C" void Loader(header_T* header) {
     Res::size = 0;
     VFS::rootNode = 0;
     V86::seg = 0x1000;
-    GraphicDisplay::consoleFont = (char **)0xFFFFFFFFC000D000;
     
     VGATextoutput* vgaout = new VGATextoutput();
     Display::setText(vgaout);
@@ -91,7 +95,34 @@ extern "C" void Loader(header_T* header) {
     SB::ok();
 
     
-    vesaout->drawChar(5, 5, "A", 0xFF00FF);
+    //vesaout->drawChar(5, 5, "A", 0xFF00FF);
+    /*int a = 200;
+    for (uint i = 200; i < 400; i++) {
+        for (uint j = a; j < 400; j++) {
+            vesaout->putPixel(i, j, 0xFF0000);
+            if (i == j) {
+                a--;
+                break;
+            }
+        }
+    }*/
+    
+    FPU();
+    
+    Display::putChar(5, 5, "C", 0xFF0000);
+    
+    
+    GL::Window* w = new GL::Window(100, 100);
+    GL::Window::window = w;
+    
+    GL::Quad* stvorec = new GL::Quad();
+    //stvorec->vertex(-1.0f, 1.0f, 0.0f);
+    //stvorec->vertex(1.0f, 1.0f, 0.0f);
+    //stvorec->vertex(-1.0f, -1.0f, 0.0f);
+    //stvorec->vertex(1.0f, -1.0f, 0.0f);
+    
+   //w->testDraw();
+    
     
     //for (uint i = 0; i < 800; i++) {
     //    for (uint j = 0; j < 600; j++)

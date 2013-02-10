@@ -23,6 +23,7 @@ SRC += $(wildcard C++/*.cpp)
 SRC += $(wildcard C++/Exceptions/*.cpp)
 SRC += $(wildcard Exceptions/*.cpp)
 SRC += $(wildcard Library/*.cpp)
+SRC += $(wildcard Library/GL/*.cpp)
 
 SRC += $(wildcard DeviceManager/*.cpp)
 SRC += $(wildcard MemoryManager/*.cpp)

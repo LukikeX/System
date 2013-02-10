@@ -5,7 +5,7 @@
 
 class GraphicDisplay : public DisplayProto {
 public:
-    static char** consoleFont;        
+    static const char consoleFont[][16];
 protected:
     static uint consoleColor[16];
     
