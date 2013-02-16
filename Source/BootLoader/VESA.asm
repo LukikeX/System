@@ -247,7 +247,7 @@ setup_video_mode:
         push es
         xor ax, ax
         mov es, ax
-        mov di, 0xD000
+        mov di, 0x9000
         call get_bios_vga_font
         pop es
 

@@ -61,7 +61,6 @@ void SimpleVT::unmap() {
 void SimpleVT::redraw() {
     if (!mapped)
         return;
-    return;
     
     for (uint r = 0; r < rows; r++) {
         for (uint c = 0; c < cols; c++)

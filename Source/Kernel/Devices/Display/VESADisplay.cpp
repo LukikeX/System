@@ -2,6 +2,7 @@
 #include <TaskManager/V86/V86.h>
 #include <Core/Panic.h>
 #include <Core/IO.h>
+#include <sched.h>
 
 inline ushort rgbTo15(uint color) {
     return (
@@ -70,7 +71,6 @@ VESADisplay::modeInfo_T VESADisplay::getModeInfo(ushort mode) {
 }
 
 void VESADisplay::getModes(Vector<Display::modeT>& to) {
-   // panic("test");
     /*controllerInfo_T info = getCtrlrInfo();
     
     ushort* modes = (ushort *)((((info.videomodes & 0xFFFF0000) >> 12) | (info.videomodes & 0x0000FFFF)) & 0xFFFFFFFF00000000);
@@ -176,19 +176,19 @@ uchar VESADisplay::get8Bit(uint color) {
 }
 
 void VESADisplay::putPixel(ushort x, ushort y, uint color) {
-    //if (x >= currMode.Xres || y >= currMode.Yres)
-     //   return;
+    if (x >= currMode.Xres || y >= currMode.Yres)
+        return;
     
     union {
         uchar* c;
         ushort* w;
         uint* d;
-    } p = {memPos(x, y)};
+    } p = { memPos(x, y) };
     
     *p.d = (*p.d & 0xFF000000) | color;
     return;
     
-    if (currMode.bpp == 24)
+    if (currMode.bpp == 24 || currMode.bpp == 32)
         *p.d = (*p.d & 0xFF000000) | color;
     else if (currMode.bpp == 15)
         *p.w = rgbTo15(color);
@@ -212,7 +212,7 @@ uint VESADisplay::getPixel(ushort x, ushort y) {
         uint* d;
     } p = {memPos(x, y)};
     
-    if (currMode.bpp == 24)
+    if (currMode.bpp == 24 || currMode.bpp == 32)
         ret = *p.d & 0x00FFFFFF;
     else if (currMode.bpp == 15)
         ret = rgbFrom15(*p.w);
@@ -233,7 +233,7 @@ void VESADisplay::drawChar(ushort line, ushort col, WChar c, uchar color) {
     ushort sy = line * 16;
     uint fgcolor = 1, bgcolor = 0;
     
-    if (currMode.bpp == 24) {
+    if (currMode.bpp == 24 || currMode.bpp == 32) {
         fgcolor = consoleColor[color & 0xF];
         bgcolor = consoleColor[(color >> 4) & 0xF];
     } else if (currMode.bpp == 15) {
@@ -248,22 +248,15 @@ void VESADisplay::drawChar(ushort line, ushort col, WChar c, uchar color) {
     }
     
     if (c == WChar(" ")) {
-        uchar* p = memPos(sx, sy);
-        for (uint y = 0; y < 9; y++) {
+        for (uchar* p = memPos(sx, sy); p < memPos(sx, sy + 16); p += currMode.pitch) {
             if (pixWidth == 1)
                 Memory::set((ushort *)p, (ushort)bgcolor, 0);
             else if (pixWidth == 2)
                 Memory::set((ushort *)p, (ushort)bgcolor, 0);
-            else if (pixWidth == 3) {
-                for (uint i = 0; i < 9; i++) {
-                    p[0] = bgcolor;
-                    p[1] = bgcolor >> 8;
-                    p[2] = bgcolor >> 16;
-                    p += 3;
-                }
-                p -= 27;
+            else if (pixWidth == 3 || pixWidth == 4) {
+                for (uint i = 0; i < 9; i++)
+                    ((uint *)p)[i] = bgcolor;
             }
-            p += currMode.pitch;
         }
         return;
     }
@@ -275,13 +268,13 @@ void VESADisplay::drawChar(ushort line, ushort col, WChar c, uchar color) {
             ushort* w;
             uint* d;
         } pos = { p + (8 * pixWidth) };
-        uchar pixs = 0x12;//consoleFont[ch][y];
+        uchar pixs = consoleFont[ch * 16 + y];
         
-        if (pixWidth == 3) {
+        if (pixWidth == 3 || pixWidth == 4) {
             *pos.d = (*pos.d & 0xFF000000) | bgcolor;
             for (int x = 0; x < 8; x++) {
                 pos.c -= pixWidth;
-                *pos.w = (pixs & 1 ? fgcolor : bgcolor);
+                *pos.d = (*pos.d & 0xFF000000) | (pixs & 1 ? fgcolor : bgcolor);
                 pixs = pixs >> 1;
             }
         } else if (pixWidth == 2) {
@@ -307,16 +300,17 @@ void VESADisplay::drawChar(ushort line, ushort col, WChar c, uchar color) {
 }
 
 bool VESADisplay::textScroll(ushort line, ushort col, ushort height, ushort width, uchar color) {
+    return false;
     uchar* start = memPos(col * 9, line * 16);
     uint count = width * 9 * pixWidth;
     uint diff = 16 * currMode.pitch;
     putCrsBuff();
     
     for (int i = 0; i < (height - 1) * 16; i++) {
-        Memory::copy(start, start + diff, count);
+        Memory::copy(start + diff, start, count);
         start += currMode.pitch;
     }
-    
+
     for (uint i = 0; i < width; i++) 
         drawChar(line + height - 1, col + i, " ", color);
     

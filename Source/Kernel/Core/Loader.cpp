@@ -5,6 +5,7 @@
 #include "SB.h"
 #include "IO.h"
 #include "Shell/Shell.h"
+#include "VTManager/VT.h"
 
 #include <C++/Runtime.h>
 #include <VTManager/ScrollableVT.h>
@@ -44,6 +45,7 @@
 //Dorobit Vlastny filesystem
 //Odskusat funkcnost a stabilitu VFS a RamFS
 //Opravit v basestringu to posrate uvolnovanie pamete....
+//Opravit vo VESADisplay scrollovanie
 
 //Process:
 //scall - uid
@@ -58,12 +60,11 @@ extern "C" void Loader(header_T* header) {
     construct();
     Res::size = 0;
     VFS::rootNode = 0;
-    V86::seg = 0x1000;
     
     VGATextoutput* vgaout = new VGATextoutput();
     Display::setText(vgaout);
     
-    SB* sb = new SB(11);
+    SB* sb = new SB(13);
     SB::progress("Initializing paging...");
     ulong size = 0x100000;
     for (uint i = 0; i < header->mapLen; i++)
@@ -92,44 +93,8 @@ extern "C" void Loader(header_T* header) {
         PhysMem::kernelPageDirectory->map(PhysMem::kernelPageDirectory->getPage((ulong)(vesaout->fb + i), true), (vesaout->currMode.physbase + i), false, false);
     
     vesaout->pixWidth = (vesaout->currMode.bpp + 1) / 8;
+    VT::redrawScreen();
     SB::ok();
-
-    
-    //vesaout->drawChar(5, 5, "A", 0xFF00FF);
-    /*int a = 200;
-    for (uint i = 200; i < 400; i++) {
-        for (uint j = a; j < 400; j++) {
-            vesaout->putPixel(i, j, 0xFF0000);
-            if (i == j) {
-                a--;
-                break;
-            }
-        }
-    }*/
-    
-    FPU();
-    
-    Display::putChar(5, 5, "C", 0xFF0000);
-    
-    
-    GL::Window* w = new GL::Window(100, 100);
-    GL::Window::window = w;
-    
-    GL::Quad* stvorec = new GL::Quad();
-    //stvorec->vertex(-1.0f, 1.0f, 0.0f);
-    //stvorec->vertex(1.0f, 1.0f, 0.0f);
-    //stvorec->vertex(-1.0f, -1.0f, 0.0f);
-    //stvorec->vertex(1.0f, -1.0f, 0.0f);
-    
-   //w->testDraw();
-    
-    
-    //for (uint i = 0; i < 800; i++) {
-    //    for (uint j = 0; j < 600; j++)
-    //        Display::mode.device->putPixel(i, j, i * j * 10);
-    //}
-    
-    for (;;);
     
     SB::progress("Initializing GDT...");
     GDT();
@@ -145,6 +110,10 @@ extern "C" void Loader(header_T* header) {
 
     SB::progress("Setting up device manager...");
     Device();
+    SB::ok();
+    
+    SB::progress("Enabling Float Point Unit...");
+    FPU();
     SB::ok();
     
     SB::progress("Setting up timer...");
@@ -169,16 +138,34 @@ extern "C" void Loader(header_T* header) {
     SB::ok();
     
     delete sb;
-    kvt->map(0, 0);
+    kvt->map();
     
     //============================ Testing =====================================
     *kvt << "[Video] Resolution: " << (int)Display::textCols() << ":" << (int)Display::textRows() << "\n";
     
-    //Device::registerDevice(new VESADisplay());
-    //Display::getModes();
-    
     VFS::mount((DirectoryNode* )0, 0x100000);
     Shell();
+    
+    
+    
+    //GL::Window* w = new GL::Window(100, 100);
+    //GL::Window::window = w;
+    
+    //GL::Quad* stvorec = new GL::Quad();
+    //stvorec->vertex(-1.0f, 1.0f, 0.0f);
+    //stvorec->vertex(1.0f, 1.0f, 0.0f);
+    //stvorec->vertex(-1.0f, -1.0f, 0.0f);
+    //stvorec->vertex(1.0f, -1.0f, 0.0f);
+    
+   //w->testDraw();
+    
+    
+    //for (uint i = 0; i < 800; i++) {
+    //    for (uint j = 0; j < 600; j++)
+    //        Display::mode.device->putPixel(i, j, i * j * 10);
+    //}
+    
+    
     
     while (true) {
         Shell::printMode();
@@ -259,15 +246,6 @@ void Print(header_T* h) {
     *kvt << "|--------------------|------------|-----------------------------|\n";
 }
 
-
-//Test V86
-    //V86Thread::regsT r;
-    //Memory::clear(&r);
-    //r.ax = 0x0F << 4;
-    //V86::biosInt(0x12, r);
-    //*kvt << "int: " << (uint)r.ax;
-
-
 //Test multitaskingu
 /*
  ulong syscall(ulong n, ulong a, ulong b, ulong c, ulong d, ulong e) {
@@ -296,14 +274,3 @@ void prog2() {
  */    
     //new Thread((ThreadEntry)prog1, 0, true);
     //new Thread((ThreadEntry)prog2, 0, true);
-
-
-
-
-      //  Thread* t = new Thread((ThreadEntry)prog1, 0, true);
-        
-        //V86Thread::regsT r;
-        //Memory::clear(&r);
-        //r.ax = 0x0F << 4;
-        //V86::biosInt(0x12, r);
-        //*kvt << "int: " << (uint)r.ax;

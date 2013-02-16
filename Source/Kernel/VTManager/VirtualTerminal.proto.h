@@ -19,16 +19,6 @@ protected:
     virtual void updateCursor() { }
     
 public:
-    /*typedef enum {
-        Black  = 0x000000,
-        White  = 0xFFFFFF,
-        Red    = 0xC00000,
-        Green  = 0x00C000,
-        Blue   = 0x0000C0,
-        Cyan   = 0x00C0C0,
-        Grey   = 0xC0C0C0,
-        Yellow = 0xC0C000
-    } Color;*/
     typedef enum {
         Black  = 0,
         Red    = 4,
@@ -58,13 +48,13 @@ public:
     void writeHex(uint num, bool updateScr = true);
     void writeHex(ulong num, bool updateScr = true);
     
-    inline VirtualTerminal& operator<< (const String& s) { write(s); return *this; }
-    inline VirtualTerminal& operator<< (const char c) { write(String(c)); return *this; }
-    inline VirtualTerminal& operator<< (int i) { writeDec(i); return *this; }
-    inline VirtualTerminal& operator<< (long i) { writeDec(i); return *this; }
-    inline VirtualTerminal& operator<< (ushort i) { writeHex(i); return *this; }
-    inline VirtualTerminal& operator<< (uint i) { writeHex(i); return *this; }
-    inline VirtualTerminal& operator<< (ulong i) { writeHex(i); return *this; }
+    inline VirtualTerminal& operator<<(const String& s) { write(s); return *this; }
+    inline VirtualTerminal& operator<<(const char c) { write(String(c)); return *this; }
+    inline VirtualTerminal& operator<<(int i) { writeDec(i); return *this; }
+    inline VirtualTerminal& operator<<(long i) { writeDec(i); return *this; }
+    inline VirtualTerminal& operator<<(ushort i) { writeHex(i); return *this; }
+    inline VirtualTerminal& operator<<(uint i) { writeHex(i); return *this; }
+    inline VirtualTerminal& operator<<(ulong i) { writeHex(i); return *this; }
     
     //keyboard func
     virtual void keyPress(keyStatus ks);
