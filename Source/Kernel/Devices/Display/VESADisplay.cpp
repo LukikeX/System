@@ -2,7 +2,6 @@
 #include <TaskManager/V86/V86.h>
 #include <Core/Panic.h>
 #include <Core/IO.h>
-#include <sched.h>
 
 inline ushort rgbTo15(uint color) {
     return (

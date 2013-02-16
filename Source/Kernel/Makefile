@@ -36,6 +36,7 @@ SRC += $(wildcard Devices/*.cpp)
 SRC += $(wildcard Devices/ATA/*.cpp)
 SRC += $(wildcard Devices/Display/*.cpp)
 SRC += $(wildcard Devices/Keyboard/*.cpp)
+SRC += $(wildcard Devices/Mouse/*.cpp)
 
 SRC += $(wildcard VFS/*.cpp)
 SRC += $(wildcard Linker/*.cpp)

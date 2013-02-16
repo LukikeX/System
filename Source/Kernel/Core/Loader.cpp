@@ -23,6 +23,7 @@
 #include <Devices/Display/VGATextOutput.h>
 #include <Devices/Keyboard/PS2Keyboard.h>
 #include <Devices/Display/VESADisplay.h>
+#include <Devices/Mouse/PS2Mouse.h>
 #include <Devices/FPU.h>
 
 #include <SyscallManager/Res.h>
@@ -146,6 +147,7 @@ extern "C" void Loader(header_T* header) {
     VFS::mount((DirectoryNode* )0, 0x100000);
     Shell();
     
+    PS2Mouse();
     
     
     //GL::Window* w = new GL::Window(100, 100);
