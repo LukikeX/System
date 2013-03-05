@@ -2,6 +2,7 @@
 #define KEYBOARD_DEFS_H
 
 #include <Core/typedef.h>
+#include <Library/WChar.h>
 
 //Used by variable kbdstatus
 #define STATUS_SCRL  0x40
@@ -78,7 +79,7 @@ struct keyStatus {
     bool hasChar;
     uchar modifiers;
     uchar command;	
-    char character;
+    WChar character;
     keyStatus() : hasCmd(false), hasChar(false), command(0), character('\0') { }
 };
 

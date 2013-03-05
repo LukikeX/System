@@ -145,7 +145,7 @@ void VESADisplay::unsetMode() {
 }
 
 void VESADisplay::clear() {
-    for (uint* i = (uint *)(memPos(0, 0)); i < (uint *)(memPos(currMode.Xres, 0)); i++)
+    for (ulong* i = (ulong *)(memPos(0, 0)); i < (ulong *)(memPos(currMode.Xres, currMode.Yres- 1)); i++)
         *i = 0;
 }
 

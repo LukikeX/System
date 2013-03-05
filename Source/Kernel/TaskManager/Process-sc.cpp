@@ -1,7 +1,10 @@
 #include "Process.h"
 #include "Thread.h"
 #include "Task.h"
-#include "SyscallManager/Res.h"
+#include <SyscallManager/Res.h>
+#include <UserManager/UserManager.h>
+
+#define ISPARENT Task::currentProcess()->getPid() == ppid
 
 Process::callT Process::callTable[] = {
     CALL0(PRIF_EXIT,       &Process::exitSC),
@@ -25,7 +28,7 @@ ulong Process::scall(uint wat, ulong a, ulong, ulong, ulong) {
         return Task::currentProcess()->resId();
     else if (wat == PRIF_SRUN) {
         String* e = (String *)a;
-        Process* p = Process::run(*e, 1); //@todo: UID!!
+        Process* p = Process::run(*e, UserManager::uid());
         if (p)
             return p->resId();
     } else if (wat == PRIF_SWAIT) {
@@ -47,7 +50,7 @@ ulong Process::scall(uint wat, ulong a, ulong, ulong, ulong) {
 }
 
 bool Process::accessible() {
-    return true; //uid == User::uid...
+    return uid == UserManager::uid();
 }
 
 ulong Process::exitSC() {
@@ -58,16 +61,18 @@ ulong Process::exitSC() {
 }
 
 ulong Process::argcSC() {
-    //if () // 	if (Usr::uid() == m_uid or ISROOT or ISPARENT) { @todo
-    return args.size();
+    if (UserManager::uid() == uid || ISROOT || ISPARENT)
+        return args.size();
+    return (ulong)-1;
 }
 
 ulong Process::argvSC(ulong idx) {
     if (idx >= args.size())
         return (ulong)-1;
-    //if () // 	if (Usr::uid() == m_uid or ISROOT or ISPARENT) {
     
-    return args[idx].serialize();
+    if (UserManager::uid() == uid || ISROOT || ISPARENT)
+        return args[idx].serialize();
+    return (ulong)-1;
 }
 
 ulong Process::startSC() {

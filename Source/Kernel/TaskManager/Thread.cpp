@@ -1,5 +1,6 @@
 #include "Thread.h"
 #include "Task.h"
+#include <UserManager/UserManager.h>
 #include <Core/IO.h>
 #include <DeviceManager/Time.h>
 #include <MemoryManager/GDT.h>
@@ -259,5 +260,5 @@ ulong Thread::finishSC(ulong errCode) {
 }
 
 bool Thread::accessible() {
-    return true; //(Usr::uid() == m_process->m_uid);
+    return UserManager::uid() == process->uid;
 }

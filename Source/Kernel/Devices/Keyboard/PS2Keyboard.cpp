@@ -7,11 +7,11 @@
 PS2Keyboard::PS2Keyboard() {
     Device::requestIRQ(this, 1);
     
-//    uchar tmp = IO::inB(0x60), tmp2 = 0;
-    //while (tmp != tmp2) {
-//        tmp2 = tmp;
-      //  tmp = IO::inB(0x60);
-    //}
+    uchar tmp = IO::inB(0x60), tmp2 = 0;
+    while (tmp != tmp2) {
+        tmp2 = tmp;
+        tmp = IO::inB(0x60);
+    }
 
     escaped = false;
 }

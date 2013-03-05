@@ -3,6 +3,7 @@
 
 #include "FileSystem.proto.h"
 #include <SyscallManager/Ressource.h>
+#include <UserManager/User.h>
 
 class FSNode : public Ressource {
 protected:
@@ -43,9 +44,9 @@ public:
     FileSystem* getFS() const { return fs; }
     virtual FSNode* getParent() const { return parent; }
     
-    bool readable() { return false; }
-    bool writable() { return false; }
-    bool runnable() { return false; }
+    bool readable(User* user = 0);
+    bool writable(User* user = 0);
+    bool runnable(User* user = 0);
     
     bool setPermissions(uint perm) {
         bool v = fs->setPermissions(this, perm);

@@ -1,7 +1,8 @@
 #include "FSNode.proto.h"
 #include "VFS.h"
-#include "TaskManager/Task.h"
-#include "SyscallManager/Res.h"
+#include <TaskManager/Task.h>
+#include <SyscallManager/Res.h>
+#include <UserManager/UserManager.h>
 
 FSNode::callT FSNode::callTable[] = {
     CALL0(FNIF_GETNAME,   &FSNode::getNameSC),
@@ -87,4 +88,46 @@ ulong FSNode::getParentSC() {
 
 bool FSNode::accessible() {
     return readable();
+}
+
+bool FSNode::readable(User* user) {
+    if (ISROOT)
+        return true;
+    
+    if (!user)
+        user = UserManager::user();
+    
+    if (user->getUid() == uid)
+        return ((permissions >> 6) & 4) != 0;
+    if(user->isInGroup(gid))
+        return ((permissions >> 3) & 4) != 0;
+    return (permissions & 4) != 0;
+}
+
+bool FSNode::writable(User* user) {
+    if (ISROOT)
+        return true;
+    
+    if (!user)
+        user = UserManager::user();
+    
+    if (user->getUid() == uid)
+        return ((permissions >> 6) & 2) != 0;
+    if(user->isInGroup(gid))
+        return ((permissions >> 3) & 2) != 0;
+    return (permissions & 2) != 0;
+}
+
+bool FSNode::runnable(User* user) {
+    if (ISROOT)
+        return true;
+    
+    if (!user)
+        user = UserManager::user();
+    
+    if (user->getUid() == uid)
+        return ((permissions >> 6) & 1) != 0;
+    if(user->isInGroup(gid))
+        return ((permissions >> 3) & 1) != 0;
+    return (permissions & 1) != 0;
 }

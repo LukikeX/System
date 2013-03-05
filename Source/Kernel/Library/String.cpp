@@ -187,11 +187,11 @@ String String::hex(uint n) {
 }
 
 String String::number(long n) {
-    //if (!n) return String("0");
+    if (!n) return String("0");
     
- //   bool negative = false;
+    bool negative = false;
     if (n < 0) {
-  //      negative = true;
+        negative = true;
         n = 0 - n;
     }
     uint order = 0, temp = n;
@@ -212,8 +212,8 @@ String String::number(long n) {
     
     ret.string[order] = 0;
     
-   // if (negative)
-     //   return String("-") += ret;
+    if (negative)
+        return String("-") += ret;
     return ret;
 }
 

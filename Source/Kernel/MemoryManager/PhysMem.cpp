@@ -8,7 +8,7 @@ Bitset* PhysMem::frames;
 PageDirectory* PhysMem::kernelPageDirectory;
 
 PhysMem::PhysMem(ulong size) {
-    nFrames = 0x600000;
+    nFrames = 0x60000;
     frames = new Bitset(nFrames);
     
     kernelPageDirectory = new PageDirectory();

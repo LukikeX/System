@@ -1,6 +1,8 @@
 #ifndef LIST_H
 #define LIST_H
 
+#include <Core/typedef.h>
+
 template<typename T>
 class List {
 protected:

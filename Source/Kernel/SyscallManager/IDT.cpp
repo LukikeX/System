@@ -171,10 +171,7 @@ void IDT::handler(regs* r) {
             IO::outB(0xA0, 0x20);
         IO::outB(0x20, 0x20);
     
-        IO::sti();
         Device::handler(r);
-        IO::cli();
-        
         doSwitch = doSwitch || Task::IRQwakeup(r->intNo - 32);
     } else if (r->intNo == 64) {
        // *kvt << "syscall: " << r->rax << " | " << r->rbx << " | " << r->rcx << "\n";

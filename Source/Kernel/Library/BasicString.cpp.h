@@ -28,7 +28,7 @@ BasicString<T>::BasicString(const T value, unsigned int count) {
 
 template<typename T>
 BasicString<T>::~BasicString() {
-   // BS_FREE;
+    BS_FREE;
 }
 
 template<typename T>

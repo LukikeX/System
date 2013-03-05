@@ -7,7 +7,7 @@ ScrollableVT::ScrollableVT(uint rows, uint cols, uint keepRows, uchar fgColor, u
         SimpleVT(rows, cols, fgColor, bgColor) {
     this->keepRows = keepRows;
     linesUp = 0;
-    lines = new vtchr*[cols];
+    lines = new vtchr*[keepRows];
     
     for (uint i = 0; i < keepRows; i++) {
         lines[i] = new vtchr[cols];
@@ -48,13 +48,13 @@ void ScrollableVT::redraw() {
         return;
     
     for (uint r = 0; r < rows; r++) {
-        if (r > linesUp) {
+        if (r >= linesUp) {
             for (uint c = 0; c < cols; c++)
                 Display::putChar(r + maprow, c + mapcol, BUFCHR(r - linesUp, c).c, BUFCHR(r - linesUp, c).color);
         } else {
             for (uint c = 0; c < cols; c++) {
-                //uint l = keepRows - linesUp + r;
-                //Display::putChar(r + maprow, c + mapcol, lines[l][c].c, lines[l][c].color);
+                uint l = keepRows - linesUp + r;
+                Display::putChar(r + maprow, c + mapcol, lines[l][c].c, lines[l][c].color);
             }
         }
     }
