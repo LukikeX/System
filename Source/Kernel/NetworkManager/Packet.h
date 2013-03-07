@@ -14,7 +14,8 @@ public:
     ~Packet();
     
     ushort checksum();
-    void addHeader(uint size);
+    void addHeader(ushort size, uchar* data);
+    void delHeader(ushort size);
 };
 
 #endif

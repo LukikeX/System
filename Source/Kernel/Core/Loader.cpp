@@ -3,7 +3,7 @@
 #include "Panic.h"
 #include "SB.h"
 #include "IO.h"
-#include "Shell/Shell.h"
+#include <Shell/KernelShell.h>
 
 #include <C++/Runtime.h>
 #include <VTManager/VT.h>
@@ -141,21 +141,24 @@ extern "C" void Loader(header_T* header) {
     kvt->map();
     
     //============================ Testing =====================================
-    *kvt << "[Video] Resolution: " << (int)Display::textCols() << ":" << (int)Display::textRows() << "\n";
-    
     VFS::mount((DirectoryNode* )0, 0x100000);
-    Shell();
     
-   // PCI::deviceList();
+    DirectoryNode* cwd = VFS::getRootNode();
+    Task::currentProcess()->setCwd(cwd);
     
-    Net::ifconfig_t conf;
-    conf.ipaddr = inetAddress(192, 168, 0, 100);
-    conf.netmask = inetAddress(255, 255, 255, 0);
-    conf.broadcast = inetAddress(192, 168, 0, 255);
-    conf.mtu = 0;
+    new KernelShell(cwd, kvt);
+    while (KernelShell::getInstances())
+        Task::currentThread()->sleep(100);
     
-    NE2000* ne = new NE2000();
-    ne->readPacket();
+    
+    //Net::ifconfig_t conf;
+    //conf.ipaddr = inetAddress(192, 168, 0, 100);
+    //conf.netmask = inetAddress(255, 255, 255, 0);
+    //conf.broadcast = inetAddress(192, 168, 0, 255);
+    //conf.mtu = 0;
+    
+    //NE2000* ne = new NE2000();
+    //ne->readPacket();
     
     //GL::Window* w = new GL::Window(100, 100);
    // GL::Window::window = w;
@@ -168,32 +171,6 @@ extern "C" void Loader(header_T* header) {
     
    // w->testDraw();
     
-    while (true) {
-        Shell::printMode();
-        Vector<String> v = kvt->readLine(true).split(' ');
-        
-        if (v[0].empty())
-            continue;
-        
-        //if (v[0] == "speed")
-        //    Mouse::setSpeed((float)v[1].toInt() / 100);
-        
-        bool e = false;
-        for (uint i = 0; Shell::commands[i].cwd; i++) {
-            if (v[0] == Shell::commands[i].name) {
-                Vector<String> args;
-                for (uint j = 1; j < v.size(); j++)
-                    args.push(v[j]);
-                Shell::commands[i].cwd(args);
-                e = true;
-                break;
-            }
-        }
-        
-        if (!e)
-            *kvt << "Prikaz neexistuje\n";
-    }
-
     for (;;);
 }
 

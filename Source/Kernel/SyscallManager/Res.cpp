@@ -15,7 +15,7 @@ Res::staticCallT Res::staticCalls[] = {
     {THIF_OBJTYPE, Thread::scall},
     {FLIF_OBJTYPE, File::scall},
     {FNIF_OBJTYPE, FSNode::scall},
-    {STIF_OBJTYPE, System::scall},
+    {SYIF_OBJTYPE, System::scall},
     {0, 0}
 };
 

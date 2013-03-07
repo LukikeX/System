@@ -40,10 +40,23 @@ ushort Packet::checksum() {
     return (ushort)~sum;
 }
 
-void Packet::addHeader(uint size) {
+void Packet::addHeader(ushort size, uchar* data) {
     uchar* newData = new uchar[len + size];
     
-    Memory::copy(data, newData, len, size);
-    delete[] data;
+    Memory::copy(data, newData, size);
+    Memory::copy(this->data, newData, len, size);
+    
+    delete[] this->data;
+    this->data = newData;
     len += size;
+}
+
+void Packet::delHeader(ushort size) {
+    uchar* newData = new uchar[len - size];
+    
+    Memory::copy(data, (newData - size), len);
+    
+    delete[] data;
+    data = newData;
+    len -= size;
 }

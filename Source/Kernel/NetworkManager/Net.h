@@ -8,12 +8,37 @@
 
 class Net {
 public:
+    union ipAddress_t {
+        uint a;
+        uchar q[4];
+    };
+    
     struct ifconfig_t {
         uint ipaddr;
         uint netmask;
         uint broadcast;
         uint mtu;
     };
+    
+    struct adapter_t {
+        bool up;
+        uint type;
+        void* data;
+        uint mtu;
+        uint overhead;
+        
+        ipAddress_t ipaddr;
+        ipAddress_t netmask;
+        ipAddress_t broadcast;
+        ipAddress_t gateway;
+        void* packetCache;
+        
+        uint dropped;
+        uint errors;
+        uint recived;
+    };
+    
+    void ifconfig(String device, ifconfig_t* conf, bool up);
 };
 
 #endif

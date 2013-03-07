@@ -1,6 +1,9 @@
 #ifndef ETHERNET_H
 #define ETHERNET_H
 
+#include "Net.h"
+#include <Library/Vector.h>
+
  //#define NE2000_TYPE 1
 #define ETHER_FRAME_IP          0x0800
 #define ETHER_FRAME_ARP         0x0806
@@ -70,7 +73,40 @@
 #define E8390_PAGE2 0x80  /* Page 3 is invalid. */
 
 class Ethernet {
+public:
+    struct hwAddress_t {
+        uchar h[6];
+        
+        void setHwAddress(uchar a, uchar b, uchar c, uchar d, uchar e, uchar f) { h[0] = a; h[1] = b; h[2] = c; h[3] = d; h[4] = e; h[5] = f; }
+    };
     
+    struct IORequest_t {
+        uchar cmd;
+        uchar complete;
+        hwAddress_t raddr;
+        ushort type;
+        uint length;
+        void* memory;
+        void* extra;
+        
+        IORequest_t* next;
+        IORequest_t* prev;
+    };
+    
+    struct ethernet_t {
+        uint type;
+        bool lock;
+        hwAddress_t macAddr;
+        IORequest_t* ioFirst, *ioLast;
+        Net::adapter_t* adapter;
+    };
+    
+private:
+    Vector<ethernet_t> devs;
+    
+public:
+    Net::adapter_t* getAdapter(int idx);
+    Net::adapter_t* getAdapterByName(String device);
 };
 
 

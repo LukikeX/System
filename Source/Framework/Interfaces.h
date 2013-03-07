@@ -86,8 +86,8 @@
 
 
 //==============================================================================
-#define STIF_OBJTYPE     0x600
-#define STIF_SREBOOT     0x01
+#define SYIF_OBJTYPE     0x600
+#define SYIF_SREBOOT     0x01
 
 
 #endif

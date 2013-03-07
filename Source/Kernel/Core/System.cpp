@@ -2,7 +2,7 @@
 #include <SyscallManager/Ressource.h>
 
 ulong System::scall(uint wat, ulong, ulong, ulong, ulong) {
-    if (wat == STIF_SREBOOT)
+    if (wat == SYIF_SREBOOT)
         reboot();
     
     return 0;
