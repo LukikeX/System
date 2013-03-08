@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="88">
+<configurationDescriptor version="84">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
-    <df root="Source" name="Source">
+    <df name="Source" root="Source">
       <df name="BootLoader">
         <in>A20.asm</in>
         <in>BootLoader.asm</in>
         <in>GDT.asm</in>
         <in>LongMode.asm</in>
         <in>MemoryMap.asm</in>
+        <in>VESA.asm</in>
       </df>
       <df name="Framework">
         <df name="VirtualTerminal">
@@ -52,6 +53,8 @@
           <in>Keyboard.h</in>
           <in>Mouse.cpp</in>
           <in>Mouse.h</in>
+          <in>PCI.cpp</in>
+          <in>PCI.h</in>
           <in>Time.cpp</in>
           <in>Time.h</in>
         </df>
@@ -77,8 +80,26 @@
             <in>PS2Keyboard.cpp</in>
             <in>PS2Keyboard.h</in>
           </df>
+          <df name="Mouse">
+            <in>Mouse.proto.h</in>
+            <in>PS2Mouse.cpp</in>
+            <in>PS2Mouse.h</in>
+          </df>
+          <df name="Network">
+            <df name="ne2000">
+              <in>ne2000.cpp</in>
+              <in>ne2000.h</in>
+            </df>
+          </df>
+          <df name="PCI">
+            <in>PCIDefs.h</in>
+            <in>PCIDev.cpp</in>
+            <in>PCIDev.h</in>
+          </df>
           <in>BlockDevice.proto.h</in>
           <in>Device.proto.h</in>
+          <in>FPU.cpp</in>
+          <in>FPU.h</in>
           <in>Timer.cpp</in>
           <in>Timer.h</in>
         </df>
@@ -108,6 +129,14 @@
           </df>
         </df>
         <df name="Library">
+          <df name="GL">
+            <in>Prim.cpp</in>
+            <in>Prim.h</in>
+            <in>Quad.cpp</in>
+            <in>Quad.h</in>
+            <in>Window.cpp</in>
+            <in>Window.h</in>
+          </df>
           <in>BasicString.cpp.h</in>
           <in>BasicString.h</in>
           <in>Bitset.cpp</in>
@@ -138,14 +167,23 @@
           <in>PhysMem.cpp</in>
           <in>PhysMem.h</in>
         </df>
+        <df name="NetworkManager">
+          <in>Ethernet.cpp</in>
+          <in>Ethernet.h</in>
+          <in>Net.cpp</in>
+          <in>Net.h</in>
+          <in>Packet.cpp</in>
+          <in>Packet.h</in>
+        </df>
         <df name="Resources">
           <df name="Keymaps">
             <in>en.kmap</in>
           </df>
         </df>
         <df name="Shell">
-          <in>Shell.cpp</in>
-          <in>Shell.h</in>
+          <in>KernelShell-fs.cpp</in>
+          <in>KernelShell.cpp</in>
+          <in>KernelShell.h</in>
         </df>
         <df name="SyscallManager">
           <in>IDT.asm</in>
@@ -172,6 +210,12 @@
           <in>Task.h</in>
           <in>Thread.cpp</in>
           <in>Thread.h</in>
+        </df>
+        <df name="UserManager">
+          <in>Group.h</in>
+          <in>User.h</in>
+          <in>UserManager.cpp</in>
+          <in>UserManager.h</in>
         </df>
         <df name="VFS">
           <in>BlockCache.cpp.h</in>
@@ -244,555 +288,6 @@
           </ccTool>
         </makeTool>
       </makefileType>
-      <item path="Source/BootLoader/A20.asm" ex="false" tool="4" flavor2="0">
-      </item>
-      <item path="Source/BootLoader/BootLoader.asm" ex="false" tool="4" flavor2="0">
-      </item>
-      <item path="Source/BootLoader/GDT.asm" ex="false" tool="4" flavor2="0">
-      </item>
-      <item path="Source/BootLoader/LongMode.asm" ex="false" tool="4" flavor2="0">
-      </item>
-      <item path="Source/BootLoader/MemoryMap.asm" ex="false" tool="4" flavor2="0">
-      </item>
-      <item path="Source/Framework/Interfaces.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Source/Framework/VirtualTerminal/Defs.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/C++/Exceptions/Unwind.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/C++/Exceptions/cxxabi.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/C++/Exceptions/exception.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/C++/Exceptions/typeinfo.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/C++/Exceptions/typeinfo.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/C++/Runtime.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="Source/Kernel/C++/Runtime.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Source/Kernel/Core/A.asm" ex="false" tool="4" flavor2="0">
-      </item>
-      <item path="Source/Kernel/Core/IO.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="Source/Kernel/Core/IO.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Source/Kernel/Core/Loader.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="Source/Kernel/Core/Loader.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Source/Kernel/Core/Mutex.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="Source/Kernel/Core/Mutex.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Source/Kernel/Core/Panic.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="Source/Kernel/Core/Panic.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Source/Kernel/Core/SB.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="Source/Kernel/Core/SB.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Source/Kernel/Core/System.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="Source/Kernel/Core/System.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Source/Kernel/Core/typedef.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Source/Kernel/DeviceManager/Device.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/DeviceManager/Device.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/DeviceManager/Display.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/DeviceManager/Display.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/DeviceManager/Keyboard.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/DeviceManager/Keyboard.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/DeviceManager/Mouse.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/DeviceManager/Mouse.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/DeviceManager/Time.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/DeviceManager/Time.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Source/Kernel/Devices/ATA/ATAController.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/Devices/ATA/ATAController.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/Devices/ATA/ATADrive.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/Devices/ATA/ATADrive.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/Devices/BlockDevice.proto.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/Devices/Device.proto.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/Devices/Display/Display.proto.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/Devices/Display/GraphicDisplay.proto.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/Devices/Display/GraphicDisplay.proto.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/Devices/Display/VESADisplay.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/Devices/Display/VESADisplay.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/Devices/Display/VGATextOutput.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/Devices/Display/VGATextOutput.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/Devices/Keyboard/Keyboard.defs.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/Devices/Keyboard/Keyboard.proto.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/Devices/Keyboard/PS2Keyboard.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/Devices/Keyboard/PS2Keyboard.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/Devices/Timer.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="Source/Kernel/Devices/Timer.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Source/Kernel/Exceptions/Exception.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/Exceptions/Exception.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/Exceptions/FileException.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/Exceptions/MemoryException.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/FileSystems/Adv/Adv.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/FileSystems/Adv/Adv.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/FileSystems/Adv/AdvBlockGroup.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/FileSystems/Adv/AdvBlockGroup.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/FileSystems/Adv/AdvInode.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/FileSystems/Adv/AdvInode.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/FileSystems/Ext2/Ext2.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/FileSystems/Ext2/Ext2.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/FileSystems/RamFS/RamFS.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/FileSystems/RamFS/RamFS.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/FileSystems/RamFS/RamFileNode.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/Library/BasicString.cpp.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/Library/BasicString.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/Library/Bitset.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="Source/Kernel/Library/Bitset.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Source/Kernel/Library/List.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Source/Kernel/Library/String.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="Source/Kernel/Library/String.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Source/Kernel/Library/Vector.cpp.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Source/Kernel/Library/Vector.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Source/Kernel/Library/WChar.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="Source/Kernel/Library/WChar.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Source/Kernel/Linker/Binary.proto.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/Linker/Binary.proto.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/MemoryManager/GDT.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/MemoryManager/GDT.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Source/Kernel/MemoryManager/Heap.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/MemoryManager/Heap.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Source/Kernel/MemoryManager/Memory.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/MemoryManager/Memory.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/MemoryManager/PageAlloc.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/MemoryManager/PageAlloc.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/MemoryManager/PageDirectory.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/MemoryManager/PageDirectory.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/MemoryManager/PhysMem.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/MemoryManager/PhysMem.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/Resources/Keymaps/en.kmap"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/Shell/Shell.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="Source/Kernel/Shell/Shell.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Source/Kernel/SyscallManager/IDT.asm"
-            ex="false"
-            tool="4"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/SyscallManager/IDT.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/SyscallManager/IDT.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Source/Kernel/SyscallManager/Res.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/SyscallManager/Res.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Source/Kernel/SyscallManager/Ressource.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/SyscallManager/Ressource.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/TaskManager/Process-sc.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/TaskManager/Process.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/TaskManager/Process.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/TaskManager/Task.asm" ex="false" tool="4" flavor2="0">
-      </item>
-      <item path="Source/Kernel/TaskManager/Task.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="Source/Kernel/TaskManager/Task.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Source/Kernel/TaskManager/Thread.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/TaskManager/Thread.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Source/Kernel/TaskManager/V86/V86.asm"
-            ex="false"
-            tool="4"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/TaskManager/V86/V86.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/TaskManager/V86/V86.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/TaskManager/V86/V86Thread.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/TaskManager/V86/V86Thread.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/VFS/BlockCache.cpp.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Source/Kernel/VFS/BlockCache.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Source/Kernel/VFS/DirectoryNode.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/VFS/DirectoryNode.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Source/Kernel/VFS/FSNode-sc.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="Source/Kernel/VFS/FSNode.proto.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Source/Kernel/VFS/File-sc.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="Source/Kernel/VFS/File.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="Source/Kernel/VFS/File.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Source/Kernel/VFS/FileNode.proto.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Source/Kernel/VFS/FileSystem.proto.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/VFS/Part.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="Source/Kernel/VFS/Part.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Source/Kernel/VFS/Partition.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="Source/Kernel/VFS/Partition.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Source/Kernel/VFS/VFS.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="Source/Kernel/VFS/VFS.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Source/Kernel/VTManager/ScrollableVT.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/VTManager/ScrollableVT.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/VTManager/SimpleVT.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/VTManager/SimpleVT.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Source/Kernel/VTManager/VT.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="Source/Kernel/VTManager/VT.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Source/Kernel/VTManager/VirtualTerminal-kbd.proto.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/VTManager/VirtualTerminal-sc.proto.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/VTManager/VirtualTerminal.proto.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="Source/Kernel/VTManager/VirtualTerminal.proto.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
     </conf>
   </confs>
 </configurationDescriptor>

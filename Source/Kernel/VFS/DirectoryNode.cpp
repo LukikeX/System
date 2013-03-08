@@ -142,9 +142,6 @@ Vector<FSNode *>& DirectoryNode::getChildren() {
     return children;
 }
 
-
-
-
 DirectoryNode* DirectoryNode::createDirectory(const String& name) {
     if (mounts)
         return mounts->createDirectory(name);
